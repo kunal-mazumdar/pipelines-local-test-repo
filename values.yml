@@ -1,0 +1,3 @@
+myRepo:
+  gitProvider: mygithub
+  path: kunal-mazumdar/pipelines-local-test-repo
