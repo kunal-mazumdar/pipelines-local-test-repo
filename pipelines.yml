@@ -25,6 +25,7 @@ pipelines:
       - name: p1_s1
         type: Bash
         configuration:
+          nodePool: dyn_kube_np
           inputResources:
             # Sets up step to be triggered when there are commit events to myFirstRepo
             - name: myFirstRepo
@@ -73,6 +74,7 @@ pipelines:
       - name: p2_s1
         type: Bash
         configuration:
+          nodePool: dyn_kube_np
           inputResources:
             # Sets up step to be triggered when myPropertyBag is updated
             - name: myPropertyBag
