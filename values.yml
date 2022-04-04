@@ -1,3 +1,5 @@
 myRepo:
   gitProvider: mygithub
   path: kunal-mazumdar/pipelines-local-test-repo
+myNodePool:
+  name: dyn_insighthelm_kube_np
