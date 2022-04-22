@@ -1,84 +1,648 @@
-template: true   # required for local templates
+template: true
 valuesFilePath: ./values.yml
 
 resources:
-  - name: myFirstRepo
-    type: GitRepo
-    configuration:
-      # SCM integration where the repository is located
-      gitProvider: {{ .Values.myRepo.gitProvider }} # this will be replaced from values.yml
-      # Repository path, including org name/repo name
-      path: {{ .Values.myRepo.path }} # this will be replaced from values.yml
-      branches:
-        # Specifies which branches will trigger dependent steps
-        include: master
-
-  - name: myPropertyBag
+  - name: myPropertyBag1Pipe21
     type: PropertyBag
     configuration:
       commitSha: 1
       runID: 1
-
+  - name: myPropertyBag2Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag3Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag4Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag5Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag6Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag7Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag8Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag9Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: frontendGitPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag12Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: redisBuildInfoPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: wwwGitPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: vaultInitBuildInfoPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag16Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag17Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: frontendBuildInfoPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: cpGitPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: msgPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag20Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag21Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag22Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag23Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag24Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag28Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag29Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag30Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag31Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag32Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag33Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag34Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag35Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag36Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag37Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag38Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag39Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag40Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag41Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag42Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag43Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag44Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag45Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag46Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag47Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag48Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag49Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag50Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag51Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag52Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: myPropertyBag53Pipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: microGitPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
+  - name: templateFSPipe21
+    type: PropertyBag
+    configuration:
+      commitSha: 1
+      runID: 1
 pipelines:
-  - name: my_first_pipeline
+{{ range $i, $e := until 65 }}
+  - name: Pipe21b{{$i}}
     steps:
-      - name: p1_s1
+      - name: trigger_controlplane_builds
+        type: Bash
+        execution:
+          onExecute:
+            - echo hi
+      - name: automation_e2e_build
         type: Bash
         configuration:
-          nodePool: {{ .Values.myNodePool.name }}
           inputResources:
-            # Sets up step to be triggered when there are commit events to myFirstRepo
-            - name: myFirstRepo
+            - name: myPropertyBag1Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
         execution:
           onExecute:
-            # Data from input resources is available as env variables in the step
-            - echo $res_myFirstRepo_commitSha
-            # The next two commands add variables to run state, which is available to all downstream steps in this run
-            # Run state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-RunState
-            - add_run_variables current_runid=$run_id
-            - add_run_variables commitSha=$res_myFirstRepo_commitSha
-            # This variable is written to pipeline state in p1_s3.
-            # So this will be empty during first run and will be set to prior run number in subsequent runs
-            # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
-            - echo "Previous run ID is $prev_runid"
-
-      - name: p1_s2
+            - echo hi
+      - name: frontend
         type: Bash
         configuration:
+          inputResources:
+            - name: myPropertyBag2Pipe21
           inputSteps:
-            - name: p1_s1
+            - name: trigger_controlplane_builds
         execution:
           onExecute:
-            # Demonstrates the availability of an env variable written to run state during p1_s1
-            - echo $current_runid
-
-      - name: p1_s3
+            - echo hi
+      - name: frontend_publish
         type: Bash
         configuration:
+          inputResources:
+            - name: frontendGitPipe21
+            - name: frontendBuildInfoPipe21
           inputSteps:
-            - name: p1_s2
+            - name: frontend
+        execution:
+          onExecute:
+            - echo hi
+      - name: frontend_sonar_scan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: frontendGitPipe21
+          inputSteps:
+            - name: frontend
+        execution:
+          onExecute:
+            - echo hi
+      - name: msgPipe21
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag3Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: msg_publish
+        type: Bash
+        configuration:
           outputResources:
-            - name: myPropertyBag
+            - name: msgPipe21
+          inputSteps:
+            - name: msgPipe21
         execution:
           onExecute:
-            - echo $current_runid
-            # Writes current run number to pipeline state
-            - add_pipeline_variables prev_runid=$run_id
-            # Uses an utility function to update the output resource with the commitSha that triggered this run
-            # Dependent pipelines can be configured to trigger when this resource is updated
-            # Utility functions documentation: https://www.jfrog.com/confluence/display/JFROG/Pipelines+Utility+Functions
-            - write_output myPropertyBag commitSha=$commitSha runID=$current_runid
-
-  - name: my_second_pipeline
-    steps:
-      - name: p2_s1
+            - echo hi
+      - name: msg_clam_scan
         type: Bash
         configuration:
-          nodePool: {{ .Values.myNodePool.name }}
           inputResources:
-            # Sets up step to be triggered when myPropertyBag is updated
-            - name: myPropertyBag
+            - name: cpGitPipe21
+          inputSteps:
+            - name: msg_publish
         execution:
           onExecute:
-            # Retrieves the commitSha from input resource
-            - echo "CommitSha is $res_myPropertyBag_commitSha"
+            - echo hi
+      - name: redis
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag12Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: redis_publish
+        type: Bash
+        configuration:
+          outputResources:
+            - name: redisBuildInfoPipe21
+          inputSteps:
+            - name: redis
+        execution:
+          onExecute:
+            - echo hi
+      - name: vault
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag4Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: vault_publish
+        type: Bash
+        configuration:
+          outputResources:
+            - name: wwwGitPipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: vault_clam_scan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag20Pipe21
+          inputSteps:
+            - name: vault_publish
+        execution:
+          onExecute:
+            - echo hi
+      - name: template_build
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag5Pipe21
+          outputResources:
+            - name: templateFSPipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: micro_build
+        type: Bash
+        configuration:
+          inputResources:
+            - name: templateFSPipe21
+            - name: myPropertyBag22Pipe21
+            - name: myPropertyBag23Pipe21
+            - name: microGitPipe21
+          inputSteps:
+            - name: template_build
+        execution:
+          onExecute:
+            - echo hi
+      - name: micro_test
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag24Pipe21
+          inputSteps:
+            - name: micro_build
+        execution:
+          onExecute:
+            - echo hi
+      - name: micro_sonar_scan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: microGitPipe21
+          inputSteps:
+            - name: micro_test
+        execution:
+          onExecute:
+            - echo hi
+      - name: template_sonar_scan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag21Pipe21
+          inputSteps:
+            - name: template_build
+        execution:
+          onExecute:
+            - echo hi
+      - name: vault_init
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag6Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: vault_init_publish
+        type: Bash
+        configuration:
+          outputResources:
+            - name: vaultInitBuildInfoPipe21
+          inputSteps:
+            - name: vault_init
+        execution:
+          onExecute:
+            - echo hi
+      - name: inst_build
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag28Pipe21
+            - name: myPropertyBag29Pipe21
+            - name: myPropertyBag30Pipe21
+            - name: myPropertyBag31Pipe21
+            - name: myPropertyBag32Pipe21
+            - name: myPropertyBag33Pipe21
+            - name: myPropertyBag34Pipe21
+            - name: myPropertyBag35Pipe21
+            - name: myPropertyBag36Pipe21
+            - name: myPropertyBag37Pipe21
+          inputSteps:
+            - name: vault_init_publish
+        execution:
+          onExecute:
+            - echo hi
+      - name: inst_clam_scan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag38Pipe21
+          inputSteps:
+            - name: inst_build
+        execution:
+          onExecute:
+            - echo hi
+      - name: create_snapshot_branch
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag39Pipe21
+            - name: myPropertyBag40Pipe21
+          inputSteps:
+            - name: inst_clam_scan
+        execution:
+          onExecute:
+            - echo hi
+      - name: postgres
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag7Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: postgres_publish
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag16Pipe21
+          inputSteps:
+            - name: postgres
+        execution:
+          onExecute:
+            - echo hi
+      - name: postgres_clam_scan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag43Pipe21
+          inputSteps:
+            - name: postgres_publish
+        execution:
+          onExecute:
+            - echo hi
+      - name: www_clam_scan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag16Pipe21
+          inputSteps:
+            - name: www_publish
+        execution:
+          onExecute:
+            - echo hi
+      - name: pipelines_router
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag8Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: pipelines_router_publish
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag17Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: build_helm_chart
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag9Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: www
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag41Pipe21
+            - name: myPropertyBag42Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: www_publish
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag41Pipe21
+            - name: myPropertyBag42Pipe21
+          inputSteps:
+            - name: www
+        execution:
+          onExecute:
+            - echo hi
+      - name: api_build
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag44Pipe21
+            - name: myPropertyBag45Pipe21
+            - name: myPropertyBag46Pipe21
+            - name: myPropertyBag47Pipe21
+            - name: myPropertyBag48Pipe21
+            - name: myPropertyBag49Pipe21
+            - name: myPropertyBag50Pipe21
+            - name: myPropertyBag51Pipe21
+            - name: myPropertyBag52Pipe21
+          inputSteps:
+            - name: trigger_controlplane_builds
+        execution:
+          onExecute:
+            - echo hi
+      - name: api_clam_scan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: myPropertyBag53Pipe21
+          inputSteps:
+            - name: api_build
+        execution:
+          onExecute:
+            - echo hi
+      - name: trigger_post_release
+        type: Bash
+        configuration:
+          inputResources:
+            - name: cpGitPipe21
+            - name: msgPipe21
+            - name: redisBuildInfoPipe21
+            - name: vaultInitBuildInfoPipe21
+            - name: wwwGitPipe21
+          inputSteps:
+            - name: msg_clam_scan
+            - name: vault_clam_scan
+            - name: micro_sonar_scan
+            - name: www_clam_scan
+            - name: api_clam_scan
+        execution:
+          onExecute:
+            - echo hi
+{{ end }}
