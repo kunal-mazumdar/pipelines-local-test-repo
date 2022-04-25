@@ -263,7 +263,7 @@ resources:
       commitSha: 1
       runID: 1
 pipelines:
-{{ range $i, $e := until 65 }}
+{{ range $i, $e := until 5 }}
   - name: DemoPipeA{{$i}}
     steps:
       - name: trigger_controlplane_builds
