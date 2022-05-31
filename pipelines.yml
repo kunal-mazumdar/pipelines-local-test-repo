@@ -21,6 +21,10 @@ resources:
 
 pipelines:
   - name: my_first_pipeline
+    configuration:
+      inputResources:
+        - name: myPropertyBag
+        - name: myPropertyBag
     steps:
       - name: p1_s1
         type: Bash
@@ -65,7 +69,6 @@ pipelines:
           inputSteps:
             - name: p1_s2
           inputResources:
-            - name: myPropertyBag
             - name: myPropertyBag
         execution:
           onExecute:
