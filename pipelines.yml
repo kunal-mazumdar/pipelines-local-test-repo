@@ -18,6 +18,12 @@ resources:
     configuration:
       commitSha: 1
       runID: 1
+      
+  - name: myPropertyBag2
+    type: PropertyBag
+    configuration:
+      commitSha: 2
+      runID: 2
 
 pipelines:
   - name: my_first_pipeline
@@ -67,6 +73,8 @@ pipelines:
           inputResources:
             - name: myPropertyBag
             - name: myPropertyBag
+            - name: myPropertyBag2
+            - name: myPropertyBag2
         execution:
           onExecute:
             # Demonstrates the availability of an env variable written to run state during p1_s1
