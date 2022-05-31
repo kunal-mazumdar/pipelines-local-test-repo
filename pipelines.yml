@@ -21,10 +21,6 @@ resources:
 
 pipelines:
   - name: my_first_pipeline
-    configuration:
-      inputResources:
-        - name: myPropertyBag
-        - name: myPropertyBag
     steps:
       - name: p1_s1
         type: Bash
