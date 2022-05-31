@@ -66,6 +66,7 @@ pipelines:
             - name: p1_s2
           inputResources:
             - name: myPropertyBag
+            - name: myPropertyBag
         execution:
           onExecute:
             # Demonstrates the availability of an env variable written to run state during p1_s1
