@@ -49,6 +49,7 @@ pipelines:
             - name: p1_s1
           outputResources:
             - name: myPropertyBag
+            - name: myPropertyBag
         execution:
           onExecute:
             - echo $current_runid
@@ -65,7 +66,6 @@ pipelines:
           inputSteps:
             - name: p1_s2
           inputResources:
-            - name: myPropertyBag
             - name: myPropertyBag
         execution:
           onExecute:
