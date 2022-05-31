@@ -47,16 +47,6 @@ pipelines:
         configuration:
           inputSteps:
             - name: p1_s1
-        execution:
-          onExecute:
-            # Demonstrates the availability of an env variable written to run state during p1_s1
-            - echo $current_runid
-
-      - name: p1_s3
-        type: Bash
-        configuration:
-          inputSteps:
-            - name: p1_s2
           outputResources:
             - name: myPropertyBag
         execution:
@@ -68,17 +58,17 @@ pipelines:
             # Dependent pipelines can be configured to trigger when this resource is updated
             # Utility functions documentation: https://www.jfrog.com/confluence/display/JFROG/Pipelines+Utility+Functions
             - write_output myPropertyBag commitSha=$commitSha runID=$current_runid
-
-  - name: my_second_pipeline
-    steps:
-      - name: p2_s1
+            
+      - name: p1_s3
         type: Bash
         configuration:
-          nodePool: {{ .Values.myNodePool.name }}
+          inputSteps:
+            - name: p1_s2
           inputResources:
-            # Sets up step to be triggered when myPropertyBag is updated
             - name: myPropertyBag
+              trigger: false
         execution:
           onExecute:
-            # Retrieves the commitSha from input resource
-            - echo "CommitSha is $res_myPropertyBag_commitSha"
+            # Demonstrates the availability of an env variable written to run state during p1_s1
+            - echo $current_runid
+            - echo $res_myPropertyBag_commitSha
