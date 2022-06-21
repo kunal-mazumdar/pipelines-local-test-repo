@@ -27,6 +27,8 @@ resources:
 
 pipelines:
   - name: my_first_pipeline
+    outputResources:
+      - name: myPropertyBag
     steps:
       - name: p1_s1
         type: Bash
@@ -47,33 +49,3 @@ pipelines:
             # So this will be empty during first run and will be set to prior run number in subsequent runs
             # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
             - echo "Previous run ID is $prev_runid"
-
-      - name: p1_s2
-        type: Bash
-        configuration:
-          inputSteps:
-            - name: p1_s1
-          outputResources:
-            - name: myPropertyBag
-        execution:
-          onExecute:
-            - echo $current_runid
-            # Writes current run number to pipeline state
-            - add_pipeline_variables prev_runid=$run_id
-            # Uses an utility function to update the output resource with the commitSha that triggered this run
-            # Dependent pipelines can be configured to trigger when this resource is updated
-            # Utility functions documentation: https://www.jfrog.com/confluence/display/JFROG/Pipelines+Utility+Functions
-            - write_output myPropertyBag commitSha=$commitSha runID=$current_runid
-            
-      - name: p1_s3
-        type: Bash
-        configuration:
-          inputSteps:
-            - name: p1_s2
-          inputResources:
-            - name: myPropertyBag
-        execution:
-          onExecute:
-            # Demonstrates the availability of an env variable written to run state during p1_s1
-            - echo $current_runid
-            - echo $res_myPropertyBag_commitSha
