@@ -27,7 +27,7 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: myFirstRepo
+            - name: myPropertyBag
         execution:
           onExecute:
             - printenv
