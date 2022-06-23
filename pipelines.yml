@@ -1,18 +1,10 @@
-template: true   # required for local templates
-valuesFilePath: ./values.yml
-
 resources:
   - name: myFirstRepo
     type: GitRepo
     configuration:
-      # SCM integration where the repository is located
-      gitProvider: {{ .Values.myRepo.gitProvider }} # this will be replaced from values.yml
-      # Repository path, including org name/repo name
-      path: {{ .Values.myRepo.path }} # this will be replaced from values.yml
-      #branches:
-        # Specifies which branches will trigger dependent steps
-        #include: master
-
+      gitProvider: mygithub
+      path: kunal-mazumdar/pipelines-local-test-repo
+      
   - name: myPropertyBag
     type: PropertyBag
     configuration:
@@ -26,27 +18,14 @@ resources:
       runID: 2
 
 pipelines:
-  - name: my_first_pipeline
-    configuration:
-      outputResources:
-        - name: myPropertyBag
+  - name: demo_manual
     steps:
-      - name: p1_s1
+      - name: manual_trigger
         type: Bash
         configuration:
-          nodePool: {{ .Values.myNodePool.name }}
           inputResources:
-            # Sets up step to be triggered when there are commit events to myFirstRepo
-            - name: myFirstRepo
+            - name: myRepo_d
         execution:
           onExecute:
-            # Data from input resources is available as env variables in the step
-            - echo $res_myFirstRepo_commitSha
-            # The next two commands add variables to run state, which is available to all downstream steps in this run
-            # Run state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-RunState
-            - add_run_variables current_runid=$run_id
-            - add_run_variables commitSha=$res_myFirstRepo_commitSha
-            # This variable is written to pipeline state in p1_s3.
-            # So this will be empty during first run and will be set to prior run number in subsequent runs
-            # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
-            - echo "Previous run ID is $prev_runid"
+            - printenv
+            - echo "hi"
