@@ -19,6 +19,9 @@ resources:
 
 pipelines:
   - name: demo_manual
+    configuration:
+      inputResources:
+        - name: myFirstRepo
     steps:
       - name: manual_trigger
         type: Bash
