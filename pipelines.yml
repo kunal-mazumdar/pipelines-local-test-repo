@@ -24,7 +24,7 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: myRepo_d
+            - name: myFirstRepo
         execution:
           onExecute:
             - printenv
