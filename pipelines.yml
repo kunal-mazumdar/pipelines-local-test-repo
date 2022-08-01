@@ -15,9 +15,11 @@ resources:
 
 pipelines:
 {{ range .Values.services }}
-  - name: my_first_pipeline_{{ .name }}
+{{- $serviceName := .name -}}
+{{ range .envs }}
+  - name: my_first_pipeline_{{ $serviceName }}_{{ . }}
     steps:
-      - name: p1_s1_{{ .name }}
+      - name: p1_s1_{{ $serviceName }}_{{ . }}
         type: Bash
         configuration:
           inputResources:
@@ -35,4 +37,5 @@ pipelines:
             # So this will be empty during first run and will be set to prior run number in subsequent runs
             # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
             - echo "Previous run ID is $prev_runid"
+{{ end }}
 {{ end }}
