@@ -13,25 +13,13 @@ resources:
         # Specifies which branches will trigger dependent steps
         include: master
 
-  - name: myPropertyBag
-    type: PropertyBag
-    configuration:
-      commitSha: 1
-      runID: 1
-      
-  - name: myPropertyBag2
-    type: PropertyBag
-    configuration:
-      commitSha: 2
-      runID: 2
-
 pipelines:
-  - name: my_first_pipeline
+{{ range .Values.services }}
+  - name: my_first_pipeline_{{.}}
     steps:
-      - name: p1_s1
+      - name: p1_s1_{{.}}
         type: Bash
         configuration:
-          nodePool: {{ .Values.myNodePool.name }}
           inputResources:
             # Sets up step to be triggered when there are commit events to myFirstRepo
             - name: myFirstRepo
@@ -47,3 +35,4 @@ pipelines:
             # So this will be empty during first run and will be set to prior run number in subsequent runs
             # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
             - echo "Previous run ID is $prev_runid"
+{{ end }}
