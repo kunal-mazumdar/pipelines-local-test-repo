@@ -15,9 +15,9 @@ resources:
 
 pipelines:
 {{ range .Values.services }}
-  - name: my_first_pipeline_{{ $.name }}
+  - name: my_first_pipeline_{{ .name }}
     steps:
-      - name: p1_s1_{{ $.name }}
+      - name: p1_s1_{{ .name }}
         type: Bash
         configuration:
           inputResources:
