@@ -1,8 +1,3 @@
-myRepo:
-  gitProvider: kunal_github
-  path: kunal-mazumdar/pipelines-local-test-repo
-myNodePool:
-  name: static_np_1
 services:
   - name: service_a
     envs:
