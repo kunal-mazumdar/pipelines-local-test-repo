@@ -4,5 +4,13 @@ myRepo:
 myNodePool:
   name: static_np_1
 services:
-  - service_a
-  - service_b
+  - name: service_a
+    envs:
+      - dev
+      - staging
+      - production
+  - name: service_b
+    envs:
+      - dev
+      - staging
+      - production
