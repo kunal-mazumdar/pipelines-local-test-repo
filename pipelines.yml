@@ -9,7 +9,6 @@ pipelines:
     steps:
       - name: p1_s1_{{ $serviceName }}_{{ . }}
         type: Bash
-        configuration:
         execution:
           onExecute:
             - echo "test"        
