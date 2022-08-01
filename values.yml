@@ -3,3 +3,6 @@ myRepo:
   path: kunal-mazumdar/pipelines-local-test-repo
 myNodePool:
   name: static_np_1
+services:
+  - service_a
+  - service_b
