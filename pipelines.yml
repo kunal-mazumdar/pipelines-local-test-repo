@@ -5,7 +5,7 @@ pipelines:
 {{ range .Values.services }}
 {{- $serviceName := .name -}}
 {{ range .envs }}
-  - name: my_first_pipeline_{{ $serviceName }}_{{ . }}
+  - name: my_pipeline_{{ $serviceName }}_{{ . }}
     steps:
       - name: p1_s1_{{ $serviceName }}_{{ . }}
         type: Bash
