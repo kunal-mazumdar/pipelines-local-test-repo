@@ -13,7 +13,7 @@ pipelines:
         type: Bash
         configuration:
           inputSteps:
-            - test_step_1
+            - name: test_step_1
         execution:
           onExecute:
             - cd /tmp
