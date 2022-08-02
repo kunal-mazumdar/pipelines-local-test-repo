@@ -1,16 +1,22 @@
-template: true   # required for local templates
-valuesFilePath: ./values.yml
-
 pipelines:
-{{ range .Values.services }}
-{{- $serviceName := .name -}}
-{{ range .envs }}
-  - name: my_pipeline_{{ $serviceName }}_{{ . }}
+  - name: test_pipe_1
     steps:
-      - name: p1_s1_{{ $serviceName }}_{{ . }}
+      - name: test_step_1
         type: Bash
         execution:
           onExecute:
-            - echo "test"        
-{{ end }}
-{{ end }}
+            - cd /tmp
+            - mkdir -p "node_modules/@jfrog-pipelines"
+            - echo "test" >> node_modules/@jfrog-pipelines/test.txt
+            - add_pipeline_files node_modules/@jfrog-pipelines jfrog_pipelines_packages_cache
+      - name: test_step_1
+        type: Bash
+        configuration:
+          inputSteps:
+            - test_step_1
+        execution:
+          onExecute:
+            - cd /tmp
+            - mkdir -p "target/node_modules"
+            - cd target
+            - restore_pipeline_files jfrog_pipelines_packages_cache node_modules/
