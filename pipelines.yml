@@ -9,7 +9,7 @@ pipelines:
             - mkdir -p "node_modules/@jfrog-pipelines"
             - echo "test" >> node_modules/@jfrog-pipelines/test.txt
             - add_pipeline_files node_modules/@jfrog-pipelines jfrog_pipelines_packages_cache
-      - name: test_step_1
+      - name: test_step_2
         type: Bash
         configuration:
           inputSteps:
