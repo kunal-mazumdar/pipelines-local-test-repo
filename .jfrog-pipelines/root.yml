@@ -1,3 +1,12 @@
+resources:
+  - name: myFirstRepo
+    type: GitRepo
+    configuration:
+      gitProvider: my_github
+      path: kunal-mazumdar/pipelines-local-test-repo
+      branches:
+        include: multi-ps
+        
 pipelines:
   - name: test_pipe_9494_2_root
     steps:
