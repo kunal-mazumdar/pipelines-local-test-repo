@@ -2,7 +2,7 @@ resources:
   - name: myFirstRepo
     type: GitRepo
     configuration:
-      gitProvider: my_github
+      gitProvider: mygithub
       path: kunal-mazumdar/pipelines-local-test-repo
       branches:
         include: multi-ps
@@ -14,6 +14,8 @@ pipelines:
         type: Bash
         execution:
           onExecute:
+            - echo {{gitBranch}}
+            - echo {{sourceRepository}}            
             - cd /tmp
             - mkdir -p "node_modules/@jfrog-pipelines"
             - echo "test" >> node_modules/@jfrog-pipelines/test.txt
