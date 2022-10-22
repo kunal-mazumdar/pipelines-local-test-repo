@@ -2,10 +2,12 @@ template: true   # required for local templates
 valuesFilePath: ./values.yml
 
 pipelines:
-  - name: my_first_pipeline
+  {{ range $value := .Values.dashboards }}
+  - name: test_{{ $value }}_{{ .Values.pipelineName }}
     steps:
       - name: p1_s1
         type: Bash
         execution:
           onExecute:
             - echo "testing"
+  {{ end }}
