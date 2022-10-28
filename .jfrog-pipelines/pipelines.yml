@@ -1,11 +1,9 @@
-template: true
-valuesFilePath: ./values.yml
 resources:
   - name: myFirstRepo
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
-      path: {{ .Values.sourceRepository }}
+      path: {{ sourceRepository }}
       branches:
         include: {{gitBranch}}
 
@@ -17,10 +15,10 @@ pipelines:
         configuration:
           environmentVariables:
             env1: {{gitBranch}}
-            env2: {{ .Values.sourceRepository }}
+            env2: {{ sourceRepository }}
         execution:
           onExecute:
             - echo {{gitBranch}}
-            - echo {{ .Values.sourceRepository }}
+            - echo {{ sourceRepository }}
             - cd /tmp
             
