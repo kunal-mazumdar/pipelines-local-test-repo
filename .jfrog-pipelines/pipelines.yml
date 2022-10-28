@@ -5,7 +5,7 @@ resources:
     type: GitRepo
     configuration:
       gitProvider: s_gitHub
-      path: {{sourceRepository}}
+      path: {{ .Values.sourceRepository }}
       branches:
         include: {{gitBranch}}
 
@@ -17,10 +17,10 @@ pipelines:
         configuration:
           environmentVariables:
             env1: {{gitBranch}}
-            env2: {{sourceRepository}}
+            env2: {{ .Values.sourceRepository }}
         execution:
           onExecute:
             - echo {{gitBranch}}
-            - echo {{sourceRepository}}
+            - echo {{ .Values.sourceRepository }}
             - cd /tmp
             
