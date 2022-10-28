@@ -1,13 +1,26 @@
-template: true   # required for local templates
+template: true
 valuesFilePath: ./values.yml
+resources:
+  - name: myFirstRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: {{sourceRepository}}
+      branches:
+        include: {{gitBranch}}
 
 pipelines:
-  {{ range $value := .Values.dashboards }}
-  - name: test_{{ $value }}_{{ .Values.pipelineName }}
+  - name: Ps_variable_resolved_6730
     steps:
-      - name: p1_s1
+      - name: Ps_variable_resolved_6730
         type: Bash
+        configuration:
+          environmentVariables:
+            env1: {{gitBranch}}
+            env2: {{sourceRepository}}
         execution:
           onExecute:
-            - echo "testing"
-  {{ end }}
+            - echo {{gitBranch}}
+            - echo {{sourceRepository}}
+            - cd /tmp
+            
