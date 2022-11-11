@@ -14,8 +14,7 @@ pipelines:
         type: Bash
         execution:
           onExecute:
-            - echo {{gitBranch}}
-            - echo {{sourceRepository}}            
+            - echo {{gitBranch}}        
             - cd /tmp
             - mkdir -p "node_modules/@jfrog-pipelines"
             - echo "test" >> node_modules/@jfrog-pipelines/test.txt
