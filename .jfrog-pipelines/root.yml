@@ -2,8 +2,8 @@ resources:
   - name: myFirstRepo
     type: GitRepo
     configuration:
-      gitProvider: mygithub
-      path: {{sourceValueRepository}}
+      gitProvider: s_gitHub
+      path: {{ invalidVariable }}
       branches:
         include: 'master'
 
@@ -14,8 +14,9 @@ pipelines:
         type: Bash
         configuration:
           environmentVariables:
-            env2: {{sourceValueRepository}}
+            env2: {{ invalidVariable }}
         execution:
           onExecute:
-            - echo {{sourceValueRepository}}
+            - echo {{ invalidVariable }}
             - cd /tmp
+            
