@@ -3,31 +3,19 @@ resources:
     type: GitRepo
     configuration:
       gitProvider: mygithub
-      path: kunal-mazumdar/pipelines-local-test-repo
+      path: {{valuesourceRepository}}
       branches:
-        include: multi-ps
-        
+        include: 'master'
+
 pipelines:
-  - name: test_pipe_9494_2_root
+  - name: Ps_variable_resolved_6730
     steps:
-      - name: test_pipe_step_9494_3
-        type: Bash
-        execution:
-          onExecute:
-            - echo {{gitBranch}}
-            - echo {{sourceRepository}}
-            - cd /tmp
-            - mkdir -p "node_modules/@jfrog-pipelines"
-            - echo "test" >> node_modules/@jfrog-pipelines/test.txt
-            - add_pipeline_files node_modules/@jfrog-pipelines jfrog_pipelines_packages_cache
-      - name: test_pipe_step_9494_4
+      - name: Ps_variable_resolved_6730
         type: Bash
         configuration:
-          inputSteps:
-            - name: test_pipe_step_9494_3
+          environmentVariables:
+            env2: {{valuesourceRepository}}
         execution:
           onExecute:
+            - echo {{valuesourceRepository}}
             - cd /tmp
-            - mkdir -p "target/node_modules"
-            - cd target
-            - restore_pipeline_files jfrog_pipelines_packages_cache node_modules/
