@@ -1,12 +1,3 @@
-resources:
-  - name: myFirstRepo
-    type: GitRepo
-    configuration:
-      gitProvider: s_gitHub
-      path: {{ invalidVariable }}
-      branches:
-        include: 'master'
-
 pipelines:
   - name: Ps_variable_resolved_6730
     steps:
@@ -14,9 +5,10 @@ pipelines:
         type: Bash
         configuration:
           environmentVariables:
-            env2: {{ invalidVariable }}
+            env: 1
         execution:
           onExecute:
-            - echo {{ invalidVariable }}
-            - cd /tmp
+            - echo {{ gitBranch }}
+            - echo {{ sourceRepository }}
+            - echo {{ defaultArtifactory }}
             
