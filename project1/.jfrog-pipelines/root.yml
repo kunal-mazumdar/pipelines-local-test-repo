@@ -1,0 +1,14 @@
+valuesFilePath: ./values.yml
+pipelines:
+  - name: Ps_variable_resolved_6730_1
+    steps:
+      - name: Ps_variable_resolved_6730_1
+        type: Bash
+        configuration:
+          environmentVariables:
+            env: 1
+        execution:
+          onExecute:
+            - echo {{ gitBranch }}
+            - echo {{ sourceRepository }}
+            

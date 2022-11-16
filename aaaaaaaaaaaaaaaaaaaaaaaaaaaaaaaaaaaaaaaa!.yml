@@ -1,5 +1,0 @@
-pipelines:
-  - name: test
-    steps:
-      - name: test1
-        
