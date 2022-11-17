@@ -11,4 +11,5 @@ pipelines:
           onExecute:
             - echo {{ gitBranch }}
             - echo {{ sourceRepository }}
+            - echo {{ defaultArtifactory }}
             
