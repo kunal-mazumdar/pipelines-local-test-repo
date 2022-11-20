@@ -2,23 +2,22 @@ resources:
   - name: myFirstRepo
     type: GitRepo
     configuration:
-      gitProvider: s_gitHub
+      gitProvider: mygithub
       path: {{ sourceRepository }}
       branches:
-        include: {{gitBranch}}
+        include: {{ gitBranch }}
 
 pipelines:
-  - name: Ps_variable_resolved_6730
+  - name: P1
     steps:
-      - name: Ps_variable_resolved_6730
+      - name: S1
         type: Bash
         configuration:
           environmentVariables:
-            env1: {{gitBranch}}
+            env1: {{ gitBranch }}
             env2: {{ sourceRepository }}
         execution:
           onExecute:
-            - echo {{gitBranch}}
-            - echo {{ sourceRepository }}
-            - cd /tmp
+            - echo {{ $myDict := dict "name1" "value1" "name2" "value2" "name3" "value 3" }}
+            - echo {{ get $myDict "name1" }}
             
