@@ -13,8 +13,6 @@ resources:
  
 pipelines:
   - name: test_signed_start
-    configuration:
-      jfrogCliVersion: 2
     steps:
       - name: create_info
         type: Bash
