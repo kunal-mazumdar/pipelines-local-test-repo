@@ -26,6 +26,7 @@ pipelines:
         execution:
           onExecute:
             - cd $res_signed_git_resourcePath
+            - touch server.js
             - jfrog rt upload server.js
             - jfrog rt build-collect-environment
             - jfrog rt build-publish --detailed-summary $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER > summaryOutput.json
