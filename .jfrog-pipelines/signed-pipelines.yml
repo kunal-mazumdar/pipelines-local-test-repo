@@ -1,0 +1,47 @@
+resources:
+  - name: signed_git
+    type: GitRepo
+    configuration:
+      gitProvider: mygithub
+      path: kunal-mazumdar/pipelines-local-test-repo
+      branches:
+        include: {{ gitBranch }}
+  - name: signed_buildinfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: int_default_artifactory
+ 
+pipelines:
+  - name: test_signed_start
+    configuration:
+      jfrogCliVersion: 2
+    steps:
+      - name: create_info
+        type: Bash
+        configuration:
+          inputResources:
+            - name: signed_git
+          integrations:
+            - name: int_default_artifactory
+          outputResources:
+            - name: signed_buildinfo
+        execution:
+          onExecute:
+            - cd $res_signed_git_resourcePath
+            - jfrog rt upload server.js
+            - jfrog rt build-collect-environment
+            - jfrog rt build-publish --detailed-summary $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER > summaryOutput.json
+            - save_artifact_info buildInfo summaryOutput.json --build-name=$JFROG_CLI_BUILD_NAME --build-number=$JFROG_CLI_BUILD_NUMBER
+ 
+  - name: test_signed_stop
+    steps:
+      - name: validate_info
+        type: Bash
+        configuration:
+          inputResources:
+            - name: signed_buildinfo
+        execution:
+          onExecute:
+            - response=$(validate_artifact buildInfo --build-name ${res_signed_buildinfo_buildName} --build-number ${res_signed_buildinfo_buildNumber})
+            - validateResult=$(echo "$response" | jq '.result')
+            - if [ "$validateResult" != "true" ]; then echo "failed validation" && exit 1; fi
