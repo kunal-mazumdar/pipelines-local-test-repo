@@ -1,0 +1,39 @@
+template: true
+valuesFilePath: values.yml
+resources:
+  - name: docker_test_repo
+    type: GitRepo
+    configuration:
+      gitProvider: my_github
+      path: kunal-mazumdar/pipelines-local-test-repo
+      branches:
+        include: {{ gitBranch }}
+
+  - name: triggerBag
+    type: PropertyBag
+    configuration:
+      trigger_docker_release: ''
+      
+
+pipelines:
+  - name: application_test_pipeline
+    configuration:
+      jfrogCliVersion: 2
+    steps:
+      - name: test{{ .Values.suffix }}
+        type: Bash
+        configuration:          
+          inputResources:
+            - name: docker_test_repo
+          outputResources:
+            - name: triggerBag
+          integrations:
+            - name: art
+        execution:
+          onExecute:
+            - pushd $res_docker_test_repo_resourcePath
+            - ls -al
+            {{ if hasPrefix "release" "{{ gitBranch }}" }}
+            - echo "Sending slack notification for passing tests..."
+            {{ end }}
+            - write_output triggerBag "trigger_docker_release=$step_id"
