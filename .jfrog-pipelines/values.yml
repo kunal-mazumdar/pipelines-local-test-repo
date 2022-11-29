@@ -1,7 +1,7 @@
 template_repository:
   name: PS_Sync_Template_10113
   path: {{sourceRepository}}
-  gitProvider: s_gitHub
+  gitProvider: github_kunal
   branch: {{gitBranch}}
 
 release_template:
