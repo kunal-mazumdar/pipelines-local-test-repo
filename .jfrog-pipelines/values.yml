@@ -1,0 +1,10 @@
+template_repository:
+  name: PS_Sync_Template_10113
+  path: {{sourceRepository}}
+  gitProvider: s_gitHub
+  branch: {{gitBranch}}
+
+release_template:
+  pipelineName: Publish_Template_10113
+  path: templates/jfrog/myPipelineTemplate
+  version: 0.0.1
