@@ -1,84 +1,85 @@
-template: true   # required for local templates
 valuesFilePath: ./values.yml
-
 resources:
-  - name: myFirstRepo
-    type: GitRepo
+  - name: templateRepository
+    type: GITRepo
     configuration:
-      # SCM integration where the repository is located
-      gitProvider: {{ .Values.myRepo.gitProvider }} # this will be replaced from values.yml
-      # Repository path, including org name/repo name
-      path: {{ .Values.myRepo.path }} # this will be replaced from values.yml
+      path: {{ .Values.templateRepository.path }}
+      gitProvider: {{ .Values.templateRepository.gitProvider }}
+      {{ if .Values.templateRepository.branch1 }}
       branches:
-        # Specifies which branches will trigger dependent steps
-        include: master
+        include: {{ .Values.templateRepository.branch}}
+      {{ end }}
+  #       branches:
+  #         include: {{ .Values.templateRepository.branch }}
+  #         exclude: {{ default "foo"  .Values.templateRepository.branch1 }}
 
-  - name: myPropertyBag
-    type: PropertyBag
+  - name: goTemplateBinary
+    type: FileSpec
     configuration:
-      commitSha: 1
-      runID: 1
+      sourceArtifactory: {{ .Values.defaultArtifactory }}
+      pattern: "jfrogpipelines/tools/pipelines-template"
+      recursive: false
+      flat: true
 
 pipelines:
-  - name: my_first_pipeline
+  - name: {{ .Values.publishTemplate.pipelineName }}
+    configuration:
+      environmentVariables:
+        readOnly:
+          templateFolder:
+            default: {{ .Values.templateRepository.templateFolder }}
+            description: Please mention the exact template folder location, where your templateDefinition.yml file is present in the repository
+          templateNameSpace:
+            default: {{ .Values.publishTemplate.namespace }}
+            description: Please mention the namespace where you want your template to be uploaded to artifactory's jfrogpipelines
+          templateName:
+            default: {{ .Values.publishTemplate.name }}
+            description: Please mention the name of your template
+          version:
+            default: {{ .Values.publishTemplate.version }}
+            description: Please enter semantic version
     steps:
-      - name: p1_s1
+      - name: validate_and_publish_template
         type: Bash
         configuration:
-          nodePool: {{ .Values.myNodePool.name }}
           inputResources:
-            # Sets up step to be triggered when there are commit events to myFirstRepo
-            - name: myFirstRepo
+            - name: goTemplateBinary
+            - name: templateRepository
+              trigger: false
         execution:
           onExecute:
-            # Data from input resources is available as env variables in the step
-            - echo $res_myFirstRepo_commitSha
-            # The next two commands add variables to run state, which is available to all downstream steps in this run
-            # Run state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-RunState
-            - add_run_variables current_runid=$run_id
-            - add_run_variables commitSha=$res_myFirstRepo_commitSha
-            # This variable is written to pipeline state in p1_s3.
-            # So this will be empty during first run and will be set to prior run number in subsequent runs
-            # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
-            - echo "Previous run ID is $prev_runid"
-
-      - name: p1_s2
-        type: Bash
-        configuration:
-          inputSteps:
-            - name: p1_s1
-        execution:
-          onExecute:
-            # Demonstrates the availability of an env variable written to run state during p1_s1
-            - echo $current_runid
-
-      - name: p1_s3
-        type: Bash
-        configuration:
-          inputSteps:
-            - name: p1_s2
-          outputResources:
-            - name: myPropertyBag
-        execution:
-          onExecute:
-            - echo $current_runid
-            # Writes current run number to pipeline state
-            - add_pipeline_variables prev_runid=$run_id
-            # Uses an utility function to update the output resource with the commitSha that triggered this run
-            # Dependent pipelines can be configured to trigger when this resource is updated
-            # Utility functions documentation: https://www.jfrog.com/confluence/display/JFROG/Pipelines+Utility+Functions
-            - write_output myPropertyBag commitSha=$commitSha runID=$current_runid
-
-  - name: my_second_pipeline
-    steps:
-      - name: p2_s1
-        type: Bash
-        configuration:
-          nodePool: {{ .Values.myNodePool.name }}
-          inputResources:
-            # Sets up step to be triggered when myPropertyBag is updated
-            - name: myPropertyBag
-        execution:
-          onExecute:
-            # Retrieves the commitSha from input resource
-            - echo "CommitSha is $res_myPropertyBag_commitSha"
+            - versionRegex='^([0-9]+\.){0,2}(\*|[0-9]+)$'
+            - |
+              if [[ $version =~ $versionRegex ]]; then
+                echo "$version is valid"
+              else
+                echo "Please enter a valid semantic version"
+                exit 1
+              fi
+            - |
+              if [[ $templateNameSpace == 'jfrog' ]]; then
+                echo "namespace cannot be jfrog, please choose a different namespace"
+                exit 1
+              fi
+            - pushd $res_templateRepository_resourcePath
+            - pushd $templateFolder
+            - |
+              if [ ! test -f "./templateDefinition.yml" ]; then
+                echo "please provide valid template folder where your templateDefinition.yml is present in the repository"
+              fi
+            - touch values.yml
+            - cp -vr $res_goTemplateBinary_resourcePath/pipelines-template ./pipelines-template
+            - chmod +x ./pipelines-template
+            - ls -ll
+            - uname -m
+            - ./pipelines-template apply --values-file ./values.yml --template-file ./templateDefinition.yml --output-file output.yml
+            - jfrog rt upload ./templateDefinition.yml jfrogpipelines/templates/$templateNameSpace/$templateName/$version/templateDefinition.yml --recursive=true
+            - |
+              if test -f "./values.yml.example"; then
+                jfrog rt upload ./values.yml.example jfrogpipelines/templates/$templateNameSpace/$templateName/$version/values.yml.example --recursive=true
+              fi
+            - |
+              if test -f "./readme.md"; then
+                jfrog rt upload ./readme.md jfrogpipelines/templates/$templateNameSpace/$templateName/$version/readme.md --recursive=true
+              fi
+            - popd

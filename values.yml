@@ -1,5 +1,21 @@
-myRepo:
-  gitProvider: mygithub
-  path: kunal-mazumdar/pipelines-local-test-repo
-myNodePool:
-  name: static_np_1
+templateRepository:
+  # scm integration name
+  gitProvider: deepikaGithub
+  # repository path where your templates are present
+  path: deepikasl/old-templates
+  # branch name where your templates are present in the repository
+  branch: main
+  # template folder location, where your templateDefinition.yml file is present
+  templateFolder: templates/jfrog_name_space/myPipelineTemplate
+
+publishTemplate:
+  # Template namespace
+  namespace: deepikaTemplate
+  # Template name
+  name: myPipelineTemplate
+  # Template version
+  version: 0.0.1
+  # name of the pipeline
+  pipelineName: Publish_Template
+
+defaultArtifactory: "{{ defaultArtifactory }}"
