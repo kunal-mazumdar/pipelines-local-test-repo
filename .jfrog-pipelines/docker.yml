@@ -82,3 +82,23 @@ pipelines:
             - echo "$response"
             - validateResult=$(echo "$response" | jq '.result')
             - if [ "$validateResult" != "true" ]; then echo "failed validation" && exit 1; fi
+            
+      - name: validate_signed_docker_build_using_utility
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: validate_signed_docker_build
+          inputResources:
+            - name: docker_build_info
+          integrations:
+            - name: generic
+        execution:
+          onExecute:
+            - echo $res_docker_build_info_buildName
+            - echo $res_docker_build_info_buildNumber
+            - echo $int_generic_pipe_token
+            - echo ${int_generic_pipe_token}            
+            - response=$(validate_artifact buildInfo --build-name ${res_docker_build_info_buildName} --build-number ${res_docker_build_info_buildNumber})
+            - echo "$response"
+            - validateResult=$(echo "$response" | jq '.result')
+            - if [ "$validateResult" != "true" ]; then echo "failed validation" && exit 1; fi
