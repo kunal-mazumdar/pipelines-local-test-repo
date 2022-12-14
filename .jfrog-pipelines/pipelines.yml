@@ -1,0 +1,8 @@
+pipelines:
+  - name: my_first_pipeline
+    steps:
+      - name: my_first_step
+        type: Bash
+        execution:
+          onExecute:
+            - echo "test"
