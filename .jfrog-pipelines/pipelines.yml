@@ -1,7 +1,7 @@
 valuesFilePath: ./values.yml
 
 include:
-  template: jfrog/HelloWorld/0.0.0
+  template: jfrog/HelloWorld/1.0.0
 
 pipelines:
   - name: my_first_pipeline
