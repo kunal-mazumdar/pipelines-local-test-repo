@@ -1,7 +1,7 @@
 template:
   namespace: local
   name: template1
-  version: 0.0.0
+  version: 1.0.0
   development: true
 
 pipelines:

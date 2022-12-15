@@ -1,6 +1,7 @@
 template:
   namespace: local
   name: template2
+  version: 1.0.0
 
 pipelines:
   - name: template_pipeline_2
