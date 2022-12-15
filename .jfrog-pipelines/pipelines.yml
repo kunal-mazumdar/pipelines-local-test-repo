@@ -1,6 +1,8 @@
+valuesFilePath: ./values.yml
+
 include:
   template: local/template1/0.0.0
-  
+
 pipelines:
   - name: my_first_pipeline
     steps:
