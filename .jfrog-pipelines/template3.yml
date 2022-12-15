@@ -1,0 +1,13 @@
+template:
+  namespace: local
+  name: template3
+  version: 1.0.0
+
+pipelines:
+  - name: template_pipeline_2
+    steps:
+      - name: template_step_2
+        type: Bash
+        execution:
+          onExecute:
+            - echo "test from template"
