@@ -1,7 +1,7 @@
 pipelines:
-  - name: my_first_pipeline
+  - name: my_first_pipeline_1
     steps:
-      - name: my_first_step
+      - name: my_first_step_1
         type: Bash
         execution:
           onExecute:
