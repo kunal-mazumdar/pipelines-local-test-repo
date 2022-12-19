@@ -1,0 +1,8 @@
+pipelines:
+  - name: p1
+    steps:
+      - name: s1
+        type: Bash
+        execution:
+          onExecute:
+            - echo "test"
