@@ -1,0 +1,5 @@
+namePrefix: intro
+repo:
+  integrationName: kunalGh
+  path: "kunal-mazumdar/pipelines-local-test-repo"
+  branchPattern: "template2.0"

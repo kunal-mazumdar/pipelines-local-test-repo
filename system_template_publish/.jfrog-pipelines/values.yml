@@ -1,0 +1,12 @@
+templateRepository:
+  gitProvider: kunalGh
+  path: "kunal-mazumdar/pipelines-local-test-repo"
+  branch: template2.0
+  templateFolder: templates/broadcom/NewHelloWorld
+ 
+publishTemplate:
+  namespace: broadcom
+  name: NewHelloWorld
+  version: 1.0.0
+  pipelineName: publish_broadcom_system_templates
+  artifactoryIntegration: def_artifactory

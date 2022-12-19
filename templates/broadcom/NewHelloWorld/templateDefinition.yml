@@ -1,0 +1,8 @@
+pipelines:
+  - name: new_hello_world_pipeline
+    steps:
+      - name: new_hello_world_pipeline_step_1
+        type: Bash
+        execution:
+          onExecute:
+            - echo {{ .Values.helloWorldMessage }}

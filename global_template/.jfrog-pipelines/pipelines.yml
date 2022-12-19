@@ -1,12 +1,12 @@
 valuesFilePath: ./values.yml
 
 include:
-  template: local/template1/1.0.0
+  template: jfrog/HelloWorld:1.0.0
 
 pipelines:
-  - name: my_first_pipeline
+  - name: my_additional_pipeline
     steps:
-      - name: my_first_step
+      - name: my_additional_step
         type: Bash
         execution:
           onExecute:
