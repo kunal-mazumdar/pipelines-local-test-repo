@@ -1,5 +1,5 @@
 templateRepository:
-  gitProvider: kunalGh
+  gitProvider: int_demo_git
   path: "kunal-mazumdar/pipelines-local-test-repo"
   branch: template2.0
   templateFolder: templates/broadcom/NewHelloWorld

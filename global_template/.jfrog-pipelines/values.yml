@@ -1,5 +1,5 @@
 namePrefix: broadcom_intro
 repo:
-  integrationName: kunalGh
+  integrationName: int_demo_git
   path: "kunal-mazumdar/pipelines-local-test-repo"
   branchPattern: "template2.0"
