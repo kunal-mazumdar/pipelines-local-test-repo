@@ -1,4 +1,4 @@
 valuesFilePath: ./values.yml
 
 include:
-  template: broadcom/NewHelloWorld:1.0.0
+  template: broadcom/NewHelloWorld/1.0.0
