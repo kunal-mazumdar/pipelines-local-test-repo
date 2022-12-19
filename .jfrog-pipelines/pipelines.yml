@@ -1,7 +1,7 @@
 pipelines:
-  - name: p1
+  - name: p2
     steps:
-      - name: s1
+      - name: s2
         type: Bash
         execution:
           onExecute:
