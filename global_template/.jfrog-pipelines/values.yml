@@ -1,4 +1,4 @@
-namePrefix: intro
+namePrefix: broadcom_intro
 repo:
   integrationName: kunalGh
   path: "kunal-mazumdar/pipelines-local-test-repo"
