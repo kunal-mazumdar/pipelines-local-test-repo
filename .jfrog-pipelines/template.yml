@@ -1,25 +1,14 @@
-include:
-  template: nameSpace10545/nameSpace10545/0.0.0
-valuesFilePath: devTemplate.yml  
+template:
+  namespace: nameSpace10545
+  name: nameSpace10545
+  version: 0.0.0
+  development: true
+
 pipelines:
-  - name: PS_Sync_9494_002
+  - name: PS_Sync_9494_0021
     steps:
-      - name: PS_Sync_9494_002_001
+      - name: PS_Sync_9494_002_0011
         type: Bash
         execution:
           onExecute:
             - cd /tmp
-            - mkdir -p "node_modules/@jfrog-pipelines"
-            - echo "test" >> node_modules/@jfrog-pipelines/test.txt
-            - add_pipeline_files node_modules/@jfrog-pipelines jfrog_pipelines_packages_cache
-      - name: PS_Sync_9494_002_002
-        type: Bash
-        configuration:
-          inputSteps:
-            - name: PS_Sync_9494_002_001
-        execution:
-          onExecute:
-            - cd /tmp
-            - mkdir -p "target/node_modules"
-            - cd target
-            - restore_pipeline_files jfrog_pipelines_packages_cache node_modules/
