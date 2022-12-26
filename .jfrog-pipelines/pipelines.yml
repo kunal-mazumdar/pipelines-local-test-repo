@@ -1,8 +1,25 @@
+include:
+  template: nameSpace10545/nameSpace10545/0.0.0
+valuesFilePath: template.yml
 pipelines:
-  - name: my_first_pipeline
+  - name: PS_Sync_9494_002
     steps:
-      - name: my_first_step
+      - name: PS_Sync_9494_002_001
         type: Bash
         execution:
           onExecute:
-            - echo "test"
+            - cd /tmp
+            - mkdir -p "node_modules/@jfrog-pipelines"
+            - echo "test" >> node_modules/@jfrog-pipelines/test.txt
+            - add_pipeline_files node_modules/@jfrog-pipelines jfrog_pipelines_packages_cache
+      - name: PS_Sync_9494_002_002
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: PS_Sync_9494_002_001
+        execution:
+          onExecute:
+            - cd /tmp
+            - mkdir -p "target/node_modules"
+            - cd target
+            - restore_pipeline_files jfrog_pipelines_packages_cache node_modules/
