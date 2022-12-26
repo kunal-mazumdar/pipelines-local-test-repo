@@ -1,5 +1,8 @@
 include:
   template: nameSpace10545/nameSpace10545/0.0.0
+  
+valuesFilePath: ./template.yml
+
 pipelines:
   - name: PS_Sync_9494_002
     steps:
