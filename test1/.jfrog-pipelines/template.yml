@@ -1,0 +1,14 @@
+template:
+  namespace: nameSpace10545
+  name: nameSpace10545
+  version: 0.0.0
+  development: true
+
+pipelines:
+  - name: PS_Sync_9494_0021
+    steps:
+      - name: PS_Sync_9494_002_0011
+        type: Bash
+        execution:
+          onExecute:
+            - cd /tmp
