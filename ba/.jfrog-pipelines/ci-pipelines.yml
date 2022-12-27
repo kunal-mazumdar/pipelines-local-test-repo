@@ -1,0 +1,57 @@
+resources:
+  - name: ba_config_ci_gitRepo
+    type: GitRepo
+    configuration:
+      path: STORE/ba-config
+      gitProvider: bitbucket
+      branches:
+        include: ^master$
+      files:
+        include: ^[0-9a-z-]+/(staging|development|production)/.+
+
+pipelines:
+  - name: ba_config_ci
+    configuration:
+      environmentVariables:
+        readOnly:
+          CI_PIPELINES_SCRIPT_PATH: ".jfrog-pipelines/ci-pipelines.sh"
+    steps:
+      - name: cd_update
+        type: Bash
+        configuration:
+          inputResources:
+            - name: ba_config_ci_gitRepo
+              trigger: true
+          integrations:
+            - name: bitbucket_ba_auto
+          environmentVariables:
+            BITBUCKET_PUSH_RESOURCE_NAME: "bitbucket_ba_auto"
+            CD_VALUES_YAML_PATH: ".jfrog-pipelines/cd-values.yml"
+            BA_CONFIG_PIPELINE_SOURCE_ID: "453"
+        execution:
+          onStart:
+            - cd ${res_ba_config_ci_gitRepo_resourcePath}
+            - source ${CI_PIPELINES_SCRIPT_PATH}
+          onExecute:
+            - cd_update_on_execute
+
+      - name: trigger_deployment_jobs
+        type: Bash
+        configuration:
+          inputResources:
+            - name: ba_config_ci_gitRepo
+              trigger: false
+          inputSteps:
+            - name: cd_update
+          integrations:
+            - name: repo21
+          environmentVariables:
+            BITBUCKET_CLONE_RESOURCE_NAME: "ba_config_ci_gitRepo"
+            BITBUCKET_COMMITTER: ${res_ba_config_ci_gitRepo_lastAuthorEmail%@*}
+            REPO21_PIPELINES_BEARER_TOKEN: "${int_repo21_pipelines_token}"
+        execution:
+          onStart:
+            - cd ${res_ba_config_ci_gitRepo_resourcePath}
+            - source ${CI_PIPELINES_SCRIPT_PATH}
+          onExecute:
+            - trigger_deployment_jobs_on_execute

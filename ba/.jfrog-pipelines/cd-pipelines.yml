@@ -1,0 +1,34 @@
+template: true
+valuesFilePath: ./cd-values.yml
+
+resources:
+  - name: ba_config_gitRepo_cd
+    type: GitRepo
+    configuration:
+      path: STORE/ba-config
+      gitProvider: bitbucket
+      branches:
+        include: ^master$
+
+pipelines:
+{{- range $serviceKey, $serviceValue := .Values.services }}
+{{- range $environment := $serviceValue }}
+{{- range $_, $actionValue := $.Values.actions }}
+- name: {{ $serviceKey | replace "-" "_" }}_{{ $environment }}_{{ $actionValue }}
+  configuration:
+    chronological: true
+  steps:
+    - name: {{ $actionValue }}
+      type: Bash
+      execution:
+        onStart:
+          - echo test
+        onExecute:
+          - onExecute
+        onSuccess:
+          - onSuccess
+        onFailure:
+          - onFailure
+{{ end }}
+{{ end }}
+{{ end }}
