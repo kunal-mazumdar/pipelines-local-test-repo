@@ -1,8 +1,8 @@
 #############################################################################################
 #                                                                                           #
-#            #
-#                                                     #
-#      #
+#   THIS FILE WAS GENERATED AUTOMATICALLY BY A PIPELINES JOB NAMED "ba_cd_update"           #
+#   ANY MANUAL CHANGES WILL BE OVERWRITTEN                                                  #
+#   FOR UPDATING THE LIST OF SERVICES AND ENVIRONMENTS, PLEASE RUN THE "ba_cd_update" JOB   #
 #                                                                                           #
 #############################################################################################
 
@@ -10,3 +10,111 @@ actions:
   - deploy
   - reload
   - restart
+
+services:
+  azure-mp-webhook:
+    - production
+    - staging
+  bajobs:
+    - production
+    - staging
+  bamail:
+    - staging
+  basbdemo:
+    - staging
+  billprep:
+    - development
+    - production
+    - staging
+  billtx:
+    - production
+    - staging
+  bintray-proxy:
+    - production
+    - staging
+  cloud-usage:
+    - production
+    - staging
+  custupd:
+    - production
+    - staging
+  jbach:
+    - development
+    - production
+    - staging
+  jcs:
+    - development
+    - production
+    - staging
+  jes:
+    - development
+    - production
+    - staging
+  jmis:
+    - development
+    - production
+    - staging
+  jpay:
+    - development
+    - production
+    - staging
+  jpms:
+    - development
+    - production
+    - staging
+  licval:
+    - production
+    - staging
+  logship:
+    - production
+    - staging
+  meproc:
+    - development
+    - production
+    - staging
+  myjfrog-api-proxy:
+    - development
+    - production
+    - staging
+  myjfrog-ui-v2:
+    - development
+    - production
+    - staging
+  myjfrog-ui:
+    - development
+    - production
+    - staging
+  narcissus-ali:
+    - development
+  narcissus:
+    - development
+    - production
+    - staging
+  npmaint:
+    - development
+    - staging
+  parlic:
+    - production
+    - staging
+  saasmon:
+    - production
+    - staging
+  saastoken:
+    - development
+    - production
+    - staging
+  store:
+    - development
+    - production
+    - staging
+  uas:
+    - development
+    - production
+    - staging
+  usage-exposer:
+    - development
+    - production
+    - staging
+  usage-reporter:
+    - production
+    - staging
