@@ -21,4 +21,8 @@ pipelines:
           onExecute:
             - echo {{gitBranch}}
             - cd /tmp
+            - |
+              if [[ -n ${TRIGGERED_BY} ]]; then
+                update_run_description "Triggered by username: '${TRIGGERED_BY}'"
+              fi
             
