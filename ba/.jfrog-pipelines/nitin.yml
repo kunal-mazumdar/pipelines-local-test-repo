@@ -1,28 +1,99 @@
 template: true
 valuesFilePath: ./cd-values.yml
+
 resources:
-  - name: myFirstRepo
+  - name: ba_config_gitRepo_cd
     type: GitRepo
     configuration:
-      gitProvider: s_gitHub
-      path: nitind123/Org_test_Automation
+      path: STORE/ba-config
+      gitProvider: bitbucket
       branches:
-        include: {{gitBranch}}
+        include: ^master$
+  - name: saas_configuration_feat
+    type: GitRepo
+    configuration:
+      path: devops/saas-configuration
+      gitProvider: bitbucket
+      branches:
+        include: ^master$
+  - name: saas_deployer_feature_pipelines
+    type: GitRepo
+    configuration:
+      path: DEVOPS/saas-deployer-feature-pipelines
+      gitProvider: bitbucket
+      branches:
+        include: ^master$
 
 pipelines:
-  - name: Ps_variable_resolved_6730
-    steps:
-      - name: {{ .Values.Pipeline.name }}
-        type: Bash
-        configuration:
-          environmentVariables:
-            env1: {{gitBranch}}
-        execution:
-          onExecute:
-            - echo {{gitBranch}}
-            - cd /tmp
-            - |
-              if [[ -n ${TRIGGERED_BY} ]]; then
-                update_run_description "Triggered by username: '${TRIGGERED_BY}'"
-              fi
-            
+{{- range $serviceKey, $serviceValue := .Values.services }}
+{{- range $environment := $serviceValue }}
+{{- range $_, $actionValue := $.Values.actions }}
+- name: {{ $serviceKey | replace "-" "_" }}_{{ $environment }}_{{ $actionValue }}
+  configuration:
+    chronological: true
+  steps:
+    - name: {{ $actionValue }}
+      type: Bash
+      configuration:
+        runtime:
+          type: image
+          image:
+            custom:
+              registry: docker #integration name
+              name: entplus.jfrog.io/devops-docker/jfrog/devops/jfrog-saas-deployer
+              tag: "latest"
+              autoPull: true
+              options: --entrypoint=""
+        inputResources:
+          - name: saas_deployer_feature_pipelines
+            trigger: false
+          - name: saas_configuration_feat
+            trigger: false
+          - name: ba_config_gitRepo_cd
+            trigger: false
+        integrations:
+          - name: docker
+          - name: jfdev_agent
+          - name: narcissus # needed - username and password
+          - name: k8s # needed (get SDM token from the DevOps Infra team): SDM user token to JFApps K8S on Dev, Stg, Prod
+          - name: kms_deployer_only
+          - name: rpm_sign
+          - name: artifactory
+        environmentVariables:
+          ACTION: {{ $actionValue }}
+          APPLICATION: {{ $serviceKey }}
+          JFROG_SERVER_ENVIRONMENT: {{ $environment }} # production / staging / development
+          NARCISSUS_USER: ${int_narcissus_{{ $environment }}Username}
+          NARCISSUS_PASSWORD: ${int_narcissus_{{ $environment }}Password}
+          AWS_KMS_JENKINS_DEPLOYER_ACCESS_KEY_ID: ${int_kms_deployer_only_{{ $environment }}Id}
+          AWS_KMS_JENKINS_DEPLOYER_SECRET_ACCESS_KEY: ${int_kms_deployer_only_{{ $environment }}Secret}
+          CERT_GPG_PASSPHRASE: ${int_rpm_sign_passphrase}
+          SAAS_CONFIGURATION_BASE_DIR: /opt/jfrog/saas-deployer
+          JFROG_DEVOPS_TOOLS_VERSION: latest
+          LC_ALL: C.UTF-8
+          LANG: C.UTF-8
+          WORKDIR: /opt/jfrog/saas-deployer
+          SDM_ADMIN_TOKEN: ${int_k8s_sdmToken}
+          USE_SDM: "true"
+          TRIGGERED_BY:
+            default: ""
+            description: Triggered By Username
+            allowCustom: true
+      execution:
+        onStart:
+          - |
+          	if [[ -n ${TRIGGERED_BY} ]]; then
+              update_run_description "Triggered by username: '${TRIGGERED_BY}'"
+            fi
+          - source "${res_ba_config_gitRepo_cd_resourcePath}/.jfrog-pipelines/cd-pipelines.sh"
+          - onStart
+        onExecute:
+          - onExecute
+        onSuccess:
+          - onSuccess
+        onFailure:
+          - onFailure
+
+{{ end }}
+{{ end }}
+{{ end }}
