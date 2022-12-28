@@ -1,5 +1,5 @@
 template: true
-valuesFilePath: ./values.yml
+valuesFilePath: ./cd-values.yml
 resources:
   - name: myFirstRepo
     type: GitRepo
