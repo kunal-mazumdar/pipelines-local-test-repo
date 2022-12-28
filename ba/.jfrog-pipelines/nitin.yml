@@ -1,0 +1,24 @@
+template: true
+valuesFilePath: ./values.yml
+resources:
+  - name: myFirstRepo
+    type: GitRepo
+    configuration:
+      gitProvider: s_gitHub
+      path: nitind123/Org_test_Automation
+      branches:
+        include: {{gitBranch}}
+
+pipelines:
+  - name: Ps_variable_resolved_6730
+    steps:
+      - name: {{ .Values.Pipeline.name }}
+        type: Bash
+        configuration:
+          environmentVariables:
+            env1: {{gitBranch}}
+        execution:
+          onExecute:
+            - echo {{gitBranch}}
+            - cd /tmp
+            
