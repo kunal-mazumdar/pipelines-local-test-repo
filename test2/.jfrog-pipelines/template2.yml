@@ -1,0 +1,14 @@
+template:
+  namespace: company
+  name: demoTemplate1
+  version: 1.0.0
+  development: true
+
+pipelines:
+  - name: P3
+    steps:
+      - name: S3
+        type: Bash
+        execution:
+          onExecute:
+            - cd /tmp
