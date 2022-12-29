@@ -1,0 +1,13 @@
+valuesFilePath: values.yml
+
+include:
+  template: company/demoTemplate1/1.0.0
+
+pipelines:
+  - name: PS1
+    steps:
+      - name: PS2
+        type: Bash
+        execution:
+          onExecute:
+            - cd /tmp
