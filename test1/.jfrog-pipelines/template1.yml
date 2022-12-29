@@ -1,13 +1,13 @@
 template:
-  namespace: nameSpace10545
-  name: nameSpace10545
-  version: 0.0.0
+  namespace: company
+  name: demoTemplate1
+  version: 1.0.0
   development: true
 
 pipelines:
-  - name: PS_Sync_9494_0021
+  - name: P1
     steps:
-      - name: PS_Sync_9494_002_0011
+      - name: S1
         type: Bash
         execution:
           onExecute:
