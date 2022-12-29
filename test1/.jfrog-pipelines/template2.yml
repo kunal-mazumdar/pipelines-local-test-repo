@@ -2,7 +2,6 @@ template:
   namespace: company
   name: demoTemplate2
   version: 1.0.0
-  development: true
 
 pipelines:
   - name: P2
