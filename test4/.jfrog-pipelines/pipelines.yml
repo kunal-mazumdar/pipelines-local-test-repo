@@ -7,7 +7,7 @@ pipelines:
         type: Bash
         configuration:
           environmentVariables:
-            version: {{ ternary "true" "false" (or (hasPrefix "dev" "{{gitBranch}}") (hasPrefix "milestone" "{{gitBranch}}") ) }}
+            version: {{ ternary 1 2 (or (hasPrefix "dev" "{{gitBranch}}") (hasPrefix "milestone" "{{gitBranch}}") ) }}
         execution:
           onExecute:
             - cd /tmp
