@@ -1,0 +1,14 @@
+valuesFilePath: values.yml
+
+pipelines:
+  - name: PS1x1
+    steps:
+      - name: PS2x3
+        type: Bash
+        execution:
+          onExecute:
+            {{ if or ( hasPrefix "dev" "{{gitBranch}}" ) ( hasPrefix "milestone" "{{gitBranch}}" ) }}
+            - cd /tmp
+            {{ else }}
+            - cd /tmp/x
+            {{ end }}
