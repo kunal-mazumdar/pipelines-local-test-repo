@@ -8,6 +8,11 @@ pipelines:
         configuration:
           environmentVariables:
             version: {{ ternary 1 2 (or (hasPrefix "dev" "{{gitBranch}}") (hasPrefix "milestone" "{{gitBranch}}") ) }}
+            {{ if or ( hasPrefix "dev" "{{gitBranch}}" ) ( hasPrefix "milestone" "{{gitBranch}}" ) }}
+            check: "pass"
+            {{ else }}
+            check: "fail"
+            {{ end }}
         execution:
           onExecute:
             - cd /tmp
