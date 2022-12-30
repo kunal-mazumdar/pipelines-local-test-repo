@@ -5,8 +5,9 @@ pipelines:
     steps:
       - name: PS2x3
         type: Bash
-        environmentVariables:
-          version: {{ ternary true false (or (hasPrefix "dev" "{{gitBranch}}") (hasPrefix "milestone" "{{gitBranch}}") ) }}
+        configuration:
+          environmentVariables:
+            version: {{ ternary true false (or (hasPrefix "dev" "{{gitBranch}}") (hasPrefix "milestone" "{{gitBranch}}") ) }}
         execution:
           onExecute:
             - cd /tmp
