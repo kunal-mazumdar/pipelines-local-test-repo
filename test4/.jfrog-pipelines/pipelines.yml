@@ -5,10 +5,13 @@ pipelines:
     steps:
       - name: PS2x3
         type: Bash
+        environmentVariables:
+          {{ if or ( hasPrefix "dev" "{{gitBranch}}" ) ( hasPrefix "milestone" "{{gitBranch}}" ) }}
+          version: 1
+          {{ else }}
+          version: 2
+          {{ end }}
         execution:
           onExecute:
-            {{ if or ( hasPrefix "dev" "{{gitBranch}}" ) ( hasPrefix "milestone" "{{gitBranch}}" ) }}
             - cd /tmp
-            {{ else }}
-            - cd /tmp/x
-            {{ end }}
+            
