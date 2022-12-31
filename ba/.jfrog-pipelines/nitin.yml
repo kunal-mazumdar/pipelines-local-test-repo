@@ -81,10 +81,6 @@ pipelines:
             allowCustom: true
       execution:
         onStart:
-          - |
-          	if [[ -n ${TRIGGERED_BY} ]]; then
-              update_run_description "Triggered by username: '${TRIGGERED_BY}'"
-            fi
           - source "${res_ba_config_gitRepo_cd_resourcePath}/.jfrog-pipelines/cd-pipelines.sh"
           - onStart
         onExecute:
