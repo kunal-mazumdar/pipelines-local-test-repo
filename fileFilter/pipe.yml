@@ -1,0 +1,15 @@
+valuesFilePath: ./values.yml
+
+pipelines:
+{{- with .Values.repoBranch }}
+  - name: P_flow
+    steps:
+      - name: S_flow
+        type: Bash
+        configuration:
+          environmentVariables:
+            env1: gitBranch
+        execution:
+          onExecute:
+            - echo {{ sha256sum "Hello world!" }}
+{{ end }}  

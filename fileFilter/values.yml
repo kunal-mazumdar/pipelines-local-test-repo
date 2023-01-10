@@ -1,0 +1,8 @@
+repoName: {{.jfrog-pipelines.sourceRepository}}
+repoBranch: {{gitBranch}}
+http: http
+environmentVariables:
+  local: "localhost:8080"
+  stg: "/stg.jfrog.com"
+  prod: "/jfrog.com"
+arg: master
