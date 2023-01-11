@@ -1,0 +1,36 @@
+valuesFilePath: values.yml
+
+pipelines:
+  - name: pipeline_A_TemplateSync_6731_001_update
+    steps:
+      - name: A_TemplateSync_6731_001_pushCommit
+        type: Bash1
+        configuration:
+          inputResources:
+            - name: A_TemplateSync_6731_001_GitRepo
+              trigger: false
+          integrations:
+            - name: s_gitHub
+        execution:
+          onExecute:
+            - cd $res_A_TemplateSync_6731_001_GitRepo_resourcePath
+            - git checkout -b A-TemplateSync-6731-001
+            - echo \"Last updated by run $run_id\" > templates/shippable/A_TemplateSync_6731_001/readme.md
+            - git add templates/shippable/A_TemplateSync_6731_001/readme.md
+            - git commit -m \"$run_id\"
+            - origin=$(git config remote.origin.url | sed \"s#ssh://##\" | sed \"s#https://##\" | sed \"s#:#/#\" | sed \"s#git@##\")
+            - host=$(echo \"$origin\" | cut -d '/' -f 1 )
+            - git remote set-url origin https://$origin
+            - git config --global credential.helper store
+            - echo \"https://token:${int_s_gitHub_token}@${host}\" > ~/.git-credentials
+            - git push origin A-TemplateSync-6731-001 -f
+            - rm ~/.git-credentials
+
+resources:
+  - name: A_TemplateSync_6731_001_GitRepo
+    type: GitRepo1
+    configuration:
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.templates.path }}
+      branches:
+        include: ^A-TemplateSync-6731-001$
