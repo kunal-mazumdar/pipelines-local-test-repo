@@ -31,6 +31,8 @@ resources:
     type: GitRepo1
     configuration:
       gitProvider: s_gitHub
-      path: {{ default "" .Values.GitHub.templates.path }}
+      {{ if hasKey .Values.GitHub "templates" }}
+      path: {{ .Values.GitHub.templates.path }}
+      {{ end }}
       branches:
         include: ^A-TemplateSync-6731-001$
