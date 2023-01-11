@@ -4,7 +4,7 @@ pipelines:
   - name: pipeline_A_TemplateSync_6731_001_update
     steps:
       - name: A_TemplateSync_6731_001_pushCommit
-        type: Bash1
+        type: Bash
         configuration:
           inputResources:
             - name: A_TemplateSync_6731_001_GitRepo
@@ -28,7 +28,7 @@ pipelines:
 
 resources:
   - name: A_TemplateSync_6731_001_GitRepo
-    type: GitRepo1
+    type: GitRepo
     configuration:
       gitProvider: s_gitHub
       {{ if and (.Values.GitHub) (.Values.GitHub.templates) }}
