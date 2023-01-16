@@ -1,11 +1,3 @@
 GitHub:
-  Org_test_Automation:
-    path: jfbetapipeorg/Org_test_Automation
-  Org_test_Automation_bash:
-    path: jfbetapipeorg/Org_test_Automation_bash
-  Org_test_Automation_PowerShell:
-    path: jfbetapipeorg/Org_test_Automation_PowerShell
-  templates:
-    path: jfbetapipeorg/templates
-  Org_test_Automation_Webhooks:
-      path: jfbetapipeorg/Org_test_Automation_Webhooks
+  repo:
+    path: "kunal-mazumdar/pipelines-local-test-repo"
