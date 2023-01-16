@@ -1,0 +1,25 @@
+valuesFilePath: values1.yml
+
+pipelines:
+  - name: test_pipe_2
+    steps:
+      - name: test_pipe_step_2
+        type: Bash
+        configuration:
+          inputResources:
+            - name: test_pipe_resource_2
+              trigger: false
+          integrations:
+            - name: mygithub
+        execution:
+          onExecute:
+            - echo test
+
+resources:
+  - name: test_pipe_resource_2
+    type: GitRepo
+    configuration:
+      gitProvider: mygithub
+      path: {{ .Values.GitHub.repo1.path }}
+      branches:
+        include: ^master$
