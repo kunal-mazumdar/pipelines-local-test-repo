@@ -1,0 +1,23 @@
+{{- define "pipe.additionalEnvs" -}}
+env3: additional
+  {{ end -}}
+
+valuesFilePath: values2.yml
+
+pipelines:
+  - name: P_define
+    steps:
+      - name: S_define
+        type: Bash
+        configuration:
+          environmentVariables:
+            env1: gitBranch
+            env2: sourceRepository
+            {{ include "pipe.additionalEnvs" . }}
+        execution:
+          onExecute:
+            - echo {{ regexFind "[a-zA-Z][1-9]" "abcd1234" }}
+            - echo {{ contains "org" ".Values.repoName" }}
+            - echo {{ indent 4 "pipe.additionalEnvs" }}
+            - echo {{ "pipeline controleplane repo " | replace " " "-" }}
+            - echo {{ list 1 2 3 | toStrings }}
