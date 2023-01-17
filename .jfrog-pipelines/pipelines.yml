@@ -1,5 +1,9 @@
 pipelines:
   - name: my_first_pipeline
+    configuration:
+      environmentVariables:
+        readOnly:
+          XRAY_ENABLED: {{ ternary "true" "false" (hasPrefix "master" "{{gitBranch}}") }}
     steps:
       - name: my_first_step
         type: Bash
