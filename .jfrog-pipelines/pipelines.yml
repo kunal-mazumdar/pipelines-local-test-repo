@@ -3,10 +3,11 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          XRAY_ENABLED: {{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}
+          XRAY_ENABLED: "true"
     steps:
       - name: my_first_step
         type: Bash
         execution:
           onExecute:
             - echo "test"
+            - {{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}
