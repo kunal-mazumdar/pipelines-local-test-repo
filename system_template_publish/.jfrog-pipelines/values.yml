@@ -10,4 +10,4 @@ publishTemplate:
   version: 1.0.0
   pipelineName: publish_broadcom_system_templates
   artifactoryIntegration: def_artifactory
-  jfrogAccessToken: access_token
+  jfrogAccessTokenIntegration: access_token
