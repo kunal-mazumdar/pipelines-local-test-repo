@@ -10,4 +10,4 @@ pipelines:
         execution:
           onExecute:
             - echo "test"
-            - echo {{ (ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" )) | toString }}
+            - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
