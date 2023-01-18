@@ -2,11 +2,13 @@ pipelines:
  - name: example_pipeline
    steps:
      - name: step_1
+       type: Bash
        execution:
          onExecute:
            - echo "1"
 
      - name: step_2
+       type: Bash     
        configuration:
          affinityGroup: example_affinity_group
        execution:
@@ -14,6 +16,7 @@ pipelines:
            - echo "2"
 
      - name: step_3
+       type: Bash     
        configuration:
          affinityGroup: example_affinity_group
          inputSteps:
