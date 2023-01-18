@@ -5,6 +5,7 @@ pipelines:
        type: Bash
        execution:
          onExecute:
+           - sleep 10
            - echo "1"
 
      - name: step_2
