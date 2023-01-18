@@ -1,8 +1,24 @@
 pipelines:
-  - name: my_first_pipeline_1
-    steps:
-      - name: my_first_step_1
-        type: Bash
-        execution:
-          onExecute:
-            - echo "test"
+ - name: example_pipeline
+   steps:
+     - name: step_1
+       execution:
+         onExecute:
+           - echo "1"
+
+     - name: step_2
+       configuration:
+         affinityGroup: example_affinity_group
+       execution:
+         onExecute:
+           - echo "2"
+
+     - name: step_3
+       configuration:
+         affinityGroup: example_affinity_group
+         inputSteps:
+           - name: step_1
+           - name: step_2
+       execution:
+         onExecute:
+           - echo "3"
