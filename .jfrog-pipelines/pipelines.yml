@@ -53,7 +53,7 @@ pipelines:
          inputResources: 
            - name: resource_pipelines
          integrations:
-           - name: github_neha
+           - name: mygithub
 #            - name: slackTest
 #            - name: smtpNotification
         execution:
@@ -76,7 +76,7 @@ pipelines:
         configuration:
         #  nodePool: u20dynamic
          integrations:
-           - name: github_neha
+           - name: mygithub
         execution:
           onExecute:
             - echo "hi"
@@ -134,7 +134,7 @@ pipelines:
             - name: connecting_resource_node_test
 #               trigger: false
           integrations:
-            - name: github_neha
+            - name: mygithub
         execution:
           onExecute:
             - write_output connecting_resource_node_test "test=value"
