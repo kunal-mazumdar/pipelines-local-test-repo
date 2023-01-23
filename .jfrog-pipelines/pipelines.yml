@@ -7,8 +7,8 @@ resources:
  - name: resource_pipelines
    type: GitRepo
    configuration:
-     gitProvider: github_neha
-     path: neha-mishraa/pipelines
+     gitProvider: mygithub
+     path: kunal-mazumdar/pipelines-local-test-repo
      files: 
        include: ^README.md$
      branches:
