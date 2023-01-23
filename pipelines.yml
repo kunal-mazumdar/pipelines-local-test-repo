@@ -1,84 +1,67 @@
-template: true   # required for local templates
-valuesFilePath: ./values.yml
-
 resources:
-  - name: myFirstRepo
-    type: GitRepo
-    configuration:
-      # SCM integration where the repository is located
-      gitProvider: {{ .Values.myRepo.gitProvider }} # this will be replaced from values.yml
-      # Repository path, including org name/repo name
-      path: {{ .Values.myRepo.path }} # this will be replaced from values.yml
-      branches:
-        # Specifies which branches will trigger dependent steps
-        include: master
-
-  - name: myPropertyBag
-    type: PropertyBag
-    configuration:
-      commitSha: 1
-      runID: 1
+ - name: connecting_resource_node_test
+   type: PropertyBag
+   configuration:
+     key1: value1
+     key2: value2
+ - name: resource_pipelines
+   type: GitRepo
+   configuration:
+     gitProvider: github_neha
+     path: neha-mishraa/pipelines
+     files: 
+       include: ^README.md$
+     branches:
+       include: ^{{gitBranch}}$
+#      buildOn:
+#        commit: true
 
 pipelines:
-  - name: my_first_pipeline
+  - name: testing1
     steps:
-      - name: p1_s1
+      - name: nodeTestStep
         type: Bash
         configuration:
-          nodePool: {{ .Values.myNodePool.name }}
+          nodePool: u18dynamic
+          outputResources: 
+            - name: connecting_resource_node_test
+#               trigger: false
+          integrations:
+            - name: github_neha
+        execution:
+          onExecute:
+            - write_output 
+            "test=value"
+
+      - name: c7dynamic
+        type: Bash
+        configuration:
+          nodePool: c7dynamic
           inputResources:
-            # Sets up step to be triggered when there are commit events to myFirstRepo
-            - name: myFirstRepo
+            - name: connecting_resource_node_test
         execution:
           onExecute:
-            # Data from input resources is available as env variables in the step
-            - echo $res_myFirstRepo_commitSha
-            # The next two commands add variables to run state, which is available to all downstream steps in this run
-            # Run state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-RunState
-            - add_run_variables current_runid=$run_id
-            - add_run_variables commitSha=$res_myFirstRepo_commitSha
-            # This variable is written to pipeline state in p1_s3.
-            # So this will be empty during first run and will be set to prior run number in subsequent runs
-            # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
-            - echo "Previous run ID is $prev_runid"
-
-      - name: p1_s2
+            - printenv
+            - docker images
+            
+      - name: u20dynamic
         type: Bash
         configuration:
-          inputSteps:
-            - name: p1_s1
-        execution:
-          onExecute:
-            # Demonstrates the availability of an env variable written to run state during p1_s1
-            - echo $current_runid
-
-      - name: p1_s3
-        type: Bash
-        configuration:
-          inputSteps:
-            - name: p1_s2
-          outputResources:
-            - name: myPropertyBag
-        execution:
-          onExecute:
-            - echo $current_runid
-            # Writes current run number to pipeline state
-            - add_pipeline_variables prev_runid=$run_id
-            # Uses an utility function to update the output resource with the commitSha that triggered this run
-            # Dependent pipelines can be configured to trigger when this resource is updated
-            # Utility functions documentation: https://www.jfrog.com/confluence/display/JFROG/Pipelines+Utility+Functions
-            - write_output myPropertyBag commitSha=$commitSha runID=$current_runid
-
-  - name: my_second_pipeline
-    steps:
-      - name: p2_s1
-        type: Bash
-        configuration:
-          nodePool: {{ .Values.myNodePool.name }}
+          nodePool: u20dynamic
           inputResources:
-            # Sets up step to be triggered when myPropertyBag is updated
-            - name: myPropertyBag
+            - name: connecting_resource_node_test
         execution:
           onExecute:
-            # Retrieves the commitSha from input resource
-            - echo "CommitSha is $res_myPropertyBag_commitSha"
+            - printenv
+            - docker images
+
+      - name: win_2019
+        type: PowerShell
+        configuration:
+          nodePool: win_2019
+          inputResources:
+            - name: connecting_resource_node_test
+        execution:
+          onExecute:
+            - write-output "Hi"
+            - docker images
