@@ -84,7 +84,7 @@ pipelines:
     steps:
       - name: myStep3
         type: Bash
-        configuration:
+        # configuration:
         #  nodePool: c7dynamic
         execution:
           onExecute:
@@ -94,7 +94,7 @@ pipelines:
     steps:
       - name: myStep4
         type: PowerShell
-        configuration:
+        # configuration:
         #  nodePool: win_2019
         execution:
           onExecute:
