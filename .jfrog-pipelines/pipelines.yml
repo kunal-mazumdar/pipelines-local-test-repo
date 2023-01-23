@@ -74,7 +74,7 @@ pipelines:
       - name: myStep2
         type: Bash
         configuration:
-         nodePool: u20dynamic
+        #  nodePool: u20dynamic
          integrations:
            - name: github_neha
         execution:
@@ -85,7 +85,7 @@ pipelines:
       - name: myStep3
         type: Bash
         configuration:
-         nodePool: c7dynamic
+        #  nodePool: c7dynamic
         execution:
           onExecute:
             - echo "hi"
@@ -95,7 +95,7 @@ pipelines:
       - name: myStep4
         type: PowerShell
         configuration:
-         nodePool: win_2019
+        #  nodePool: win_2019
         execution:
           onExecute:
             - echo "hi"
@@ -129,7 +129,7 @@ pipelines:
       - name: nodeTestStep
         type: Bash
         configuration:
-          nodePool: u18dynamic
+          # nodePool: u18dynamic
           outputResources: 
             - name: connecting_resource_node_test
 #               trigger: false
@@ -142,7 +142,7 @@ pipelines:
       - name: c7dynamic
         type: Bash
         configuration:
-          nodePool: c7dynamic
+          # nodePool: c7dynamic
           inputResources:
             - name: connecting_resource_node_test
         execution:
@@ -153,7 +153,7 @@ pipelines:
       - name: u20dynamic
         type: Bash
         configuration:
-          nodePool: u20dynamic
+          # nodePool: u20dynamic
           inputResources:
             - name: connecting_resource_node_test
         execution:
@@ -164,7 +164,7 @@ pipelines:
       - name: win_2019
         type: PowerShell
         configuration:
-          nodePool: win_2019
+          # nodePool: win_2019
           inputResources:
             - name: connecting_resource_node_test
         execution:
