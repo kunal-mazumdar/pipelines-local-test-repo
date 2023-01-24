@@ -14,14 +14,14 @@ pipelines:
             default: 1
             description: The time interval to look back before deleting an artifact. Default 1.
           repos:
-            default: ""
+            default: "abc"
             description: A list of repositories to clean. This parameter is required.
           dryRun:
             default: "false"
             values: ["true", "false"]
             description: If this parameter is passed, artifacts will not actually be deleted. Default false.
           paceTimeMS:
-            default: 0
+            default: 100
             description: The number of milliseconds to delay between delete operations. Default 0.
       
       {{ if eq "true" "{{ .Values.controls.cron.enabled }}" }}
