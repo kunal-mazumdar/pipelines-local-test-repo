@@ -1,6 +1,9 @@
 metadata:
   pipelineName: artifact_cleanup
 
+input:
+  jfrogTokenIntegration: jf_token
+
 controls:
   cron:
     enabled: false

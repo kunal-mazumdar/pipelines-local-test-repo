@@ -34,6 +34,8 @@ pipelines:
         type: Bash
         execution:
           onStart:
+            - jf c add --artifactory-url ${int_jfrogTokenIntegration_url} --access-token ${int_jfrogTokenIntegration_accessToken}
+            - jf config show
             - echo 'Validate inputs'
             - echo 'Validate repos names'
             - echo 'Fetch artifacts based on conditions from repos'
