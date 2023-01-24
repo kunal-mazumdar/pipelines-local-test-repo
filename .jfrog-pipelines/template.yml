@@ -1,5 +1,16 @@
 valuesFilePath: values.yml
 
+{{ if eq "true" "{{ .Values.controls.cron.enabled }}" }}
+# The cron time when the job is executed. Default 0 0 5 ? * 1 should be redefined.
+resources:
+  - name: "{{ .Values.metadata.pipelineName }}_cron_trigger"
+    type: CronTrigger
+    configuration:
+      interval: "{{ .Values.controls.cron.expression }}"
+      branches:
+        include: "^{{ .Values.controls.cron.branch }}$"
+{{ end }}
+
 pipelines:
   - name: {{ .Values.metadata.pipelineName }}
     configuration:
@@ -21,9 +32,12 @@ pipelines:
           paceTimeMS:
             default: 0
             description: The number of milliseconds to delay between delete operations. Default 0.
-          cron:
-            default: "0 0 5 ? * 1"
-            description: The cron time when the job is executed. Default 0 0 5 ? * 1 should be redefined.
+      
+      {{ if eq "true" "{{ .Values.controls.cron.enabled }}" }}
+      inputResources:
+        - name: {{ .Values.metadata.pipelineName }}_cron_trigger
+      {{ end }}
+
     steps:
       - name: create_repos
         type: Bash

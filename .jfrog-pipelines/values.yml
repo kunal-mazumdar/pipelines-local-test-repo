@@ -1,2 +1,8 @@
 metadata:
   pipelineName: artifact_cleanup
+
+controls:
+  cron:
+    enabled: false
+    expression: 0 0 5 ? * 1
+    branch: 0 0 5 ? * 1
