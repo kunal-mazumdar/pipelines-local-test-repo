@@ -1,0 +1,227 @@
+resources:
+  - name: artifactory_packages_report_portal_properties
+    type: PropertyBag
+    configuration:
+      dashboardId: -1
+      overallStatsWidgetId: -1
+
+  - name: artifactory_release_e2e_trigger_property_bag
+    type: PropertyBag
+    configuration:
+      buildNumber: -1
+      
+  - name: auto_report_portal_dashboard_bitbucket
+    type: GitRepo
+    configuration:
+      path: kunal-mazumdar/pipelines-local-test-repo
+      gitProvider: kunal_gh
+      branches:
+        include: ^{{gitBranch}}$
+
+  - name: artifactory_pro_docker_draft_image_resource
+    type: Image
+    configuration:
+      registry: entplus_deployer
+      sourceRepository: art-docker-dev-local
+      imageName: jfrog/artifactory-pro
+      imageTag: undefined
+      autoPull: false
+      
+  - name: artifactory_bitbucket
+    type: GitRepo
+    configuration:
+      path: kunal-mazumdar/pipelines-local-test-repo
+      gitProvider: kunal_gh
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^(binary-store|binary-store-pro|artifactory-oss|artifactory-pro|package-indexer)\/.*$
+        
+pipelines:
+  - name: artifactory_packages_e2e
+    configuration:
+      environmentVariables:
+        readOnly:
+          GIT_BRANCH: ""
+          FE_BRANCH: ""
+          CI: "true"
+          GLOBAL_ARTIFACTORY_VERSION: ""
+          SEND_REPORT_TO_RP:
+            default: "false"
+            description: "[Optional] Send report to report portal platform when working on snapshot version or dev branch"
+            values:
+              - "false"
+              - "true"
+          GIT_LFS_SKIP_SMUDGE:
+            default: "true"
+            description: "Git LFS skip the smudge process"
+          GRADLE_TESTS_FLAGS:
+            default: ""
+            description: "[Optional] For debugging to add additional gradle flags to the gradle tests executions"
+
+    steps:
+      - name: trigger_all
+        type: Bash
+        execution:
+          onExecute:
+            - echo "Starting full automation pipeline run."
+
+      - name: report_portal_dashboard_creation
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              auto:
+                language: java
+                versions:
+                  - 11
+          inputResources:
+            - name: auto_report_portal_dashboard_bitbucket
+              trigger: false
+            - name: artifactory_pro_docker_draft_image_resource
+              trigger: false
+            - name: artifactory_release_e2e_trigger_property_bag
+              newVersionOnly: true
+          outputResources:
+            - name: artifactory_packages_report_portal_properties
+          integrations:
+            - name: jfdev_agent
+            - name: entplus_deployer
+            - name: docker_jfrog_io_reader
+            - name: slack_platform_clean_pipeline
+            - name: slack_platform_release_pipeline
+            - name: slack_dev_foundation_alerts
+        execution:
+          onStart:
+            - source "${res_auto_report_portal_dashboard_bitbucket_resourcePath}/src/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script src/build/ci/pipeline_dashboard.sh
+          onExecute:
+            - export RT_GROUP_NAME=packages
+            - on_execute
+          onSuccess:
+            - on_success || echo “[ERROR] on_success returned an error”
+            - stepCommons_on_success || echo “[ERROR] stepCommons_on_success returned an error”
+          onFailure:
+            - on_failure || echo “[ERROR] on_failure returned an error”
+            - stepCommons_on_failure || echo “[ERROR] stepCommons_on_failure returned an error”
+          onComplete:
+            - stepCommons_pre_on_complete || echo “[ERROR] stepCommons_pre_on_complete returned an error”
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo “[ERROR] stepCommons_on_complete returned an error”
+
+      - name: artifactory_parse_version
+        type: Bash
+        configuration:
+          integrations:
+            - name: jfdev_agent
+            - name: entplus_deployer
+            - name: docker_jfrog_io_reader
+            - name: slack_platform_clean_pipeline
+            - name: slack_platform_release_pipeline
+            - name: slack_dev_foundation_alerts
+          inputSteps:
+            - name: trigger_all
+          inputResources:
+            - name: artifactory_bitbucket
+              trigger: false
+            - name: artifactory_release_e2e_trigger_property_bag
+              newVersionOnly: true
+            - name: artifactory_pro_docker_draft_image_resource
+              trigger: false
+        execution:
+          onStart:
+            - source "${res_artifactory_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - source "${res_artifactory_bitbucket_resourcePath}/build/ci/scripts/lib/pipelineUtils.sh"
+            - source "${res_artifactory_bitbucket_resourcePath}/build/ci/scripts/lib/releaseUtils.sh"
+            - source ${res_artifactory_bitbucket_resourcePath}/artifactory/automation/build/ci/pipelines_automation_util.sh
+          onExecute:
+            - prepareVariablesForJenkins
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+    # 6000 timeOut = 1:40h for artifactory_packages_e2e_jenkins_trigger, PIT timeout is 1:30h , we added 10min to cover the trigger time
+      - name: artifactory_packages_e2e_jenkins_trigger
+        type: Jenkins
+        configuration:
+          timeoutSeconds: 6000
+          integrations:
+            - name: jenkins_entplus_ci
+            - name: entplus_ci_jfrogdev_org
+            - name: jfdev_agent
+            - name: entplus_deployer
+            - name: docker_jfrog_io_reader
+            - name: slack_platform_clean_pipeline
+            - name: slack_platform_release_pipeline
+            - name: slack_dev_foundation_alerts
+          inputSteps:
+            - name: artifactory_parse_version
+          jenkinsJobName: artifactory/release/artifactory-packages-e2e
+          jenkinsBranchName: ${ORIGINAL_BRANCH}
+          buildParameters:
+            artifactory_version: ${JENKINS_VERSION}
+            ad_hoc_branch: {{gitBranch}}
+            is_saas_only: ${IS_SAAS_ONLY}
+
+      - name: artifactory_packages_report
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              custom:
+                name: docker.jfrog.io/pipelines/automation-pipelines-agent
+                tag: 20.04-ce-12
+                options: "-e HOME=/root --privileged"
+                registry: docker_jfrog_io_reader
+                sourceRepository: common-docker-local
+          integrations:
+            - name: slack_artifactory_packages_release
+            - name: jfdev_agent
+            - name: entplus_deployer
+            - name: docker_jfrog_io_reader
+            - name: slack_platform_clean_pipeline
+            - name: slack_platform_release_pipeline
+            - name: slack_dev_foundation_alerts
+          inputSteps:
+            - name: artifactory_packages_e2e_jenkins_trigger
+              status:
+                - success
+                - failure
+                - error
+                - cancelled
+                - skipped
+                - unstable
+                - timeout
+          inputResources:
+            - name: artifactory_bitbucket
+              trigger: false
+            - name: artifactory_packages_report_portal_properties
+            - name: artifactory_pro_docker_draft_image_resource
+              trigger: false
+        execution:
+          onStart:
+            - source "${res_artifactory_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - source ${res_artifactory_bitbucket_resourcePath}/artifactory/automation/build/ci/pipelines_automation_util.sh
+            - source ${res_artifactory_bitbucket_resourcePath}/artifactory/automation/build/ci/pipelines_artifactory_report.sh
+          onExecute:
+            - export RT_GROUP_NAME=packages
+            - export DASHBOARD_ID=${res_artifactory_packages_report_portal_properties_dashboardId}
+            - export OVERALL_STATS_WIDGET_ID=${res_artifactory_packages_report_portal_properties_overallStatsWidgetId}
+            - on_execute
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
