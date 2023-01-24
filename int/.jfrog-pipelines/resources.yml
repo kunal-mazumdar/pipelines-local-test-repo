@@ -246,6 +246,15 @@
         include: ^{{gitBranch}}$
       files:
         include: ^(go-client/_cli)\/.*$
+  - name: access_release_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^(go-client/_cli)\/.*$
   #BUILD INFO
   - name: access_cli_plugin_go_module_build_info
     type: BuildInfo
