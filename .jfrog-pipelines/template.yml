@@ -1,19 +1,9 @@
 valuesFilePath: values.yml
 
-{{ if eq "true" "{{ .Values.controls.cron.enabled }}" }}
-# The cron time when the job is executed. Default 0 0 5 ? * 1 should be redefined.
-resources:
-  - name: "{{ .Values.metadata.pipelineName }}_cron_trigger"
-    type: CronTrigger
-    configuration:
-      interval: "{{ .Values.controls.cron.expression }}"
-      branches:
-        include: "^{{ .Values.controls.cron.branch }}$"
-{{ end }}
-
 pipelines:
   - name: {{ .Values.metadata.pipelineName }}
     configuration:
+      jfrogCliVersion: "2"
       environmentVariables:
         readOnly:
           timeUnit:
@@ -28,6 +18,7 @@ pipelines:
             description: A list of repositories to clean. This parameter is required.
           dryRun:
             default: "false"
+            values: ["true", "false"]
             description: If this parameter is passed, artifacts will not actually be deleted. Default false.
           paceTimeMS:
             default: 0
@@ -39,13 +30,15 @@ pipelines:
       {{ end }}
 
     steps:
-      - name: create_repos
+      - name: delete_artifacts
         type: Bash
-        configuration:
-          environmentVariables:
-            BRANCH_NAME: ''
         execution:
           onStart:
-            - echo $BRANCH_NAME
+            - echo 'Validate inputs'
+            - echo 'Validate repos names'
+            - echo 'Fetch artifacts based on conditions from repos'
+            - echo 'Loop over artifacts and call delete with paceTimeMS delay'
+            - echo 'Log report'
+            - echo 'Save report as downloadable artifact'
           onExecute:
             - printenv
