@@ -4,6 +4,8 @@ pipelines:
   - name: {{ .Values.metadata.pipelineName }}
     configuration:
       jfrogCliVersion: "2"
+      integrations:
+        - name: {{ .Values.input.jfrogTokenIntegration }}
       environmentVariables:
         readOnly:
           timeUnit:
