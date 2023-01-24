@@ -16,7 +16,7 @@ pipelines:
             default: 1
             description: The time interval to look back before deleting an artifact. Default 1.
           repos:
-            default: "abc"
+            default: "plugin-repo-1"
             description: A list of repositories to clean. This parameter is required.
           dryRun:
             default: "false"
@@ -36,13 +36,27 @@ pipelines:
         type: Bash
         execution:
           onStart:
+            - echo '--- CONFIGURING ARTIFACTORY ---'
             - jf c add --artifactory-url ${int_{{ .Values.input.jfrogTokenIntegration }}_url} --access-token ${int_{{ .Values.input.jfrogTokenIntegration }}_accessToken}
-            - jf config show
-            - echo 'Validate inputs'
-            - echo 'Validate repos names'
+            - jf c show
+            - isArtifactoryOnline=$(jf rt ping)
+            - echo "isArtifactoryOnline = ${isArtifactoryOnline}"
+            - echo "repos = ${repos}"
+            - echo "paceTimeMS = ${paceTimeMS}"
+            - |
+              if [[ $isArtifactoryOnline != 'OK' ]]; then
+                echo "Please check access token..."
+                exit 1
+              fi
+            - echo '--- VALIDATING INPUTS ---'
+            - |
+              if [[ -z "${repos}" ]]; then
+                echo "Please provide at least one repo to proceed..."
+                exit 1
+              fi
+          onExecute:
             - echo 'Fetch artifacts based on conditions from repos'
             - echo 'Loop over artifacts and call delete with paceTimeMS delay'
+          onComplete:
             - echo 'Log report'
             - echo 'Save report as downloadable artifact'
-          onExecute:
-            - printenv
