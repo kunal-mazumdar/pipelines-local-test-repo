@@ -18,24 +18,17 @@ resources:
 
 pipelines:
   - name: testing1
+    configuration:
+      environmentVariables:
+        readOnly:
+          TESTX:
+            default: "Ubuntu_18.04"
     steps:
-#       - name: test_step
-#         type: Bash
-# #         configuration:
-# #          requiresApproval:
-# #            approvers:
-# #              - admin
-#         #            notifications:
-#         #              - integrationName: pipelines_mqtest_slack
-#         execution:
-#          onExecute:
-#            - echo "Got the approval"
       - name: myStep1
         type: Bash
         configuration:
          environmentVariables:
            DEFAULT_UBUNTU_NODEPOOL_OS:
-             allowCustom: true
              default: "Ubuntu_18.04"
              description: "Default operating system for node pool tests"
            DEFAULT_NODEPOOL_NUMBEROFNODES:
