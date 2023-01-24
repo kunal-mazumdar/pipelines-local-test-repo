@@ -1,0 +1,270 @@
+  resources:
+#JAVA RESOURCES
+  #GIT
+  - name: access_common_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: (^(java)\/.*$)|(^java\/pom\.xml$)
+        exclude: ^(java\/(server|client))\/.*$
+  - name: access_grpc_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^(grpc-api)\/.*$
+  - name: access_server_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: (^(java\/server)\/.*$)|(^java\/pom\.xml$)
+  - name: access_pro_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^(java\/pro)\/.*$
+  - name: access_java_client_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: (^(java/client)\/.*$)|(^java\/pom\.xml$)|(^(grpc-api)\/.*$)
+  - name: access_grpc_api_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^(grpc-api)\/.*$
+  - name: access_frontend_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^frontend\/.*$
+  - name: access_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^(java|.mvn)\/.*$
+  - name: auto_sanity_bitbucket
+    type: GitRepo
+    configuration:
+      path: jfrog/artifactory
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^master$
+      files:
+        include: ^artifactory/automation\/.*$
+  - name: access_lighthouse_ci_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^(frontend/build/lighthouse-ci)\/.*$
+
+  #BUILD INFO
+  - name: access_server_java_module_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_build_no_tests_java_module_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_common_java_module_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_java_client_module_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_server_docker_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_server_docker_module_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_server_maven_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_rt_pro_docker_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_rt_online_docker_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_sanity_e2e_checkout_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  #DOCKER
+  - name: access_server_rt_pro_bundle_docker_image
+    type: Image
+    configuration:
+      registry: art_jfrog_io
+      sourceRepository: art-docker-dev-local
+      imageName: jfrog/artifactory-pro
+      imageTag: undefined
+      autoPull: false
+  - name: access_server_rt_online_bundle_docker_image
+    type: Image
+    configuration:
+      registry: art_jfrog_io
+      sourceRepository: art-docker-dev-local
+      imageName: jfrog/artifactory-online
+      imageTag: undefined
+      autoPull: false
+  - name: access_server_entplus_jfrog_io_docker_image
+    type: Image
+    configuration:
+      registry: entplus_jfrog_io_docker
+      sourceRepository: undefined
+      imageName: jfrog/access
+      imageTag: undefined
+      autoPull: false
+
+  #PROPERTY BAG
+  - name: access_post_release_step_property_bag
+    type: PropertyBag
+    configuration:
+      default: -1
+  - name: access_e2e_deploy_props
+    type: PropertyBag
+    configuration:
+      artifactoryProImageTag: latestRelease
+      artifactoryOnlineImageTag: latestRelease
+      artifactoryChartVersion: undefined
+      coreChartVersion: undefined
+      runNumber: undefined
+  - name: access_cloud_env_props
+    type: PropertyBag
+    configuration:
+      envUrl: undefined
+  - name: access_gcp_env_props
+    type: PropertyBag
+    configuration:
+      envUrl: undefined
+  - name: access_sequential_env_props
+    type: PropertyBag
+    configuration:
+      envUrl: undefined
+  - name: access_cloud_env_auth_props
+    type: PropertyBag
+    configuration:
+      envUrl: undefined
+  - name: access_seq_env_auth_props
+    type: PropertyBag
+    configuration:
+      envUrl: undefined
+  - name: ubuntu_18_static_vm
+    type: PropertyBag
+    configuration:
+      ip_address: undefined
+  - name: access_lighthouse_env_props
+    type: PropertyBag
+    configuration:
+      envUrl: undefined
+  - name: access_lighthouse_score
+    type: PropertyBag
+    configuration:
+      lighthouseScore: -1
+
+#GO RESOURCES
+  #GIT
+  - name: access_cli_plugin_bitbucket
+    type: GitRepo
+    configuration:
+      path: infs/access
+      gitProvider: JFrog_bitbucket
+      branches:
+        include: ^{{gitBranch}}$
+      files:
+        include: ^(go-client/_cli)\/.*$
+  #BUILD INFO
+  - name: access_cli_plugin_go_module_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_cli_plugin_bin_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_server_helm_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_frontend_build_info
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1
+  - name: access_master_nightly_build_cron_trigger
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: entplus_deployer
+      buildName: undefined
+      buildNumber: -1

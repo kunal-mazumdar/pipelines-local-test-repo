@@ -1,0 +1,1215 @@
+template: true
+valuesFilePath: ./values.yml
+pipelines:
+  - name: access_build
+    #CI_PIPELINE_URL=https://entplus.jfrog.io/ui/pipelines/myPipelines/access_build?branch=${GIT_BRANCH_URLENCODED}
+    configuration:
+      integrations:
+        - name: jfdev_agent
+        - name: entplus_deployer
+        - name: entplus_pipelines
+        - name: entplus_ci_jfrogdev_org
+        - name: entplus_jfrog_io_docker
+        - name: docker_jfrog_io_reader
+        - name: slack_dev_foundation_alerts
+        - name: slack_platform_clean_pipeline
+        - name: slack_platform_release_pipeline
+        - name: slack_access_pipe
+        - name: jenkins_entplus_ci
+        - name: sonar_jfrog_info
+        - name: art_jfrog_io
+        - name: jira_jfrog
+      environmentVariables:
+        readOnly:
+          JFROG_CLI_TEMP_DIR: /tmp
+          CI: "true"
+          MAVEN_OPTS: "'-Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS -Dmaven.wagon.http.pool=false'"
+          MAVEN_CONFIG: "'-Pci -B -nsu -e'"
+          SLACK_MAIN_INTEGRATION: slack_platform_clean_pipeline
+          SLACK_RELEASE_INTEGRATION: slack_platform_release_pipeline
+          GOSUMDB: off
+          GOPRIVATE: jfrog.com
+          GONOPROXY: none
+          GO_VERSION: "1.19.3"
+          GIT_LFS_SKIP_SMUDGE: 1
+          CHART_TESTING_IMAGE: releases-docker.jfrog.io/charts-ci
+          CHART_TESTING_TAG: 0.1.0
+          HELM_VERSION: v3.8.2
+          KUBEVAL_VERSION: v0.16.1
+          KUBECTL_VERSION: v1.23.5
+          CUSTOM_NODE_VERSION: 16.18.1
+    steps:
+      - name: trigger_all
+        configuration:
+          inputResources:
+            - name: access_master_nightly_build_cron_trigger
+        type: Bash
+        execution:
+          onExecute:
+            - echo "Starting full pipeline run."
+
+      - name: trigger_access_java
+        configuration:
+          inputResources:
+            - name: access_bitbucket
+        type: Bash
+        execution:
+          onExecute:
+            - echo "Starting access java pipeline run."
+
+#      Access Microfrontend Steps
+      - name: access_frontend_build
+        type: Bash
+        configuration:
+          affinityGroup: sonar_frontend
+          inputResources:
+            - name: access_frontend_bitbucket
+          inputSteps:
+            - name: trigger_all
+          outputResources:
+            - name: access_frontend_build_info
+        execution:
+          onStart:
+            - source "${res_access_frontend_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script frontend/build/ci/pipelines_frontend_build.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - stepCommons_on_success --step-status-group=critical_path
+            - on_success
+          onFailure:
+            - stepCommons_on_failure --step-status-group=critical_path
+
+      - name: access_frontend_package
+        type: MvnBuild
+        configuration:
+          sourceLocation: frontend/package
+          configFileLocation: ../../build/ci/.conf
+          configFileName: maven-config
+          mvnCommand: ${MVN_COMMAND}
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+          inputResources:
+            - name: access_frontend_bitbucket
+            - name: access_frontend_build_info
+          outputResources:
+            - name: access_server_java_module_build_info
+        execution:
+          onStart:
+            - source "${res_access_frontend_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script frontend/build/ci/pipelines_frontend_package.sh
+            - on_start
+          onSuccess:
+            - stepCommons_on_success --step-status-group=critical_path
+            - on_success
+          onFailure:
+            - stepCommons_on_failure --step-status-group=critical_path
+
+      - name: access_frontend_unit_test
+        type: Bash
+        configuration:
+          inputResources:
+            - name: access_frontend_bitbucket
+              trigger: false
+            - name: access_server_java_module_build_info
+          outputResources:
+            - name: access_post_release_step_property_bag
+        execution:
+          onStart:
+            - source "${res_access_frontend_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_automation_utils.sh
+            - cd "${res_access_frontend_bitbucket_resourcePath}/frontend"
+            - upgrade_jfrog_cli_version
+            - create_npmrc
+          onExecute:
+            - jfrog npm run ci
+            - npm run test
+          onSuccess:
+            - stepCommons_on_success --step-status-group=critical_path
+          onFailure:
+            - stepCommons_on_failure --step-status-group=critical_path
+#      JAVA STEPS
+      - name: access_build_no_tests
+        type: MvnBuild
+        configuration:
+          sourceLocation: java
+          configFileLocation: ../build/ci/.conf
+          configFileName: maven-config
+          mvnCommand: ${MVN_COMMAND}
+          inputResources:
+            - name: access_bitbucket
+          inputSteps:
+            - name: access_frontend_package
+            - name: trigger_access_java
+          outputResources:
+            - name: access_build_no_tests_java_module_build_info
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+        execution:
+          onStart:
+            - source "${res_access_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_build_no_test.sh
+            - if [[ -n "${ARTIFACTORY_VERSION}" ]]; then add_run_variables ARTIFACTORY_VERSION="${ARTIFACTORY_VERSION}" >/dev/null 2>&1; fi
+            - if [[ -n "${ARTIFACTORY_TYPE}" ]]; then add_run_variables ARTIFACTORY_TYPE="${ARTIFACTORY_TYPE}" >/dev/null 2>&1; fi
+            - on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_common_unit_test
+        type: MvnBuild
+        configuration:
+          sourceLocation: java
+          configFileLocation: ../build/ci/.conf
+          configFileName: maven-config
+          mvnCommand: ${MVN_COMMAND}
+          inputResources:
+            - name: access_common_bitbucket
+          outputResources:
+            - name: access_common_java_module_build_info
+          inputSteps:
+            - name: access_build_no_tests
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+          environmentVariables:
+            SONAR_PROJECT_KEY: 'access_java_common'
+        execution:
+          onStart:
+            - source "${res_access_common_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_common_build.sh
+            - on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_server_unit_test
+        type: MvnBuild
+        configuration:
+          sourceLocation: java/server
+          configFileLocation: ../../build/ci/.conf
+          configFileName: maven-config
+          mvnCommand: ${MVN_COMMAND}
+          inputResources:
+            - name: access_bitbucket
+          inputSteps:
+            - name: access_build_no_tests
+          outputResources:
+            - name: access_server_java_module_build_info
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+          environmentVariables:
+            SONAR_PROJECT_KEY: 'access_server'
+        execution:
+          onStart:
+            - source "${res_access_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_server_unit_test.sh
+            - if [[ -n "${ARTIFACTORY_VERSION}" ]]; then add_run_variables ARTIFACTORY_VERSION="${ARTIFACTORY_VERSION}" >/dev/null 2>&1; fi
+            - if [[ -n "${ARTIFACTORY_TYPE}" ]]; then add_run_variables ARTIFACTORY_TYPE="${ARTIFACTORY_TYPE}" >/dev/null 2>&1; fi
+            - on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_server_docker
+        type: MvnBuild
+        configuration:
+          sourceLocation: java/server/distribution
+          configFileLocation: ../../../build/ci/.conf
+          configFileName: maven-config
+          mvnCommand: ${MVN_COMMAND}
+          inputResources:
+            - name: access_server_bitbucket
+          inputSteps:
+            - name: access_build_no_tests
+          outputResources:
+            - name: access_server_docker_module_build_info
+            - name: access_server_entplus_jfrog_io_docker_image
+          # nodePool: ubuntu_18_04_with_docker_20_10
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_package_access_docker.sh
+            - on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      ## Access Server Helm Chart
+      - name: access_server_helm_package
+        type: Bash
+        configuration:
+          inputResources:
+            - name: access_server_bitbucket
+            - name: access_server_entplus_jfrog_io_docker_image
+          outputResources:
+            - name: access_server_helm_build_info
+          environmentVariables:
+            CHART_TESTING_ARGS: "--charts=server/distribution/helm-chart/stable/access"
+            CHART_NAME: "access"
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_package_helm.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_server_docker_clamscan
+        type: Bash
+        configuration:
+          inputResources:
+            - name: access_server_entplus_jfrog_io_docker_image
+            - name: access_server_bitbucket
+              trigger: false
+          outputResources:
+            - name: access_post_release_step_property_bag
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_docker_clamav.sh
+            - stepCommons_load_script build/ci/scripts/lib/stepStatusUtils.sh
+          onExecute:
+            - clam_execute
+          onSuccess:
+            - stepCommons_on_success
+          onFailure:
+            - stepCommons_on_failure
+          onComplete:
+            - stepCommons_pre_on_complete
+            - clam_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete
+
+      - name: access_server_docker_security_scan
+        type: XrayScan
+        configuration:
+          failOnScan: true
+          integrations:
+            - name: security_xray_access_token
+          inputResources:
+            - name: access_server_docker_module_build_info
+              newVersionOnly: true
+            - name: access_server_bitbucket
+              trigger: false
+          outputResources:
+            - name: access_post_release_step_property_bag
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_xray_violation_handler.sh"
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_xray_scan.sh"
+            - restrict_xray_scan_to_master_branch "${res_access_server_bitbucket_commitMessage}"
+            - xrayScan_on_start
+          onSuccess:
+            - stepCommons_on_success
+          onFailure:
+            - stepCommons_on_failure
+          onComplete:
+            - stepCommons_pre_on_complete
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - run_violation_handler access ${res_access_server_docker_module_build_info_buildName} ${res_access_server_docker_module_build_info_buildNumber}
+            - stepCommons_on_complete
+
+      - name: access_pro
+        type: MvnBuild
+        configuration:
+          sourceLocation: java/pro
+          configFileLocation: ../../build/ci/.conf
+          configFileName: maven-config
+          mvnCommand: ${MVN_COMMAND}
+          inputSteps:
+            - name: access_build_no_tests
+          inputResources:
+            - name: access_pro_bitbucket
+          outputResources:
+            - name: access_post_release_step_property_bag
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+        execution:
+          onStart:
+            - source "${res_access_pro_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_pro_build.sh
+            - on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_java_client_unit_test
+        type: MvnBuild
+        configuration:
+          sourceLocation: java/client
+          configFileLocation: ../../build/ci/.conf
+          configFileName: maven-config
+          mvnCommand: ${MVN_COMMAND}
+          inputSteps:
+            - name: access_build_no_tests
+          inputResources:
+            - name: access_java_client_bitbucket
+          outputResources:
+            - name: access_java_client_module_build_info
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+          environmentVariables:
+            SONAR_PROJECT_KEY: 'access_java_client'
+        execution:
+          onStart:
+            - source "${res_access_java_client_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_client_build.sh
+            - on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_package
+        type: MvnBuild
+        configuration:
+          sourceLocation: java/server/distribution/docker-legacy
+          configFileLocation: ../../../../build/ci/.conf
+          configFileName: maven-config
+          mvnCommand: install -Pserver,release -DskipTests ${MAVEN_CONFIG}
+          inputSteps:
+            - name: access_build_no_tests
+          inputResources:
+            - name: access_server_bitbucket
+          outputResources:
+            - name: access_server_maven_build_info
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_package.sh
+            - on_start
+          onSuccess:
+            - stepCommons_on_success
+            - on_success
+          onFailure:
+            - stepCommons_on_failure
+          onComplete:
+            - stepCommons_pre_on_complete
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete
+
+      - name: access_multidb_itest
+        type: Matrix
+        stepMode: Bash
+        stepletMultipliers:
+          environmentVariables:
+            {{ if (regexMatch "master|^preRelease/.*|^milestone/.*|^release/.*" "{{gitBranch}}") }} # Filter out non postgres tests step on dev-branches
+            - DATABASE_TYPE: mariadb
+            - DATABASE_TYPE: mssql
+            - DATABASE_TYPE: mysql
+            - DATABASE_TYPE: oracle
+            {{ end }} 
+            - DATABASE_TYPE: "postgresql"
+          runtimes:
+            - type: image
+              image:
+                custom:
+                  name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                  tag: '17'
+                  options: -v ~/.m2:/root/.m2 --network bridge
+
+        configuration:
+          multiNode: true
+          timeoutSeconds: 2700 # 45 minutes
+          inputResources:
+            - name: access_server_bitbucket
+          outputResources:
+            - name: access_post_release_step_property_bag
+          inputSteps:
+            - name: trigger_access_java
+            - name: trigger_all
+          environmentVariables:
+            MYSQL_DATABASE_VERSION: "5.7"
+            MSSQL_DATABASE_VERSION: "2017-latest"
+            ORACLE_DATABASE_VERSION: "18.4.0-slim-faststart"
+            POSTGRESQL_DATABASE_VERSION: "13.4"
+            MARIADB_DATABASE_VERSION: "10.1.22"
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_multidb_itest.sh
+            - on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onExecute:
+            - on_execute
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_server_itests_matrix
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          timeoutSeconds: 1800 # 30 minutes
+          # nodePool: access_c5_4xlarge_itests
+          multiNode: true
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+          inputResources:
+            - name: access_bitbucket
+          inputSteps:
+            - name: trigger_access_java
+            - name: access_frontend_package
+          environmentVariables:
+            RUN_TEST_SUITE: "true"
+
+        stepletMultipliers:
+          environmentVariables:
+            - EXTRA_CONF: "-pl server/application,server/coverage"
+              SONAR_PROJECT_KEY: 'server_application'
+            - EXTRA_CONF: "-pl !server/application"
+              SONAR_PROJECT_KEY: 'server_no_application'
+
+        execution:
+          onStart:
+            - source "${res_access_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_server_itest.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+    {{ if (regexMatch "^preRelease/.*|^milestone/.*|^release/.*" "{{gitBranch}}") }}
+      # JA-2223  Access itests in Windows
+      -  name: "access_windows_itest"
+         type: Jenkins
+         configuration:
+           timeoutSeconds: 3600 # 1 hour
+           inputSteps:
+             - name: trigger_access_java
+             - name: trigger_all
+           inputResources:
+             - name: access_server_bitbucket
+           jenkinsJobName: infra/job/test/job/access-windows-derby-itest-split-clone
+           jenkinsBranchName: {{gitBranch}}
+           buildParameters:
+             EXECUTE_ON_BRANCH: {{gitBranch}}
+           outputResources:
+             - name: access_post_release_step_property_bag
+    {{ end }}
+
+      - name: access_client_itests
+        type: Bash
+        configuration:
+          timeoutSeconds: 1800 # 30 minutes
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+          inputSteps:
+            - name: access_build_no_tests
+          inputResources:
+            - name: access_java_client_bitbucket
+          environmentVariables:
+            RUN_TEST_SUITE: "true"
+            SONAR_PROJECT_KEY: 'access_java_client'
+        execution:
+          onStart:
+            - source "${res_access_java_client_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_client_itest.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_server_sonar_scan
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: access_server_itests_matrix
+          inputResources:
+            - name: access_server_java_module_build_info
+              trigger: false
+            - name: access_bitbucket
+          outputResources:
+            - name: access_post_release_step_property_bag
+          environmentVariables:
+            SONAR_PROJECT_KEY: 'access_server'
+            SONAR_PROJECT_BASE_DIR: './java/server'
+            SONAR_QUALITYGATE_WAIT: 'false'
+            RUN_SONAR: "true"
+            ITEST_KEYS: "server_no_application,server_application"
+          runtime:
+            type: image
+            image:
+              custom:
+                name: releases-docker.jfrog.io/jfrog/pipelines-u20java
+                tag: '17'
+                options: -v ~/.m2:/root/.m2
+        execution:
+          onStart:
+            - source "${res_access_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_server_post_processing_sonar.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_client_sonar_scan
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: access_client_itests
+          inputResources:
+            - name: access_java_client_bitbucket
+              trigger: false
+            - name: access_java_client_module_build_info
+          outputResources:
+            - name: access_post_release_step_property_bag
+          environmentVariables:
+            SONAR_PROJECT_KEY: 'access_java_client'
+            SONAR_PROJECT_BASE_DIR: './java/client'
+            SONAR_QUALITYGATE_WAIT: 'false'
+            RUN_SONAR: "true"
+          runtime:
+            type: image
+            image:
+              custom:
+                registry: entplus_jfrog_io_docker
+                sourceRepository: docker-staging-local
+                name: entplus.jfrog.io/docker-staging-local/sonar-scanner
+                tag: ${SONAR_DOCKER_TAG:-latest}
+        execution:
+          onStart:
+            - source "${res_access_java_client_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_sonar_java.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_common_sonar_scan
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: access_common_unit_test
+          inputResources:
+            - name: access_common_bitbucket
+              trigger: false
+          outputResources:
+            - name: access_post_release_step_property_bag
+          environmentVariables:
+            SONAR_PROJECT_KEY: 'access_java_common'
+            SONAR_PROJECT_BASE_DIR: './java/common'
+            SONAR_QUALITYGATE_WAIT: 'false'
+            RUN_SONAR: "true"
+          runtime:
+            type: image
+            image:
+              custom:
+                registry: entplus_jfrog_io_docker
+                sourceRepository: docker-staging-local
+                name: entplus.jfrog.io/docker-staging-local/sonar-scanner
+                tag: ${SONAR_DOCKER_TAG:-latest}
+        execution:
+          onStart:
+            - source "${res_access_common_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_sonar_java.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_security_scan
+        type: XrayScan
+        configuration:
+          failOnScan: true
+          integrations:
+            - name: security_xray_access_token
+          inputResources:
+            - name: access_server_java_module_build_info
+            - name: access_server_bitbucket
+          outputResources:
+            - name: access_post_release_step_property_bag
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_xray_violation_handler.sh"
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_xray_scan.sh"
+            - restrict_xray_scan_to_master_branch "${res_access_server_bitbucket_commitMessage}"
+            - xrayScan_on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success --step-status-group=critical_path || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure --step-status-group=critical_path || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - run_violation_handler access ${res_access_server_java_module_build_info_buildName} ${res_access_server_java_module_build_info_buildNumber}
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_client_security_scan
+        type: XrayScan
+        configuration:
+          failOnScan: true
+          integrations:
+            - name: security_xray_access_token
+          inputResources:
+            - name: access_java_client_module_build_info
+            - name: access_java_client_bitbucket
+          outputResources:
+            - name: access_post_release_step_property_bag
+        execution:
+          onStart:
+            - source "${res_access_java_client_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - source "${res_access_java_client_bitbucket_resourcePath}/build/ci/pipelines_xray_violation_handler.sh"
+            - source "${res_access_java_client_bitbucket_resourcePath}/build/ci/pipelines_xray_scan.sh"
+            - restrict_xray_scan_to_master_branch "${res_access_java_client_bitbucket_commitMessage}"
+            - xrayScan_on_start
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - run_violation_handler access ${res_access_java_client_module_build_info_buildName} ${res_access_java_client_module_build_info_buildNumber}
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      # CLI STEPS
+      - name: access_cli_plugin_build
+        type: Bash
+        configuration:
+          affinityGroup: sonar_access_cli_plugin
+          runtime:
+            type: image
+            image:
+              auto:
+                language: go
+                versions:
+                  - "1.13.7"
+
+          inputResources:
+            - name: access_cli_plugin_bitbucket
+            - name: access_server_entplus_jfrog_io_docker_image
+              trigger: false
+          outputResources:
+            - name: access_cli_plugin_go_module_build_info
+        execution:
+          onStart:
+            - source "${res_access_cli_plugin_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script go-client/_cli/build/ci/pipelines_build.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_cli_plugin_sonar_scan
+        type: Bash
+        configuration:
+          affinityGroup: sonar_access_cli_plugin
+          inputSteps:
+            - name: access_cli_plugin_build
+          inputResources:
+            - name: access_cli_plugin_bitbucket
+              trigger: false
+          outputResources:
+            - name: access_post_release_step_property_bag
+          environmentVariables:
+            SONAR_PROJECT_KEY: 'access_cli_plugin'
+            SONAR_PROJECT_BASE_DIR: './go-client/_cli/'
+            SONAR_QUALITYGATE_WAIT: 'false'
+            RUN_SONAR: "true"
+          runtime:
+            type: image
+            image:
+              custom:
+                registry: entplus_jfrog_io_docker
+                sourceRepository: docker-staging-local
+                name: entplus.jfrog.io/docker-staging-local/sonar-scanner
+                tag: ${SONAR_DOCKER_TAG:-latest}
+        execution:
+          onStart:
+            - source "${res_access_cli_plugin_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script go-client/_cli/build/ci/pipelines_sonar_go.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: access_cli_plugin_bin
+        type: Bash
+        configuration:
+          runtime:
+            type: image
+            image:
+              auto:
+                language: go
+                versions:
+                 - "1.13.7"
+          inputSteps:
+            - name: access_cli_plugin_build
+          inputResources:
+            - name: access_cli_plugin_bitbucket
+          outputResources:
+            - name: access_cli_plugin_bin_build_info
+            - name: access_post_release_step_property_bag
+        execution:
+          onStart:
+            - source "${res_access_cli_plugin_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script go-client/_cli/build/ci/pipelines_bin.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: trigger_post_release
+        type: Bash
+        configuration:
+          inputResources:
+            - name: access_post_release_step_property_bag
+            - name: access_top_level_bitbucket
+              trigger: false
+          outputResources:
+            - name: access_release_bitbucket
+        execution:
+          onStart:
+            - source "${res_access_top_level_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script build/ci/scripts/trigger_post_release_pipeline.sh
+            - on_start
+          onExecute:
+            - on_execute
+
+      - name: access_server_artifactory_pro_package_docker
+        type: Bash
+        configuration:
+          inputResources:
+            - name: access_build_no_tests_java_module_build_info
+            - name: access_server_bitbucket
+              trigger: true
+          outputResources:
+            - name: access_rt_pro_docker_build_info
+            - name: access_server_rt_pro_bundle_docker_image
+          # nodePool: ubuntu_18_04_with_docker_20_10
+        execution:
+          onStart:
+            # Workaround until PIPE-11020 is fixed
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh" || source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh" || source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_rt_pro_package_docker.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - add_run_variables AC_PROJECT_ROOT="${res_access_server_bitbucket_resourcePath}"
+            - add_run_variables AC_SOURCE_BRANCH="${res_access_server_bitbucket_branchName}"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: sanity_e2e_checkout
+        type: Bash
+        configuration:
+          affinityGroup: accessSanity
+          inputResources:
+            - name: access_server_bitbucket
+              trigger: false
+            - name: access_rt_pro_docker_build_info
+          outputResources:
+            - name: access_sanity_e2e_checkout_build_info
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_sanity_e2e_checkout.sh
+            - on_start
+          onExecute:
+            - on_execute || echo "[ERROR] on_execute returned an error"
+          onSuccess:
+            - add_run_variables AC_PROJECT_ROOT="${res_access_server_bitbucket_resourcePath}"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onComplete:
+            - on_complete || echo "[ERROR] on_complete returned an error"
+
+      - name: sanity_e2e
+        type: Bash
+        configuration:
+          affinityGroup: accessSanity
+          runtime:
+            type: image
+            image:
+              custom:
+                name: entplus.jfrog.io/jfrog-docker/pipelines/automation-pipelines-agent
+                tag: 19.03.8-ce-2
+                options: "-e HOME=/root --privileged"
+                registry: entplus_jfrog_io_docker
+                sourceRepository: common-docker-local
+          inputResources:
+            - name: access_server_rt_pro_bundle_docker_image
+            - name: access_sanity_e2e_checkout_build_info
+            - name: auto_sanity_bitbucket
+              trigger: false
+          outputResources:
+            - name: access_post_release_step_property_bag
+        execution:
+          onStart:
+            - source "${AC_PROJECT_ROOT}/java/build/ci/pipelines_sanity_e2e.sh"
+            - echo "[INFO] Starting Artifactory Sanity E2E Job"
+          onExecute:
+            - on_execute || echo "[ERROR] on_execute returned an error"
+          onComplete:
+            - on_complete || echo "[ERROR] on_complete returned an error"
+
+      - name: access_server_artifactory_online_package_docker
+        type: Bash
+        configuration:
+          inputResources:
+            - name: access_build_no_tests_java_module_build_info
+            - name: access_server_bitbucket
+          outputResources:
+            - name: access_rt_online_docker_build_info
+            - name: access_server_rt_online_bundle_docker_image
+          # nodePool: ubuntu_18_04_with_docker_20_10
+        execution:
+          onStart:
+            # Workaround until PIPE-11020 is fixed
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh" || source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh" || source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script java/build/ci/pipelines_rt_online_package_docker.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+    {{ if (regexMatch "^milestone/.*" "{{gitBranch}}") }} #Filter lighthouse on dev branches
+      - name: deploy_lighthouse_environment
+        type: Jenkins
+        configuration:
+          timeoutSeconds: 3600
+          jenkinsJobName: infra/job/test/job/jfrog-frontend-trigger-e2e-env
+          inputResources:
+            - name: access_lighthouse_ci_bitbucket
+              trigger: true
+            - name: access_server_rt_pro_bundle_docker_image
+          outputResources:
+            - name: access_lighthouse_env_props
+          buildParameters:
+            DEPLOYMENT_TYPE: "onprem"
+            REGION: "dev-2-euc1"
+            NAMESPACE: "feAccessLighthouse${run_id}"
+            SHOULD_RUN: "true"
+            ARTIFACTORY_VERSION: ${res_access_server_rt_pro_bundle_docker_image_imageTag}
+            DISTRIBUTION_VERSION: "latestRelease"
+            XRAY_VERSION: "latestRelease"
+            JFMC_VERSION: "latestRelease"
+            PIPELINES_VERSION: "latestRelease"
+            EXTRA_PARAMS: "artifactory_feature_toggler_list=xrayGitRepoScanning artifactory_special_properties=staging.mode=true whitelist_cidr=18.159.55.140;10.90.123.136"
+            XRAY: "false"
+            PIPELINES: "false"
+            JFMC: "false"
+            DISTRIBUTION: "false"
+            PIPELINES_OUTPUT_RESOURCE: "access_lighthouse_env_props"
+      - name: lighthouse_ci
+        type: Bash
+        configuration:
+          integrations:
+            - name: jfdev_agent
+            - name: docker_jfrog_io_reader
+            - name: entplus_deployer
+            - name: entplus_jfrog_io_docker
+            - name: jenkins_entplus_ci
+            - name: frontend_build_lighthouse_ci_access
+          inputResources:
+            - name: access_lighthouse_ci_bitbucket
+              trigger: true
+            - name: access_lighthouse_env_props
+          outputResources:
+            - name: access_lighthouse_score
+        execution:
+          onStart:
+            - source "${res_access_lighthouse_ci_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script frontend/build/lighthouse-ci/build/ci/pipelines_lighthouse.sh
+            - on_start
+          onExecute:
+            - on_execute
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - on_complete || echo "[ERROR] on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+    {{ end }}
+
+    {{ if (regexMatch "^preRelease/.*|^milestone/.*|^release/.*" "{{gitBranch}}") }} #Filter e2e step on dev-branches
+      - name: access_e2e
+        type: TriggerPipeline
+        configuration:
+          environmentVariables:
+            ARTIFACTORY_PRO_IMAGE_TAG:
+              default: "${res_access_server_rt_online_bundle_docker_image_imageTag}"
+              description: "[MANDATORY]: Field to determine the Artifactoy Pro bundled version for testing"
+              allowCustom: true
+            ARTIFACTORY_ONLINE_IMAGE_TAG:
+              default: "${res_access_server_rt_online_bundle_docker_image_imageTag}"
+              description: "[MANDATORY]: Field to determine the Artifactoy Pro bundled version for testing"
+              allowCustom: true
+            ARTIFACTORY_CHART_VERSION:
+              default: "10${res_access_server_rt_online_bundle_docker_image_latestArtifactoryRelease}"
+              description: "[MANDATORY]: Field to determine the Artifactoy-Product chart version"
+              allowCustom: true
+          integrations:
+            - name: devf_embedded_pipelines
+          affinityGroup: access_e2e
+          outputResources:
+            - name: access_post_release_step_property_bag
+          inputResources:
+            - name: access_server_rt_pro_bundle_docker_image
+              trigger: false
+              newVersionOnly: true
+            - name: access_server_rt_online_bundle_docker_image
+              trigger: false
+              newVersionOnly: true
+            - name: access_server_bitbucket
+              trigger: true
+          projectKey: jfac
+          pipelineName: access_e2e
+          branchName: {{gitBranch}}
+          stepName: init_props
+        execution:
+          onStart:
+            - source "${res_access_server_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - echo "Triggering access_e2e pipeline"
+            - set_trigger_payload pipelineVariables "ARTIFACTORY_PRO_IMAGE_TAG=${ARTIFACTORY_PRO_IMAGE_TAG}" "ARTIFACTORY_ONLINE_IMAGE_TAG=${ARTIFACTORY_ONLINE_IMAGE_TAG}" "ARTIFACTORY_CHART_VERSION=${ARTIFACTORY_CHART_VERSION}" "SKIP_E2E=${SKIP_PARENT_E2E}"
+            - export pipelines_poll_interval_seconds=30
+          onSuccess:
+            - on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - echo "Something went wrong. (Nested run status is ${nested_run_status})"
+            - on_failure || echo "[ERROR] on_failure returned an error"
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - echo "Final e2e status is $nested_run_status"
+    {{ else }}
+      - name: mfe_local_e2e
+        type: Matrix
+        stepMode: Bash
+        configuration:
+          integrations:
+            - name: entplus_pipelines
+            - name: JFrog_bitbucket
+            - name: entplus_jfrog_io_docker
+          multiNode: true
+          outputResources:
+            - name: access_post_release_step_property_bag
+          inputResources:
+            - name: access_build_no_tests_java_module_build_info
+              trigger: true
+              newVersionOnly: true
+            - name: access_bitbucket
+              trigger: true
+        stepletMultipliers:
+          environmentVariables:
+            - NODE: 1
+            - NODE: 2
+            - NODE: 3
+            - NODE: 4
+            - NODE: 5
+            - NODE: 6
+            - NODE: 7
+            - NODE: 8
+        execution:
+          onStart:
+            - source "${res_access_bitbucket_resourcePath}/build/ci/pipelines_step_setup.sh"
+            - stepCommons_load_script frontend/build/ci/pipelines_frontend_test.sh
+            - on_start_local
+          onExecute:
+            - on_execute_local
+          onSuccess:
+            - stepCommons_on_success
+          onFailure:
+            - stepCommons_on_failure
+    {{ end }}
