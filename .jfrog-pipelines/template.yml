@@ -78,11 +78,11 @@ pipelines:
             - |
               if [[ ${dryRun} == 'true' ]]; then
                 echo '===== [Dry Run Mode] Following are the list of artifacts ====='
-                echo ${actionable_artifacts}
+                echo "-->" ${actionable_artifacts} | jq -r '.[].path'
                 exit 1
               else
                 echo '===== Loop over artifacts and call delete with paceTimeMS delay ====='
-                echo ${actionable_artifacts}
+                echo "-->" ${actionable_artifacts} | jq -r '.[].path'
               fi              
           onComplete:
             - echo 'Log report'
