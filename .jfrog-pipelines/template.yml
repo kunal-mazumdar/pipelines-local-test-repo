@@ -72,7 +72,7 @@ pipelines:
             - |
               echo '{ "files": [ { "aql": { "items.find": { "type": "file", "repo": { "$match": "${repo}" }, "stat.downloaded": { "$lt": "${threshold_timestamp}" } } } } ] }' >> plugin_search.aql
               cat plugin_search.aql
-              current_timestamp=${node -e 'console.log(new Date().getTime())'}
+              current_timestamp=$(node -e 'console.log(new Date().getTime())')
               cat ${current_timestamp}
               actionable_artifacts=$(jf rt s --spec=plugin_search.aql --spec-vars "repo=${repos};threshold_timestamp=${current_timestamp}")
             - |
