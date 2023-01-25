@@ -3,6 +3,13 @@ valuesFilePath: values.yml
 pipelines:
   - name: {{ .Values.metadata.pipelineName }}
     configuration:
+      runtime:
+        type: image
+        image:
+          auto:
+            language: 'node'
+            versions:
+              - "16"
       jfrogCliVersion: "2"
       integrations:
         - name: {{ .Values.input.jfrogTokenIntegration }}
@@ -25,6 +32,12 @@ pipelines:
           paceTimeMS:
             default: 100
             description: The number of milliseconds to delay between delete operations. Default 0.
+          maxRepos:
+            default: 100
+            description: Maximum allowed repos to search
+          maxArtifacts:
+            default: 1000
+            description: Maximum allowed artifacts to be deleted
       
       {{ if eq "true" "{{ .Values.controls.cron.enabled }}" }}
       inputResources:
@@ -36,7 +49,7 @@ pipelines:
         type: Bash
         execution:
           onStart:
-            - echo '--- CONFIGURING ARTIFACTORY ---'
+            - echo '===== CONFIGURING ARTIFACTORY ====='
             - jf c add --artifactory-url ${int_{{ .Values.input.jfrogTokenIntegration }}_url} --access-token ${int_{{ .Values.input.jfrogTokenIntegration }}_accessToken}
             - jf c show
             - isArtifactoryOnline=$(jf rt ping)
@@ -48,19 +61,30 @@ pipelines:
                 echo "Please check access token..."
                 exit 1
               fi
-            - echo '--- VALIDATING INPUTS ---'
+            - echo '===== VALIDATING INPUTS ====='
             - |
               if [[ -z "${repos}" ]]; then
                 echo "Please provide at least one repo to proceed..."
                 exit 1
               fi
           onExecute:
-            - echo '--- Fetch artifacts based on conditions from repos ---'
+            - echo '===== Fetch artifacts based on conditions from repos ====='
             - |
               echo '{ "files": [ { "aql": { "items.find": { "type": "file", "repo": { "$match": "${repo}" }, "stat.downloaded": { "$lt": "${threshold_timestamp}" } } } } ] }' >> plugin_search.aql
               cat plugin_search.aql
-            - jf rt s --spec=plugin_search.aql --spec-vars "repo=${repos};threshold_timestamp=1674637993212"
-            - echo 'Loop over artifacts and call delete with paceTimeMS delay'
+            - |
+              current_timestamp=node -e 'console.log(new Date().getTime())'
+              cat ${current_timestamp}
+              actionable_artifacts=$(jf rt s --spec=plugin_search.aql --spec-vars "repo=${repos};threshold_timestamp=${current_timestamp}")
+            - |
+              if [[ ${dryRun} == 'true' ]]; then
+                echo '===== [Dry Run Mode] Following are the list of artifacts ====='
+                echo ${actionable_artifacts}
+                exit 1
+              else
+                echo '===== Loop over artifacts and call delete with paceTimeMS delay ====='
+                echo ${actionable_artifacts}
+              fi              
           onComplete:
             - echo 'Log report'
             - echo 'Save report as downloadable artifact'
