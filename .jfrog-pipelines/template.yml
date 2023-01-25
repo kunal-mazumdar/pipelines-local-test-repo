@@ -59,7 +59,7 @@ pipelines:
             - |
               echo '{ "files": [ { "aql": { "items.find": { "type": "file", "repo": { "$match": "${repo}" }, "stat.downloaded": { "$lt": "${threshold_timestamp}" } } } } ] }' >> plugin_search.aql
               cat plugin_search.aql
-            - jf rt s --spec=plugin_search.aql --spec-vars "repo=plugin-repo-*;threshold_timestamp=1674624550951"
+            - jf rt s --spec=plugin_search.aql --spec-vars "repo=${repos};threshold_timestamp=1674624550951"
             - echo 'Loop over artifacts and call delete with paceTimeMS delay'
           onComplete:
             - echo 'Log report'
