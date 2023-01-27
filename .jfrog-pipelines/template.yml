@@ -23,7 +23,7 @@ pipelines:
             default: 1
             description: The time interval to look back before deleting an artifact. Default 1.
           repos:
-            default: "plugin-repo-1"
+            default: ""
             description: A list of repositories to clean. This parameter is required.
           dryRun:
             default: "false"
@@ -113,8 +113,8 @@ pipelines:
                   echo "paceTimeMS = ${paceTimeMS}"                  
                   for path in ${actionable_artifact_paths}
                   do
-                    echo $path
-                    # DELETE
+                    jf rt del "$path"
+                    echo "[Deleted] $path"
                     sleep $((paceTimeMS/1000))
                   done
                 fi
