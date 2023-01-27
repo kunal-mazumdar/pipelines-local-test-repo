@@ -1,8 +1,8 @@
 resources:
   - name: "{{ .Values.metadata.pipelineName }}_property_bag"
     type: PropertyBag
-      configuration:
-        artifactsDeleted: ""
+    configuration:
+      artifactsDeleted: ""
 
 {{ if eq "true" "{{ .Values.controls.cron.enabled }}" }}
 # The cron time when the job is executed. Default 0 0 5 ? * 1 should be redefined.
