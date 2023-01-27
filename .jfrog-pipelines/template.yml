@@ -43,6 +43,8 @@ pipelines:
       inputResources:
         - name: {{ .Values.metadata.pipelineName }}_cron_trigger
       {{ end }}
+      outputResources:
+        - name: {{ .Values.metadata.pipelineName }}_property_bag
 
     steps:
       - name: delete_artifacts
@@ -117,6 +119,7 @@ pipelines:
                     echo "[Deleted] $path"
                     sleep $((paceTimeMS/1000))
                   done
+                  write_output "{{ .Values.metadata.pipelineName }}_property_bag" artifactsDeleted=${actionable_artifact_paths}
                 fi
               }
               cleanup
