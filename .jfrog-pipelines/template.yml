@@ -80,19 +80,21 @@ pipelines:
                   echo "No matching artifacts found for cleanup!"
                   exit 1
                 fi
+                echo '===== Following artifacts found for cleanup ====='
+                actionable_artifact_paths=$(echo ${actionable_artifacts} | jq -r '.[].path')
+                echo ${actionable_artifact_paths}
               }
               search
-            - |
-              echo '===== Following artifacts found for cleanup ====='
-              actionable_artifact_paths=$(echo ${actionable_artifacts} | jq -r '.[].path')
-              echo ${actionable_artifact_paths}
-              if [[ ${dryRun} == 'true' ]]; then                
-                echo '==== Artifact cleanup skipped in Dry Run! ===='
-                exit 1
-              else
-                echo '===== Initiating cleanup with delay of ${paceTimeMS}ms between each artifact ====='
-                # DELETE
-              fi              
+            - |              
+              function cleanup() {
+                if [[ ${dryRun} == 'true' ]]; then                
+                  echo '==== Artifact cleanup skipped in Dry Run! ===='
+                else
+                  echo '===== Initiating cleanup with delay of ${paceTimeMS}ms between each artifact ====='
+                  # DELETE
+                fi
+              }
+              cleanup
           onComplete:
             - echo 'Log report'
             - echo 'Save report as downloadable artifact'
