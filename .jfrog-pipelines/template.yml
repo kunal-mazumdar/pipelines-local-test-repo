@@ -72,7 +72,7 @@ pipelines:
               function search() {
                 echo "===== Fetching artifacts not downloaded since ${timeInterval} ${timeUnit} from now ====="
                 echo '{"files":[{"aql":{"items.find":{"type":"file","stat.downloaded":{"$lt":"${threshold_timestamp}"}}},"sortBy":["stat.downloaded"],"sortOrder":"desc"}]}' >> plugin_search_template.aql
-                echo "const fs=require('fs');const threshold_timestamp='${threshold_timestamp}';const aql=fs.readFileSync('plugin_search_template.aql',{encoding:'utf8'});const repos=process.argv[2];const rq=repos.split(',').map((repo)=>{return{'repo':repo}});const aqlO=JSON.parse(aql);aqlO.files[0].aql['items.find']['\'$or\'']=rq;fs.writeFileSync('plugin_search.aql',JSON.stringify(aqlO,null,1))" >> prepare_aql.js
+                echo 'const fs=require("fs");const threshold_timestamp="${threshold_timestamp}";const aql=fs.readFileSync("plugin_search_template.aql",{encoding:"utf8"});const repos=process.argv[2];const rq=repos.split(",").map((repo)=>{return{"repo":repo}});const aqlO=JSON.parse(aql);aqlO.files[0].aql["items.find"]["$or"]=rq;fs.writeFileSync("plugin_search.aql",JSON.stringify(aqlO,null,1))' >> prepare_aql.js
                 node prepare_aql.js ${repos} ${maxRepos}
                 cat plugin_search.aql
                 current_timestamp=$(node -e 'console.log(new Date().getTime())')
