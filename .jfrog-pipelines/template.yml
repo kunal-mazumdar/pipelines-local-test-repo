@@ -23,10 +23,10 @@ pipelines:
             default: 1
             description: The time interval to look back before deleting an artifact. Default 1.
           repos:
-            default: "plugin-repo-1"
+            default: "plugin-repo-*"
             description: A list of repositories to clean. This parameter is required.
           dryRun:
-            default: "false"
+            default: "true"
             values: ["true", "false"]
             description: If this parameter is passed, artifacts will not actually be deleted. Default false.
           paceTimeMS:
@@ -61,28 +61,34 @@ pipelines:
                 echo "Please check access token..."
                 exit 1
               fi
-            - echo '===== VALIDATING INPUTS ====='
             - |
+              echo '===== VALIDATING INPUTS ====='
               if [[ -z "${repos}" ]]; then
                 echo "Please provide at least one repo to proceed..."
                 exit 1
               fi
           onExecute:
-            - echo '===== Fetch artifacts based on conditions from repos ====='
             - |
-              echo '{ "files": [ { "aql": { "items.find": { "type": "file", "repo": { "$match": "${repo}" }, "stat.downloaded": { "$lt": "${threshold_timestamp}" } } } } ] }' >> plugin_search.aql
+              echo '===== Fetching artifacts not downloaded since ${timeInterval} ${timeUnit} from now ====='
+              echo '{ "files": [ { "aql": { "items.find": { "type": "file", "repo": { "$match": "${repo}" }, "stat.downloaded": { "$lt": "${threshold_timestamp}" } } }, "sortBy": ["stat.downloaded"], "sortOrder": "desc", "limit": ${limit} } ] }' >> plugin_search.aql
               cat plugin_search.aql
               current_timestamp=$(node -e 'console.log(new Date().getTime())')
               echo ${current_timestamp}
-              actionable_artifacts=$(jf rt s --spec=plugin_search.aql --spec-vars "repo=${repos};threshold_timestamp=${current_timestamp}")
-            - |
-              if [[ ${dryRun} == 'true' ]]; then
-                echo '===== [Dry Run Mode] Following are the list of artifacts ====='
-                echo ${actionable_artifacts} | jq -r '.[].path'
+              actionable_artifacts=$(jf rt s --recursive --spec=plugin_search.aql --spec-vars "repo=${repos};threshold_timestamp=${current_timestamp};limit=${maxArtifacts}")
+              if [[ -z "${actionable_artifacts}" ]]; then
+                echo "No matching artifacts found for cleanup!"
                 exit 1
               else
-                echo '===== Loop over artifacts and call delete with paceTimeMS delay ====='
-                echo ${actionable_artifacts} | jq -r '.[].path'
+            - |
+              echo '===== Following artifacts found for cleanup ====='
+              actionable_artifact_paths=$(echo ${actionable_artifacts} | jq -r '.[].path')
+              echo ${actionable_artifact_paths}
+              if [[ ${dryRun} == 'true' ]]; then                
+                echo '==== Artifact cleanup skipped in Dry Run! ===='
+                exit 1
+              else
+                echo '===== Initiating cleanup with delay of ${paceTimeMS}ms between each artifact ====='
+                # DELETE
               fi              
           onComplete:
             - echo 'Log report'

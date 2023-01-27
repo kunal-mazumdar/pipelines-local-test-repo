@@ -8,4 +8,4 @@ controls:
   cron:
     enabled: false
     expression: 0 0 5 ? * 1
-    branch: 0 0 5 ? * 1
+    branch: master
