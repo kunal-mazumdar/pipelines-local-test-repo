@@ -69,16 +69,19 @@ pipelines:
               fi
           onExecute:
             - |
-              echo '===== Fetching artifacts not downloaded since ${timeInterval} ${timeUnit} from now ====='
-              echo '{ "files": [ { "aql": { "items.find": { "type": "file", "repo": { "$match": "${repo}" }, "stat.downloaded": { "$lt": "${threshold_timestamp}" } } }, "sortBy": ["stat.downloaded"], "sortOrder": "desc", "limit": ${limit} } ] }' >> plugin_search.aql
-              cat plugin_search.aql
-              current_timestamp=$(node -e 'console.log(new Date().getTime())')
-              echo ${current_timestamp}
-              actionable_artifacts=$(jf rt s --recursive --spec=plugin_search.aql --spec-vars "repo=${repos};threshold_timestamp=${current_timestamp};limit=${maxArtifacts}")
-              if [[ -z "${actionable_artifacts}" ]]; then
-                echo "No matching artifacts found for cleanup!"
-                exit 1
-              else
+              function search() {
+                echo '===== Fetching artifacts not downloaded since ${timeInterval} ${timeUnit} from now ====='
+                echo '{ "files": [ { "aql": { "items.find": { "type": "file", "repo": { "$match": "${repo}" }, "stat.downloaded": { "$lt": "${threshold_timestamp}" } } }, "sortBy": ["stat.downloaded"], "sortOrder": "desc", "limit": ${limit} } ] }' >> plugin_search.aql
+                cat plugin_search.aql
+                current_timestamp=$(node -e 'console.log(new Date().getTime())')
+                echo ${current_timestamp}
+                actionable_artifacts=$(jf rt s --recursive --spec=plugin_search.aql --spec-vars "repo=${repos};threshold_timestamp=${current_timestamp};limit=${maxArtifacts}")
+                if [[ -z "${actionable_artifacts}" ]]; then
+                  echo "No matching artifacts found for cleanup!"
+                  exit 1
+                fi
+              }
+              search
             - |
               echo '===== Following artifacts found for cleanup ====='
               actionable_artifact_paths=$(echo ${actionable_artifacts} | jq -r '.[].path')
