@@ -119,7 +119,7 @@ pipelines:
                     echo "[Deleted] $path"
                     sleep $((paceTimeMS/1000))
                   done
-                  write_output "{{ .Values.metadata.pipelineName }}_property_bag" artifactsDeleted=${actionable_artifact_paths}
+                  write_output artifact_cleanup_property_bag artifactsDeleted=$(printf -v joined '%s,' "${actionable_artifact_paths[@]}"; echo "${joined%,}")
                 fi
               }
               cleanup
