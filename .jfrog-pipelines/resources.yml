@@ -1,12 +1,12 @@
 resources:
-  - name: "{{ .Values.metadata.pipelineName }}_property_bag"
+  - name: artifact_cleanup_property_bag
     type: PropertyBag
     configuration:
       artifactsDeleted: ""
 
 {{ if eq "true" "{{ .Values.controls.cron.enabled }}" }}
 # The cron time when the job is executed. Default 0 0 5 ? * 1 should be redefined.
-  - name: "{{ .Values.metadata.pipelineName }}_cron_trigger"
+  - name: artifact_cleanup_cron_trigger
     type: CronTrigger
     configuration:
       interval: "{{ .Values.controls.cron.expression }}"

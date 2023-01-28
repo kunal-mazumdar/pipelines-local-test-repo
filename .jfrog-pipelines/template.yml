@@ -41,10 +41,10 @@ pipelines:
       
       {{ if eq "true" "{{ .Values.controls.cron.enabled }}" }}
       inputResources:
-        - name: {{ .Values.metadata.pipelineName }}_cron_trigger
+        - name: artifact_cleanup_cron_trigger
       {{ end }}
       outputResources:
-        - name: {{ .Values.metadata.pipelineName }}_property_bag
+        - name: artifact_cleanup_property_bag
 
     steps:
       - name: delete_artifacts
