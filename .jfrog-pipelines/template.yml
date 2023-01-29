@@ -114,7 +114,7 @@ pipelines:
                 else
                   echo "===== Initiating cleanup with delay of ${paceTimeMS}ms between each artifact ====="
                   echo "paceTimeMS = ${paceTimeMS}"                  
-                  for path in ${actionable_artifact_paths[@]}
+                  for path in "${actionable_artifact_paths[@]}"
                   do
                     echo "[Deleting Artifact] $path"
                     jf rt del "$path"                    
