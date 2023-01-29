@@ -114,10 +114,10 @@ pipelines:
                 else
                   echo "===== Initiating cleanup with delay of ${paceTimeMS}ms between each artifact ====="
                   echo "paceTimeMS = ${paceTimeMS}"                  
-                  for path in ${actionable_artifact_paths}
+                  for path in ${actionable_artifact_paths[@]}
                   do
-                    jf rt del "$path"
-                    echo "[Deleted] $path"
+                    echo "[Deleting Artifact] $path"
+                    jf rt del "$path"                    
                     sleep $((paceTimeMS/1000))
                   done
                   # write_output artifact_cleanup_property_bag artifactsDeleted=$(printf -v joined '%s,' "${actionable_artifact_paths[@]}"; echo "${joined%,}")
