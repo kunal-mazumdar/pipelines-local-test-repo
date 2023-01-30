@@ -114,18 +114,19 @@ pipelines:
                 else
                   echo "===== Initiating cleanup with delay of ${paceTimeMS}ms between each artifact ====="
                   echo "paceTimeMS = ${paceTimeMS}"                  
+                  artifactsCount=0
+                  echo "artifact_repo_path" >> report.csv
                   for path in "${actionable_artifact_paths[@]}"
                   do
-                    echo "$path" >> log.csv
+                    echo "$path" >> report.csv
+                    artifactsCount=$(artifactsCount+1)
                     echo "[Deleting Artifact] $path"
                     # jf rt del "$path"
                     sleep $((paceTimeMS/1000))
                   done
-                  write_output artifact_cleanup_property_bag artifactsCount="${#actionable_artifact_paths[@]}"
+                  write_output artifact_cleanup_property_bag artifactsCount="${artifactsCount}"
                 fi
               }
               cleanup
           onComplete:
-            - echo 'Log report'
-            - add_cache_files log.csv log_csv
-            - echo 'Save report as downloadable artifact'
+            - add_cache_files report.csv report_csv
