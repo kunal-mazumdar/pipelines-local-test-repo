@@ -1,13 +1,28 @@
-pipelines:
-  - name: my_first_pipeline
+resources:
+  - name: MB_G_006_resource
+    type: PropertyBag
     configuration:
-      environmentVariables:
-        readOnly:
-          XRAY_ENABLED: "{{ ternary true false ( hasPrefix "master" "{{gitBranch}}" ) }}"
+      creatingBranch: {{gitBranch}}
+
+pipelines:
+  - name: pipeline_MB_G_006
     steps:
-      - name: my_first_step
+      - name: MB_G_006_step1
         type: Bash
+        configuration:
+          inputResources:
+            - name: MB_G_006_resource
         execution:
           onExecute:
-            - echo "test"
-            - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
+            - if [ "$res_MB_G_006_resource_creatingBranch" != "{{gitBranch}}" ]; then return 1; fi
+      - name: MB_G_006_step2
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: MB_G_006_step1
+          inputResources:
+            - name: MB_G_006_resource
+              branch: master
+        execution:
+          onExecute:
+            - if [ "$res_MB_G_006_resource_creatingBranch" != "master" ]; then return 1; fi
