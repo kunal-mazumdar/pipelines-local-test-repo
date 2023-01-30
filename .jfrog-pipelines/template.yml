@@ -52,30 +52,50 @@ pipelines:
         execution:
           onStart:
             - |
-              function validate_inputs() {
-                echo '===== VALIDATING INPUTS ====='
+              function validate_repos() {
+                echo '===== VALIDATING INPUT REPOS ====='
                 if [[ -z "${repos}" ]]; then
                   echo "Please provide at least one repo to proceed!"
                   exit 1
                 fi
+              }
+              validate_repos
+            - |
+              function validate_time_interval() {
+                echo '===== VALIDATING INPUT TIME INTERVAL ====='
                 if [ "$timeInterval" -le 0 ]; then
                   echo "timeInterval variable must have value 1 or more"
                   exit 1
                 fi
+              }
+              validate_time_interval
+            - |
+              function validate_pace_time() {
+                echo '===== VALIDATING INPUT PACE TIME ====='
                 if [ "$paceTimeMS" -lt 1000 ]; then
                   echo "paceTimeMS variable must have value 1000 or more"
                   exit 1
                 fi
+              }
+              validate_pace_time
+            - |
+              function validate_max_repos() {
+                echo '===== VALIDATING INPUT MAX REPOS ====='
                 if [ "$maxRepos" -le 0 ]; then
                   echo "maxRepos variable must have value 1 or more"
                   exit 1
                 fi
+              }
+              validate_max_repos
+            - |
+              function validate_max_artifacts() {
+                echo '===== VALIDATING INPUT MAX ARTIFACTS ====='
                 if [ "$maxArtifacts" -le 0 ]; then
                   echo "maxArtifacts variable must have value 1 or more"
                   exit 1
                 fi
               }
-              validate_inputs
+              validate_max_artifacts
             - |
               function configure_artifactory() {
                 echo '===== CONFIGURING ARTIFACTORY ====='
@@ -112,18 +132,19 @@ pipelines:
                   echo '==== Artifact cleanup skipped in dry run mode. To delete the artifacts, please run the pipeline with dryRun set to false ===='
                 else
                   echo "===== Initiating cleanup with delay of ${paceTimeMS}ms between each artifact ====="
-                  echo "artifact_repo_path" >> report.csv
+                  echo "artifact_repo_path, deleted_at" >> report.csv
                   
                   artifactsCount=0
-                  while read path; do
-                    echo "$path" >> report.csv
+                  while read path; do                    
                     artifactsCount=$((artifactsCount+1))
                     echo "[Deleting Artifact] $path"
                     jf rt del "$path"
+                    echo "$path, `date`" >> report.csv
                     sleep $((paceTimeMS/1000))
                   done </tmp/actionable_artifact_paths.txt
                   
                   write_output artifact_cleanup_property_bag artifactsCount="${artifactsCount}"
+                  write_output artifact_cleanup_property_bag runNumber=${run_number}
                 fi
               }
               cleanup
