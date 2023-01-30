@@ -26,7 +26,7 @@ pipelines:
             default: ""
             description: A list of repositories to clean. This parameter is required.
           dryRun:
-            default: "true"
+            default: "false"
             values: ["true", "false"]
             description: If this parameter is passed, artifacts will not actually be deleted. Default false.
           paceTimeMS:
@@ -118,7 +118,7 @@ pipelines:
                   do
                     echo "$path" >> log.csv
                     echo "[Deleting Artifact] $path"
-                    jf rt del "$path"                    
+                    # jf rt del "$path"
                     sleep $((paceTimeMS/1000))
                   done
                   write_output artifact_cleanup_property_bag artifactsCount="${#actionable_artifact_paths[@]}"
