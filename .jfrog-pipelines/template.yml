@@ -26,7 +26,7 @@ pipelines:
             default: ""
             description: A list of repositories to clean. This parameter is required.
           dryRun:
-            default: "false"
+            default: "true"
             values: ["true", "false"]
             description: If this parameter is passed, artifacts will not actually be deleted. Default false.
           paceTimeMS:
@@ -132,14 +132,14 @@ pipelines:
                   echo '==== Artifact cleanup skipped in dry run mode. To delete the artifacts, please run the pipeline with dryRun set to false ===='
                 else
                   echo "===== Initiating cleanup with delay of ${paceTimeMS}ms between each artifact ====="
-                  echo "artifact_repo_path, deleted_at" >> report.csv
+                  echo "artifact_repo_path, deleted_at_timestamp, deleted_at" >> report.csv
                   
                   artifactsCount=0
-                  while read path; do                    
+                  while read path; do
                     artifactsCount=$((artifactsCount+1))
-                    echo "[Deleting Artifact] $path"
-                    jf rt del "$path"
-                    echo "$path, `date`" >> report.csv
+                    echo "[Deleting Artifact] ${path}"
+                    jf rt del "${path}"
+                    echo "${path}, ${node -e 'console.log(new Date().getTime())'}, `date`" >> report.csv
                     sleep $((paceTimeMS/1000))
                   done </tmp/actionable_artifact_paths.txt
                   
