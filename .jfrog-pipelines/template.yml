@@ -119,7 +119,7 @@ pipelines:
                   for path in "${actionable_artifact_paths[@]}"
                   do
                     echo "$path" >> report.csv
-                    artifactsCount=$(artifactsCount+1)
+                    artifactsCount=$((artifactsCount+1))
                     echo "[Deleting Artifact] $path"
                     # jf rt del "$path"
                     sleep $((paceTimeMS/1000))
