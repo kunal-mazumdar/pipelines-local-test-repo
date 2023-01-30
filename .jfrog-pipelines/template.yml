@@ -121,7 +121,7 @@ pipelines:
                     jf rt del "$path"                    
                     sleep $((paceTimeMS/1000))
                   done
-                  write_output artifact_cleanup_property_bag runNumber=${run_number}
+                  write_output artifact_cleanup_property_bag artifactsCount="${#actionable_artifact_paths[@]}"
                 fi
               }
               cleanup
