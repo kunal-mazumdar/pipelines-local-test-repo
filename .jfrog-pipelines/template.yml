@@ -139,7 +139,7 @@ pipelines:
                     artifactsCount=$((artifactsCount+1))
                     echo "[Deleting Artifact] ${path}"
                     jf rt del "${path}"
-                    echo "${path}, `${node -e 'console.log(new Date().getTime())'}`, `date`" >> report.csv
+                    echo "${path}, `date +%s`, `date`" >> report.csv
                     sleep $((paceTimeMS/1000))
                   done </tmp/actionable_artifact_paths.txt
                   
