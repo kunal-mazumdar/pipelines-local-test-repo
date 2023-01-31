@@ -16,8 +16,8 @@
 
 
 Questions:
-* Created before but never downloaded ?
-* Batch delete (if yes then will delay work as batch delay)?
+* Created before but never downloaded ? YES
+* Batch delete (if yes then will delay work as batch delay)? NO
 * dryRun: true default - YES (ADDED)
 * Reports
     - Repo path - YES
