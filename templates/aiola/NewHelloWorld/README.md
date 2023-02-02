@@ -1,4 +1,4 @@
-## BROADCOM NEW HELLO WORLD SYSTEM TEMPLATE
+## AIOLA NEW HELLO WORLD SYSTEM TEMPLATE
 #### USING NEW PIPELINES TEMPLATES WORKFLOW
 ----
 #### USAGE
@@ -6,5 +6,5 @@
 valuesFilePath: ./values.yml
 
 include:
-    template: broadcom/NewHelloWorld/1.0.0
+    template: aiola/NewHelloWorld/1.0.0
 ```

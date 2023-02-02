@@ -1,12 +1,12 @@
 templateRepository:
   gitProvider: kunalGh
   path: "kunal-mazumdar/pipelines-local-test-repo"
-  branch: template2.0
-  templateFolder: templates/broadcom/NewHelloWorld
+  branch: aiola
+  templateFolder: templates/aiola/NewHelloWorld
  
 publishTemplate:
-  namespace: broadcom
+  namespace: aiola
   name: NewHelloWorld
   version: 1.0.0
-  pipelineName: publish_broadcom_system_templates
+  pipelineName: publish_aiola_system_templates
   artifactoryIntegration: def_artifactory
