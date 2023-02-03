@@ -154,4 +154,7 @@ pipelines:
               }
               cleanup
           onComplete:
-            - add_cache_files report.csv report.csv
+            - |
+              if test -f "./report.csv"; then
+                add_cache_files report.csv report.csv
+              fi
