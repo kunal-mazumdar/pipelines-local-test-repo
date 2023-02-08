@@ -12,7 +12,7 @@ resources:
       sourceArtifactory: int_default_artifactory
  
 pipelines:
-  - name: test_signed_start
+  - name: test_signed_start_1
     steps:
       - name: create_info
         type: Bash
@@ -33,7 +33,7 @@ pipelines:
             # - jfrog rt build-publish --detailed-summary $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER > summaryOutput.json
             - save_artifact_info buildInfo summaryOutput.json --build-name=$JFROG_CLI_BUILD_NAME --build-number=$JFROG_CLI_BUILD_NUMBER
  
-  - name: test_signed_stop
+  - name: test_signed_stop_1
     steps:
       - name: validate_info
         type: Bash
