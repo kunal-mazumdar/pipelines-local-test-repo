@@ -6,7 +6,7 @@ resources:
       path: kunal-mazumdar/pipelines-local-test-repo
       branches:
         include: {{ gitBranch }}
-  - name: signed_buildinfo
+  - name: signed_buildinfo_1
     type: BuildInfo
     configuration:
       sourceArtifactory: int_default_artifactory
@@ -22,7 +22,7 @@ pipelines:
           integrations:
             - name: int_default_artifactory
           outputResources:
-            - name: signed_buildinfo
+            - name: signed_buildinfo_1
         execution:
           onExecute:
             - cd $res_signed_git_resourcePath
@@ -39,9 +39,9 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: signed_buildinfo
+            - name: signed_buildinfo_1
         execution:
           onExecute:
-            - response=$(validate_artifact buildInfo --build-name ${res_signed_buildinfo_buildName} --build-number ${res_signed_buildinfo_buildNumber})
+            - response=$(validate_artifact buildInfo --build-name ${res_signed_buildinfo_1_buildName} --build-number ${res_signed_buildinfo_1_buildNumber})
             - validateResult=$(echo "$response" | jq '.result')
             - if [ "$validateResult" != "true" ]; then echo "failed validation" && exit 1; fi
