@@ -41,7 +41,7 @@ pipelines:
         execution:
           onExecute:
             # - response=$(validate_artifact buildInfo --build-name ${res_signed_buildinfo_1_buildName} --build-number ${res_signed_buildinfo_1_buildNumber})
-            - response=$(validate_artifact 'buildInfo' --build-name test_signed_start_1 --build-number 7)
+            - response=$(validate_artifact 'buildInfo' --build-name test_signed_start_1 --build-number 4)
             - echo $response
             - validateResult=$(echo "$response" | jq '.result')
             - if [ "$validateResult" != "true" ]; then echo "failed validation" && exit 1; fi
