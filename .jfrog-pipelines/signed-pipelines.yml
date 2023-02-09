@@ -31,8 +31,6 @@ pipelines:
             - jfrog rt build-publish --detailed-summary $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER > summaryOutput.json
             - save_artifact_info 'buildInfo' './summaryOutput.json' --build-name $JFROG_CLI_BUILD_NAME --build-number $JFROG_CLI_BUILD_NUMBER
             - validate_artifact 'buildInfo' --build-name $JFROG_CLI_BUILD_NAME --build-number $JFROG_CLI_BUILD_NUMBER
-            - |
-              curl -G -sL -H "Authorization: Bearer eyJ2ZXIiOiIyIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYiLCJraWQiOiJpYTFpNGo0U1cteWdpdnQ3c0lJa1dycTBIdnVMUk9oemtmc0dhZHVNQklnIn0.eyJleHQiOiJ7XCJyZXZvY2FibGVcIjpcInRydWVcIn0iLCJzdWIiOiJqZmFjQDAxZ3JzYWpieTIzZWczMGI3bnF0Y2owZm40XC91c2Vyc1wvYWRtaW4iLCJzY3AiOiJhcHBsaWVkLXBlcm1pc3Npb25zXC9hZG1pbiIsImF1ZCI6IipAKiIsImlzcyI6ImpmZmVAMDAwIiwiaWF0IjoxNjc1OTE1NjAzLCJqdGkiOiJlYTgzY2E5My00ZmJkLTRiMWYtYmEyZi00NjllODRhODZlM2YifQ.dftL6KhxrLqqXrUNFlOyWpD3Bzql07ucKP5LZaYVO2iXUgQ171LE7gbA16UWN0l457KSAISIDYimcRJCG-J2Q5Dxmdm5N6h41Og3qtYfN_jJdTKF8fR5bAFg-ldHHvc_Xnx9z5-T1B2wn2kjFoOr9biqvZNwuVMMZ1PLzolLI3u26yNwGc9tJ3QBk64qIXOpqlm_U5ihyRp_rPpDjK6-l6V2Sq8Xg8YEeVJH8qQX-Xt2KY_Tu1vgVeKpBDev4ijUyKfrkrlWYVdc_C7JSsv172_zAM1mMk3j9YuifAzoDpNVj2c1NzxKyslbGGYKL7bkS6su2dyPuo7FTCJEUag1lQ" "http://local.jfrog.com:8082/pipelines/api/v1/pipeInfo/verify?artifactType=buildInfo&buildNumber=4&projectKey=default" --data-urlencode "buildName=test_signed_start_1"
  
   - name: test_signed_stop_1
     steps:
