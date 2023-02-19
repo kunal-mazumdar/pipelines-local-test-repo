@@ -477,7 +477,7 @@ pipelines:
   {{ end }}
 
   # release pipeline - available for master, preRelease and all dev branches
-  {{ if or ( eq "{{gitBranch}}" "master" ) ( hasPrefix "preRelease" "{{gitBranch}}" ) ( hasPrefix "infra" "{{gitBranch}}" ) ( hasPrefix "feature" "{{gitBranch}}" ) ( hasPrefix "bugfix" "{{gitBranch}}" ) }}
+  {{ if or ( eq "{{gitBranch}}" "master" ) ( hasPrefix "preRelease" "{{gitBranch}}" ) ( hasPrefix "infra" "{{gitBranch}}" ) ( hasPrefix "feature" "{{gitBranch}}" ) ( hasPrefix "jfconfig" "{{gitBranch}}" ) }}
   - name: *serviceReleasePipeline
     configuration:
       integrations:
