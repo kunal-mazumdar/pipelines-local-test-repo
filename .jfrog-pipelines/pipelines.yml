@@ -22,7 +22,7 @@ __globals:
     displayName: &serviceDisplayName 'jfconfig'
     shortName: &serviceShortName 'jfcfg'
     includedServices: &serviceIncludedServices 'jfconfig'
-    gitRepoPath: &serviceGitRepoPath 'INFS/jfconfig'
+    gitRepoPath: &serviceGitRepoPath 'kunal-mazumdar/pipelines-local-test-repo'
     preReleasePipeline: &servicePreReleasePipeline 'jfconfig_prerelease'
     buildPipeline: &serviceBuildPipeline 'jfconfig_build'
     releasePipeline: &serviceReleasePipeline 'jfconfig_release'
