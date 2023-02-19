@@ -1319,3 +1319,53 @@ pipelines:
           onStart:
             - task: jfdev-ci-commons/setup-step-commons@v0.0.1
               input:
+                JFDEV_CI_COMMONS_DEFAULT_VERSION: {{ .Values.jfdevCiCommonsDefaultVersion }}
+                PROJECT_ROOT_DIR: *dvuGitRepoResourcePath
+              id: setup_step_commons
+            - *loadDependencyVersionUpdateStepCommonsFromTask
+            - stepCommons_load_script build/ci/scripts/pipelines_dependency_version_update.sh
+            - modify_dvu_versions_on_start
+          onExecute:
+            - modify_dvu_versions_on_execute
+          onSuccess:
+            - modify_dvu_versions_on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+
+      - name: create_dvu_pr
+        type: Bash
+        configuration:
+          priority: 1
+          affinityGroup: dvu_group
+          inputResources:
+            - name: *dvuGitRepoResource
+              trigger: false
+          integrations:
+            - name: *bitBucketIntegration
+          inputSteps:
+            - name: modify_dvu_versions
+        execution:
+          onStart:
+            - task: jfdev-ci-commons/setup-step-commons@v0.0.1
+              input:
+                JFDEV_CI_COMMONS_DEFAULT_VERSION: {{ .Values.jfdevCiCommonsDefaultVersion }}
+                PROJECT_ROOT_DIR: *dvuGitRepoResourcePath
+              id: setup_step_commons
+            - *loadDependencyVersionUpdateStepCommonsFromTask
+            - stepCommons_load_script build/ci/scripts/pipelines_dependency_version_update.sh
+            - create_dvu_pr_on_start
+          onExecute:
+            - create_dvu_pr_on_execute
+          onSuccess:
+            - create_dvu_pr_on_success || echo "[ERROR] on_success returned an error"
+            - stepCommons_on_success || echo "[ERROR] stepCommons_on_success returned an error"
+          onFailure:
+            - stepCommons_on_failure || echo "[ERROR] stepCommons_on_failure returned an error"
+          onComplete:
+            - stepCommons_pre_on_complete || echo "[ERROR] stepCommons_pre_on_complete returned an error"
+            - stepCommons_on_complete || echo "[ERROR] stepCommons_on_complete returned an error"
+  {{ end }}
