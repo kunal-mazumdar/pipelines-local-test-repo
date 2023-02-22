@@ -4,6 +4,7 @@ pipelines:
       environmentVariables:
         readOnly:
           XRAY_ENABLED: "{{ ternary true false ( hasPrefix "master" "{{gitBranch}}" ) }}"
+          MODIFIED_GIT_BRANCH: "{{ "{{gitBranch}}" | replace "/" "." | replace "-" "."  }}"
     steps:
       - name: my_first_step
         type: Bash
