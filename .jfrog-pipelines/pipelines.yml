@@ -1,4 +1,4 @@
 valuesFilePath: values.yml
 
 include:
-  template: jfrog/GoCI/1.0.0
+  template: kunal/GoCI/1.0.0
