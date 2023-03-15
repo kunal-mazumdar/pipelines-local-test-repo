@@ -1,1 +1,47 @@
 
+tasksRootDir: .jfrog-pipelines/tasks
+
+# Mandatory resources and integrations used in most tasks release.
+tasksUtils:
+  gitRepoPath: AUTO/jfdev-ci-commons
+  devTaskTargetRepo: ci-next-dev-tasks-local
+  officialTaskTargetRepo: ci-next-official-tasks-local
+  artIntegration: entplus_deployer
+  gitIntegration: JFrog_bitbucket
+  npmResolveRepo: npm-virtual
+
+# List of tasks for drop down menu
+# Add your new task name here, so it'll be available for release.
+tasksNames:
+  - setup-step-commons
+  - pipelines-trigger-step
+
+# List of inputs and specific integrations for each task.
+# Add your new task metadata here, for testing and building purposes.
+tasksMetadata:
+  setupStepCommons:
+    id: setup_step_commons
+    type: bash
+    taskInputs:
+      jfdevCiCommonsDefaultVersion: "1.*"
+    taskIntegrations:
+      - "entplus_jfrog_io_docker"
+      - "docker_jfrog_io_reader"
+      - "slack_dev_foundation_alerts"
+  pipelinesTriggerStep:
+    id: pipelines_trigger_step
+    type: go
+    taskInputs:
+      pipelinesIntegration: "entplus_pipelines"
+      pipelineNameToTrigger: "jfdev_ci_commons_build"
+      stepNameToTrigger: "trigger_all"
+      pipelineBranchNameToTrigger: "master"
+      pipelineProjectKey: ""
+      pipelineProjectName: ""
+      pipelineTriggerBody: ""
+    taskIntegrations:
+      - "entplus_pipelines"
+
+# Choose the task that you want to run your ci against.
+# Used for templating a generic CI for tasks developement process.
+taskToTest: pipelinesTriggerStep
