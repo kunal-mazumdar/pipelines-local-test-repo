@@ -8,9 +8,6 @@ pipelines:
       - name: dev_test_publish
         type: Bash
         configuration:
-          inputResources:
-            - name: jfdev_ci_commons_tasks_gitrepo
-              trigger: true
           # Dynamic templating of integrations per given task.
           integrations:
             # Static integrations every task will be needing due to running publish task at the end.
