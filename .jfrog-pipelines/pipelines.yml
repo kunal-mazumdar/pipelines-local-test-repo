@@ -16,13 +16,13 @@ pipelines:
             # Static integrations every task will be needing due to running publish task at the end.
             - name: {{ .Values.tasksUtils.artIntegration }}
             - name: {{ .Values.tasksUtils.gitIntegration }}
-            {{ .Values.taskToTest }}
-            {{ get .Values.tasksMetadata ".Values.taskToTest" }}
-            {{ $taskToTest := .Values.taskToTest }}
-            {{ $taskToTest }}
-            {{ get .Values.tasksMetadata "$taskToTest" }}
         execution:
           onStart:
+            - {{ .Values.taskToTest }}
+            - {{ get .Values.tasksMetadata ".Values.taskToTest" }}
+            - {{ $taskToTest := .Values.taskToTest }}
+            - {{ $taskToTest }}
+            - {{ get .Values.tasksMetadata "$taskToTest" }}
             # Dont remove because onStart must be array.
             - echo "Checking task's type for onStart."
             {{- if eq .Values.tasksMetadata.pipelinesTriggerStep.type "go" }}
