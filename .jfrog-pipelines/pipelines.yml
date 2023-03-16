@@ -22,13 +22,14 @@ pipelines:
             {{ end }}
         execution:
           onStart:
+            {{ $taskToTest := .Values.taskToTest }}
             {{ range $k, $v := .Values.tasksMetadata }}
             - {{ $k }}
             {{ end }}
             - "---------------------------"
             {{ range $k, $v := .Values.tasksMetadata }}
-            - task __ {{ .Values.taskToTest }}
-            - task __ string __ {{ (.Values.taskToTest | toString) }}
+            - task __ {{ $taskToTest }}
+            - task __ string __ {{ ($taskToTest | toString) }}
             {{ if eq $k .Values.taskToTest }}
             {{ range $v.taskIntegrations }}
             - {{ . }}
