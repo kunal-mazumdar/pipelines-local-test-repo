@@ -15,7 +15,7 @@ pipelines:
             - name: {{ .Values.tasksUtils.gitIntegration }}
             {{ $selectedTask := (get .Values.tasksMetadata (.Values.taskToTest | toString)) }}
             {{ range .Values.tasksMetadata.pipelinesTriggerStep.taskIntegrations }}
-            - name: {{ $selectedTask }}_{{ . }}
+            - name: {{ . }}
             {{ end }}
         execution:
           onStart:
