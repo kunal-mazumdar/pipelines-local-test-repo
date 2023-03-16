@@ -29,7 +29,7 @@ pipelines:
             {{ range $k, $v := .Values.tasksMetadata }}
             {{ if eq $k "pipelinesTriggerStep" }}
             {{ range $v.taskIntegrations }}
-            - name: {{ . }}
+            - {{ . }}
             {{ end }}
             {{ end }}
             {{ end }}
