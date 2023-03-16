@@ -14,11 +14,6 @@ pipelines:
             - name: {{ .Values.tasksUtils.artIntegration }}
             - name: {{ .Values.tasksUtils.gitIntegration }}
             
-            {{ $selectedTask := (get .Values.tasksMetadata (.Values.taskToTest | toString)) }}
-            {{ range .Values.tasksMetadata.pipelinesTriggerStep.taskIntegrations }}
-            - name: {{ . }}
-            {{ end }}
-            
             {{ range $k, $v := .Values.tasksMetadata }}
             {{ if eq $k "pipelinesTriggerStep" }}
             - name: "kunal_gh"
