@@ -20,10 +20,7 @@ pipelines:
             {{ get .Values.tasksMetadata ".Values.taskToTest" }}
             {{ $taskToTest := .Values.taskToTest }}
             {{ $taskToTest }}
-            {{ get .Values.tasksMetadata "$taskToTest" }}            
-#             {{- range $int := (get .Values.tasksMetadata "$taskToTest").taskIntegrations }}
-#             - name: {{ $int }}
-#             {{- end }}
+            {{ get .Values.tasksMetadata "$taskToTest" }}
         execution:
           onStart:
             # Dont remove because onStart must be array.
