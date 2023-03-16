@@ -13,7 +13,8 @@ pipelines:
             # Static integrations every task will be needing due to running publish task at the end.
             - name: {{ .Values.tasksUtils.artIntegration }}
             - name: {{ .Values.tasksUtils.gitIntegration }}
-            {{- range $int := (get (get .Values.tasksMetadata (.Values.taskToTest | toString)) "taskIntegrations") }}
+            {{ $selectedTask := (get .Values.tasksMetadata (.Values.taskToTest | toString)) }}
+            {{- range $int := (get $selectedTask "taskIntegrations") }}
             - name: {{ $int }}
             {{- end }}
         execution:
