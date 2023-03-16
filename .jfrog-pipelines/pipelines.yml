@@ -18,10 +18,10 @@ pipelines:
             - name: {{ . }}
             {{ end }}
             {{ range $k, $v := .Values.tasksMetadata }}
-            {{ if eq $k "pipelinesTriggerStep" }}
-            - name: "TRUE"
-            {{ else }}
-            - name: $k
+            {{ if eq $k .Values.taskToTest }}
+            {{ range $v.taskIntegrations }}
+            - name: {{ . }}
+            {{ end }}
             {{ end }}
             {{ end }}
         execution:
