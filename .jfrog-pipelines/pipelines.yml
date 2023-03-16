@@ -1,4 +1,4 @@
-valuesFilePath: values.yml
+valuesFilePath: ./values.yml
 
 pipelines:
   - name: ci_next_tasks_dev
@@ -16,7 +16,10 @@ pipelines:
             # Static integrations every task will be needing due to running publish task at the end.
             - name: {{ .Values.tasksUtils.artIntegration }}
             - name: {{ .Values.tasksUtils.gitIntegration }}
-            - name: {{- $taskToTest := .Values.taskToTest }}
+            {{ $taskToTest := .Values.taskToTest }}
+            {{- range $int := (get .Values.tasksMetadata $taskToTest).taskIntegrations }}
+            - name: {{ $int }}
+            {{- end }}
         execution:
           onStart:
             # Dont remove because onStart must be array.
