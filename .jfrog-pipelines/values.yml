@@ -40,7 +40,7 @@ tasksMetadata:
       pipelineProjectName: ""
       pipelineTriggerBody: ""
     taskIntegrations:
-      - "entplus_pipelines"
+      - "kunal_gh"
 
 # Choose the task that you want to run your ci against.
 # Used for templating a generic CI for tasks developement process.
