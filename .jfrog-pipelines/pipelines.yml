@@ -17,7 +17,7 @@ pipelines:
             {{ range .Values.tasksMetadata.pipelinesTriggerStep.taskIntegrations }}
             - name: {{ . }}
             {{ end }}
-            - name: "{{ $selectedTask.taskIntegrations }}"
+            - name: "{{index .Values.tasksMetadata .Values.taskToTest}}"
         execution:
           onStart:
             - "{{ .Values.taskToTest }}"
