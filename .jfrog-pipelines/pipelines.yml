@@ -17,7 +17,7 @@ pipelines:
             - name: {{ .Values.tasksUtils.artIntegration }}
             - name: {{ .Values.tasksUtils.gitIntegration }}
             {{ .Values.taskToTest }}
-            {{ get .Values.tasksMetadata .Values.taskToTest }}
+            {{ get .Values.tasksMetadata ".Values.taskToTest" }}
             {{ $taskToTest := .Values.taskToTest }}
             {{ $taskToTest }}
             {{ get .Values.tasksMetadata $taskToTest }}            
