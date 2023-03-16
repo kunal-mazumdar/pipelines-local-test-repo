@@ -17,6 +17,10 @@ pipelines:
         execution:
           onStart:
             {{ range $k, $v := .Values.tasksMetadata }}
+            - {{ $k }}
+            {{ end }}
+            - "---------------------------"
+            {{ range $k, $v := .Values.tasksMetadata }}
             - {{ $k }}_{{ "Test" }}
             {{ if eq $k "pipelinesTriggerStep" }}
             - "kunal_gh"
