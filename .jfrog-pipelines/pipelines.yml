@@ -13,17 +13,18 @@ pipelines:
             # Static integrations every task will be needing due to running publish task at the end.
             - name: {{ .Values.tasksUtils.artIntegration }}
             - name: {{ .Values.tasksUtils.gitIntegration }}
-            
-            {{ range $k, $v := .Values.tasksMetadata }}
-            {{ if eq $k "pipelinesTriggerStep" }}
-            - name: "kunal_gh"
-            {{ range $v.taskIntegrations }}
-            - name: {{ . }}
-            {{ end }}
-            {{ end }}
-            {{ end }}
+           
         execution:
           onStart:
+            {{ range $k, $v := .Values.tasksMetadata }}
+            - {{ $k }}_{{ "Test" }}
+            {{ if eq $k "pipelinesTriggerStep" }}
+            - "kunal_gh"
+            {{ range $v.taskIntegrations }}
+            - {{ . }}
+            {{ end }}
+            {{ end }}
+            {{ end }}
             - "{{ .Values.taskToTest }}"
             - "{{ get .Values.tasksMetadata (.Values.taskToTest | toString) }}"                        
             - "{{ get .Values.tasksMetadata "pipelinesTriggerStep" }}"            
