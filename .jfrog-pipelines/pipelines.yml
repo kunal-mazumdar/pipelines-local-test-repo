@@ -14,8 +14,8 @@ pipelines:
             - name: {{ .Values.tasksUtils.artIntegration }}
             - name: {{ .Values.tasksUtils.gitIntegration }}
             {{ $selectedTask := (get .Values.tasksMetadata (.Values.taskToTest | toString)) }}
-            {{- range $int := (get $selectedTask "taskIntegrations") }}
-            - name: {{ $int }}
+            {{- range $int := .Values.tasksMetadata.pipelinesTriggerStep.taskIntegrations }}
+            - name: {{ $selectedTask }}_{{ $int }}
             {{- end }}
         execution:
           onStart:
