@@ -13,16 +13,16 @@ pipelines:
             # Static integrations every task will be needing due to running publish task at the end.
             - name: {{ .Values.tasksUtils.artIntegration }}
             - name: {{ .Values.tasksUtils.gitIntegration }}
+            {{ $taskToTest := .Values.taskToTest }}
             {{ range $k, $v := .Values.tasksMetadata }}
-            {{ if eq $k "pipelinesTriggerStep" }}
+            {{ if eq $k $taskToTest }}
             {{ range $v.taskIntegrations }}
             - name: {{ . }}
             {{ end }}
             {{ end }}
             {{ end }}
         execution:
-          onStart:
-            {{ $taskToTest := .Values.taskToTest }}
+          onStart:            
             {{ range $k, $v := .Values.tasksMetadata }}
             - {{ $k }}
             {{ end }}
