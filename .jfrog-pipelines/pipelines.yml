@@ -16,7 +16,7 @@ pipelines:
         execution:
           onStart:
             - "{{ .Values.taskToTest }}"
-            - "{{ (get .Values.tasksMetadata (.Values.taskToTest | toString)).taskIntegrations }}"
+            - "{{ get (get .Values.tasksMetadata (.Values.taskToTest | toString)) "taskIntegrations" }}"
             - "{{ get .Values.tasksMetadata (.Values.taskToTest | toString) }}"                        
             - "{{ get .Values.tasksMetadata "pipelinesTriggerStep" }}"            
             - "{{ get .Values.tasksMetadata ".Values.taskToTest" }}"
