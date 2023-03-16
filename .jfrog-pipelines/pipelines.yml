@@ -17,7 +17,13 @@ pipelines:
             {{ range .Values.tasksMetadata.pipelinesTriggerStep.taskIntegrations }}
             - name: {{ . }}
             {{ end }}
-            - name: "{{ index .Values.tasksMetadata (.Values.taskToTest | toString) }}"
+            {{ range $k, $v := .Values.tasksMetadata }}
+            {{ if eq $k "pipelinesTriggerStep" }}
+            - name: "TRUE"
+            {{ else }}
+            - name: $k
+            {{ end }}
+            {{ end }}
         execution:
           onStart:
             - "{{ .Values.taskToTest }}"
@@ -27,16 +33,5 @@ pipelines:
             - "{{ $taskToTest := .Values.taskToTest }}"
             - "{{ $taskToTest }}"
             - "{{ get .Values.tasksMetadata "$taskToTest" }}"
-            # Dont remove because onStart must be array.
-            - echo "Checking task's type for onStart."
-            {{- if eq .Values.tasksMetadata.pipelinesTriggerStep.type "go" }}
-            - echo "Found go task, setting it up."
-            # Do I need the setup-go for the dev probably yes.
-            - task: jfrog/setup-go@v0.0.3
-              input:
-                version: 1.19.5
-            - export GOPROXY="https://${int_{{ .Values.tasksUtils.artIntegration }}_user}:${int_{{ .Values.tasksUtils.artIntegration }}_apikey}@entplus.jfrog.io/artifactory/api/go/pipe-go-tasks-virtual"
-            - export GONOSUMDB="github.com/jfrog/*"
-            {{- end }}
           onExecute:
             - echo "Checking task's type for onExecute."
