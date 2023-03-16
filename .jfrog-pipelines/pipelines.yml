@@ -21,9 +21,9 @@ pipelines:
             {{ $taskToTest := .Values.taskToTest }}
             {{ $taskToTest }}
             {{ get .Values.tasksMetadata "$taskToTest" }}            
-            {{- range $int := (get .Values.tasksMetadata "$taskToTest").taskIntegrations }}
-            - name: {{ $int }}
-            {{- end }}
+#             {{- range $int := (get .Values.tasksMetadata "$taskToTest").taskIntegrations }}
+#             - name: {{ $int }}
+#             {{- end }}
         execution:
           onStart:
             # Dont remove because onStart must be array.
