@@ -18,11 +18,11 @@ pipelines:
             - name: {{ .Values.tasksUtils.gitIntegration }}
         execution:
           onStart:
-            - {{ .Values.taskToTest }}
-            - {{ get .Values.tasksMetadata ".Values.taskToTest" }}
-            - {{ $taskToTest := .Values.taskToTest }}
-            - {{ $taskToTest }}
-            - {{ get .Values.tasksMetadata "$taskToTest" }}
+            - "{{ .Values.taskToTest }}"
+            - "{{ get .Values.tasksMetadata '.Values.taskToTest' }}"
+            - "{{ $taskToTest := .Values.taskToTest }}"
+            - "{{ $taskToTest }}"
+            - "{{ get .Values.tasksMetadata '$taskToTest' }}"
             # Dont remove because onStart must be array.
             - echo "Checking task's type for onStart."
             {{- if eq .Values.tasksMetadata.pipelinesTriggerStep.type "go" }}
