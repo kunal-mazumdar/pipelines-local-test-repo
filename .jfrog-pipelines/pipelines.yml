@@ -20,7 +20,7 @@ pipelines:
             {{ end }}
             
             {{ range $k, $v := .Values.tasksMetadata }}
-            {{ if eq $k (.Values.taskToTest | toString) }}
+            {{ if eq $k "pipelinesTriggerStep" }}
             - name: "kunal_gh"
             {{ range $v.taskIntegrations }}
             - name: {{ . }}
