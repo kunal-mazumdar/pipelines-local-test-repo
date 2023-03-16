@@ -21,7 +21,7 @@ pipelines:
             {{ $taskToTest := .Values.taskToTest }}
             {{ $taskToTest }}
             {{ get .Values.tasksMetadata "$taskToTest" }}            
-            {{- range $int := (get .Values.tasksMetadata $taskToTest).taskIntegrations }}
+            {{- range $int := (get .Values.tasksMetadata "$taskToTest").taskIntegrations }}
             - name: {{ $int }}
             {{- end }}
         execution:
