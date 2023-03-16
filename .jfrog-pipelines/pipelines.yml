@@ -27,7 +27,9 @@ pipelines:
             {{ end }}
             - "---------------------------"
             {{ range $k, $v := .Values.tasksMetadata }}
-            {{ if eq $k "pipelinesTriggerStep" }}
+            - task __ {{ .Values.taskToTest }}
+            - task __ string __ {{ (.Values.taskToTest | toString) }}
+            {{ if eq $k .Values.taskToTest }}
             {{ range $v.taskIntegrations }}
             - {{ . }}
             {{ end }}
