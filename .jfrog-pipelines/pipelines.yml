@@ -1,14 +1,4 @@
-pipelines:
-  - name: my_first_pipeline
-    configuration:
-      environmentVariables:
-        readOnly:
-          XRAY_ENABLED: "{{ ternary true false ( hasPrefix "master" "{{gitBranch}}" ) }}"
-          MODIFIED_GIT_BRANCH: "{{ "{{gitBranch}}" | replace "/" "." | replace "-" "."  }}"
-    steps:
-      - name: my_first_step
-        type: Bash
-        execution:
-          onExecute:
-            - echo "test"
-            - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
+valuesFilePath: values.yml
+
+include:
+  template: jfrog/PublishTemplateX/1.0.0
