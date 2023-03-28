@@ -1,14 +1,20 @@
-pipelines:
-  - name: my_first_pipeline
+template: true
+valuesFilePath: ../values/gitRepoValues.yml
+
+resources:
+  - name: P_SYC_Pipelines_6196_001_git_repo
+    type: GitRepo
     configuration:
-      environmentVariables:
-        readOnly:
-          XRAY_ENABLED: "{{ ternary true false ( hasPrefix "master" "{{gitBranch}}" ) }}"
-          MODIFIED_GIT_BRANCH: "{{ "{{gitBranch}}" | replace "/" "." | replace "-" "."  }}"
+      gitProvider: s_gitHub
+      path: {{ .Values.GitHub.Org_test_Automation.path }}
+      branches:
+        include: master
+
+pipelines:
+  - name: test_pipeline1
     steps:
-      - name: my_first_step
+      - name: step1
         type: Bash
         execution:
           onExecute:
-            - echo "test"
-            - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
+            - echo "P_SYC_Pipelines_6196_001"
