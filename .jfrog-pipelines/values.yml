@@ -1,0 +1,51 @@
+GitHub:
+  Org_test_Automation:
+    path: jfbetapipeorg/Org_test_Automation
+  Org_test_Automation_bash:
+    path: jfbetapipeorg/Org_test_Automation_bash
+  Org_test_Automation_PowerShell:
+    path: jfbetapipeorg/Org_test_Automation_PowerShell
+  templates:
+    path: jfbetapipeorg/templates
+  Org_test_Automation_Webhooks:
+      path: jfbetapipeorg/Org_test_Automation_Webhooks
+
+GitHubEnterprise:
+  Org_test_Automation:
+    path: jfbetapipeorg/Org_test_Automation
+  test_automation:
+    path: jfbeta/test_automation
+  test:
+    path: shiptest/test
+
+GitLab:
+  test_automation:
+    path: jfbeta/test_automation
+  jfrogtesting:
+    path: jfbeta/jfrogtesting
+  templates:
+    path: jfbeta/templates
+
+BitbucketCloud:
+  jfrogtesting:
+    path: jfbeta/jfrogtesting
+  test_automation:
+    path: jfbeta/test_automation
+  org_test_automation:
+    path: jfbetapipeorg/org_test_automation
+  templates:
+    path: jfbetapipeorg/templates
+
+BitbucketServer:
+  automation:
+    path: PIP/automation
+  test_automation:
+    path: PIP/test_automation
+  test:
+    path: ~ranjanks/test
+  templates:
+    path: PIP/templates
+
+Projects:
+  FirstProjectKey: first
+  SecondProjectKey: second
