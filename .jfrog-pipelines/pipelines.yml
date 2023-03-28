@@ -1,5 +1,5 @@
 template: true
-valuesFilePath: values.yml
+valuesFilePath: ../values.yml
 
 resources:
   - name: P_SYC_Pipelines_6196_001_git_repo
