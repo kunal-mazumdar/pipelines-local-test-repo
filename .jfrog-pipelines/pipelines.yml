@@ -5,6 +5,7 @@ pipelines:
         configuration:
           integrations:
             - name: test_int
+            - name: test_int_1            
             - name: test_int_2          
         type: Bash
         execution:
