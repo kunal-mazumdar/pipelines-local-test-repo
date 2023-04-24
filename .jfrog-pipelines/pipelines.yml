@@ -1,4 +1,10 @@
-valuesFilePath: values.yml
-
-include:
-  template: jfrog/PublishTemplate/1.0.0
+pipelines:
+  - name: pipeline_one  
+    steps:
+      - name: step_1_prep_env
+        type: Bash
+          integrations:
+            - name: test_int
+        execution:
+          onExecute:
+            - echo "test"
