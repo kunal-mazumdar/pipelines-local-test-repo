@@ -4,7 +4,9 @@ pipelines:
       - name: step_1_prep_env
         configuration:
           integrations:
-            - name: test_int      
+            - name: test_int
+            - name: test_int_1
+            - name: test_int_2          
         type: Bash
         execution:
           onExecute:
