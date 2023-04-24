@@ -3,9 +3,6 @@ pipelines:
     steps:
       - name: step_1_prep_env
         type: Bash
-        configuration:
-          integrations:
-            - name: test_int
         execution:
           onExecute:
             - echo "test"
