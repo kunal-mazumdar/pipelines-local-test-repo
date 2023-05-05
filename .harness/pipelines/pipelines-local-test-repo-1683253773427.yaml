@@ -21,7 +21,8 @@ pipeline:
                   identifier: echo
                   name: echo
                   spec:
-                    command: echo "hello test"
+                    shell: Sh
+                    command: echo hello random
                   timeout: ""
                   type: Run
           platform:
