@@ -22,7 +22,7 @@ pipeline:
                   name: echo
                   spec:
                     shell: Sh
-                    command: echo hello
+                    command: echo hello test123
                   timeout: ""
                   type: Run
           platform:
