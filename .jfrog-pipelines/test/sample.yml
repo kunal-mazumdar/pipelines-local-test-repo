@@ -1,0 +1,14 @@
+pipelines:
+  - name: my_first_pipeline_sample
+    configuration:
+      environmentVariables:
+        readOnly:
+          XRAY_ENABLED: "{{ ternary true false ( hasPrefix "master" "{{gitBranch}}" ) }}"
+          MODIFIED_GIT_BRANCH: "{{ "{{gitBranch}}" | replace "/" "." | replace "-" "."  }}"
+    steps:
+      - name: my_first_step
+        type: Bash
+        execution:
+          onExecute:
+            - echo "test"
+            - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
