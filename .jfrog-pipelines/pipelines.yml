@@ -1,7 +1,7 @@
 valuesFilePath: ./values.yml
 
 resources:
-  - name: infosec_publish_trigger
+  - name: infosec_docker_release_trigger
     type: PropertyBag
     configuration:
       TRIGGER_TEAMS_DOCKER_PIPELINES: 0
@@ -9,7 +9,7 @@ resources:
 pipelines:
 
   # Infosec Pipeline
-  - name: infosec_docker_build_push
+  - name: infosec_docker_release
     steps:
       - name: docker_build
         type: Bash
@@ -23,7 +23,7 @@ pipelines:
           inputSteps:
             - name: docker_build
           outputResources:
-            - name: infosec_publish_trigger
+            - name: infosec_docker_release_trigger
         execution:
           onExecute:
             - echo "Publishing base Docker image"
@@ -31,10 +31,13 @@ pipelines:
   # Teams Pipelines
   {{- range $team := .Values.teams }}
   {{- range $target := $team.targets }}
-  - name: {{ $team.name }}_{{ $target.targetImageName }}_docker_build_push
+  - name: {{ $team.name }}_{{ $target.targetImageName }}_docker_release
     steps:
       - name: docker_build
-        type: Bash        
+        type: Bash
+        configuration:
+          inputResources:
+            - name: infosec_docker_release_trigger        
         execution:
           onExecute:
             - echo "Building Docker image with selected language"
