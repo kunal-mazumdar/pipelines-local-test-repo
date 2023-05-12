@@ -7,14 +7,14 @@ teams:
     destinationRepo: 'company.jfrog.io/app_team_1_docker_local'
     targets:
       - sourceImageName: ubuntu18
-        targetImageName: 'app_team_1_u18_go'
+        targetImageName: 'u18_go'
         targetImageVersion: '2.0.0'
         language:
           name: go
           version: 1.19
 
       - sourceImageName: ubuntu20
-        targetImageName: 'app_team_1_u20_java'
+        targetImageName: 'u20_java'
         targetImageVersion: '2.1.0'
         language:
           name: java
@@ -24,7 +24,7 @@ teams:
     destinationRepo: 'company.jfrog.io/app_team_2_docker_local'
     targets:
       - sourceImageName: ubuntu20
-        targetImageName: 'app_team_2_u20_go'
+        targetImageName: 'u20_go'
         targetImageVersion: '1.1.0'
         language:
           name: go
