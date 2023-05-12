@@ -1,4 +1,4 @@
-baseImages:
+stableBaseImages:
   ubuntu18: 'company.jfrog.io/infosec_docker_local/ubuntu18:1.0.0'
   ubuntu20: 'company.jfrog.io/infosec_docker_local/ubuntu20:2.1.0'
 
@@ -6,14 +6,14 @@ teams:
   - name: app_team_1
     destinationRepo: 'company.jfrog.io/app_team_1_docker_local'
     targets:
-      - sourceImageName: ubuntu18
+      - baseImageName: ubuntu18
         targetImageName: 'u18_go'
         targetImageVersion: '2.0.0'
         language:
           name: go
           version: 1.19
 
-      - sourceImageName: ubuntu20
+      - baseImageName: ubuntu20
         targetImageName: 'u20_java'
         targetImageVersion: '2.1.0'
         language:
@@ -23,7 +23,7 @@ teams:
   - name: app_team_2
     destinationRepo: 'company.jfrog.io/app_team_2_docker_local'
     targets:
-      - sourceImageName: ubuntu20
+      - baseImageName: ubuntu20
         targetImageName: 'u20_go'
         targetImageVersion: '1.1.0'
         language:
