@@ -4,6 +4,10 @@ stableBaseImages:
 
 teams:
   - name: app_team_1
+    sourceCode:
+      repositoryPath: 'kunal-mazumdar/pipelines-local-test-repo'
+      branch: 'riotGames'
+      gitIntegration: test_git
     destinationRepo: 'company.jfrog.io/app_team_1_docker_local'
     targets:
       - baseImageName: ubuntu18
@@ -12,6 +16,8 @@ teams:
         language:
           name: go
           version: 1.19
+          tools:
+            - sonar
 
       - baseImageName: ubuntu20
         targetImageName: 'u20_java'
@@ -19,8 +25,14 @@ teams:
         language:
           name: java
           version: 18
+          tools:
+            - sonar
 
   - name: app_team_2
+    sourceCode:
+      repositoryPath: 'kunal-mazumdar/pipelines-local-test-repo'
+      branch: 'riotGames'
+      gitIntegration: test_git
     destinationRepo: 'company.jfrog.io/app_team_2_docker_local'
     targets:
       - baseImageName: ubuntu20
@@ -29,3 +41,5 @@ teams:
         language:
           name: go
           version: 1.19
+          tools:
+            - sonar

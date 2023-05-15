@@ -1,0 +1,46 @@
+valuesFilePath: ./values.yml
+
+# Creating teams git repo resources
+resources:
+  {{- range $team := .Values.teams }}
+  - name: '{{ $team.name }}_git'
+    type: GitRepo
+    configuration:
+      path: '{{ $team.sourceCode.repositoryPath }}'
+      gitProvider: '{{ $team.sourceCode.gitIntegration }}'
+      branches:
+        include: '{{ $team.sourceCode.branch }}'
+  {{- end }}
+
+pipelines:
+
+  # Teams Pipelines
+  {{- range $team := .Values.teams }}
+  {{- range $target := $team.targets }}
+  - name: {{ $team.name }}_{{ $target.targetImageName }}_docker_release
+    steps:
+      - name: docker_build
+        type: Bash
+        configuration:
+          inputResources:
+            - name: '{{ $team.name }}_git'
+            - name: infosec_docker_release_trigger
+        execution:
+          onExecute:
+            - echo "Using stable base infosec image - {{ get .Values.stableBaseImages $target.baseImageName}}"
+            - echo "Installing {{ $team.language.name }} - {{ $team.language.version }}"
+            {{- range $tool := $team.tools }}
+            - echo "Installing tool - {{ $tool }}"
+            {{- end }}
+            - echo "Successfully build image."
+
+      - name: docker_publish
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: docker_build
+        execution:
+          onExecute:
+            - echo "Publishing new Docker image"
+  {{- end }}
+  {{- end }}

@@ -1,0 +1,28 @@
+resources:
+  - name: infosec_docker_release_trigger
+    type: PropertyBag
+    configuration:
+      RELEASED_DOCKER_IMAGE: ''
+
+pipelines:
+
+  # Infosec Pipeline
+  - name: infosec_docker_release
+    steps:
+      - name: docker_build
+        type: Bash
+        execution:
+          onExecute:
+            - echo "Building base Docker image"
+      
+      - name: docker_publish
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: docker_build
+          outputResources:
+            - name: infosec_docker_release_trigger
+        execution:
+          onExecute:
+            - echo "Publishing base Docker image"
+            - write_output infosec_docker_release_trigger RELEASED_DOCKER_IMAGE='NEW_DOCKER_IMAGE:${run_number}'
