@@ -1,8 +1,32 @@
+resources:
+  
+  - name: dev_trigger
+    type: CronTrigger
+    configuration:
+      interval: '*/1 * * * *'
+      branches:
+       include: cron-sanity
+
+  - name: prod_trigger
+    type: CronTrigger
+    configuration:
+      interval: '*/2 * * * *'
+      branches:
+       include: cron-sanity-1
+
 pipelines:
-  - name: my_first_pipeline
+  - name: cron_sanity_pipeline
     steps:
-      - name: my_first_step
+      - name: cron_sanity_step
         type: Bash
+        configuration:
+          inputResources:
+            - name: dev_trigger
+            - name: prod_trigger
         execution:
           onExecute:
-            - echo "test"
+            - printenv
+            - echo $res_dev_trigger_name
+            - echo $res_dev_trigger_resourceId
+            - echo $res_prod_trigger_name
+            - echo $res_prod_trigger_resourceId
