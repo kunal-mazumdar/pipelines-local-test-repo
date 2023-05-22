@@ -1,5 +1,7 @@
 valuesFilePath: ./values.yml
 
+{{ $branchName := "{{gitBranch}}" | replace "-" "." }}
+
 pipelines:
   - name: ci_next_tasks_dev
     configuration:
@@ -22,7 +24,8 @@ pipelines:
             {{ end }}
             {{ end }}
         execution:
-          onStart:            
+          onStart:
+            - echo "Branch name = $branchName"
             {{ range $k, $v := .Values.tasksMetadata }}
             - {{ $k }}
             {{ end }}
