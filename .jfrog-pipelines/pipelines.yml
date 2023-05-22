@@ -25,7 +25,7 @@ pipelines:
             {{ end }}
         execution:
           onStart:
-            - echo "Branch name = $branchName"
+            - echo "Branch name = {{ $branchName }}"
             {{ range $k, $v := .Values.tasksMetadata }}
             - {{ $k }}
             {{ end }}
