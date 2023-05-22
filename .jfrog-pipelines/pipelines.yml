@@ -1,6 +1,6 @@
 valuesFilePath: ./values.yml
 
-{{ $branchName := "{{gitBranch}}" | replace "-" "." }}
+{{ $branchName := "template-sanity-test-1" | replace "-" "." }}
 
 pipelines:
   - name: ci_next_tasks_dev
