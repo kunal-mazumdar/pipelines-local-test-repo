@@ -4,15 +4,11 @@ resources:
     type: CronTrigger
     configuration:
       interval: '*/1 * * * *'
-      branches:
-       include: cron-sanity
 
   - name: prod_trigger
     type: CronTrigger
     configuration:
       interval: '*/2 * * * *'
-      branches:
-       include: cron-sanity-1
 
 pipelines:
   - name: cron_sanity_pipeline
