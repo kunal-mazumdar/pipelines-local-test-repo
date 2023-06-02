@@ -3,6 +3,11 @@ pipelines:
     steps:
       - name: new_hello_world_pipeline_step_1
         type: Bash
+        configuration:
+          environmentVariables:
+            {{ include "default.envs" . }}
         execution:
           onExecute:
             - echo {{ .Values.helloWorldMessage }}
+            - echo sanityName = {{ include "sanity.name" . }}
+            - echo {{ get (.Files.Get "config.json" | fromJson) "message" }}
