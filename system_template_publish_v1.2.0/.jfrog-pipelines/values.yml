@@ -1,5 +1,5 @@
 templateRepository:
-  gitProvider: s_gitHub
+  gitProvider: kunal_gh
   path: "{{.jfrog-pipelines.sourceRepository}}"
   branch: "{{gitBranch}}"
   templateFolder: templates/broadcom/NewHelloWorld
