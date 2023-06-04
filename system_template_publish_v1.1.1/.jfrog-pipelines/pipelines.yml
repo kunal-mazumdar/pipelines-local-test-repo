@@ -1,4 +1,0 @@
-valuesFilePath: ./values.yml
-
-include:
-  template: local/PublishTemplate/1.1.1
