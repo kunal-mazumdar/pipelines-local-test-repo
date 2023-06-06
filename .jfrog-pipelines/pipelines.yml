@@ -4,6 +4,8 @@ resources:
     configuration:
       path: kunal-mazumdar/pipelines-local-test-repo
       gitProvider: kunal_gh
+      branches:
+        include: sanity
 
 pipelines:
   - name: my_first_pipeline
