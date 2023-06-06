@@ -1,5 +1,5 @@
 resources:
-  - name: git_res
+  - name: git_res_1
     type: GitRepo
     configuration:
       path: kunal-mazumdar/pipelines-local-test-repo
@@ -20,7 +20,7 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: git_res
+            - name: git_res_1
         execution:
           onExecute:
             - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
