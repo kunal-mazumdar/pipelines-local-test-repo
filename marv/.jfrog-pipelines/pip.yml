@@ -27,7 +27,7 @@ pipelines:
     jfrogCliVersion: 2
     environmentVariables:
       readOnly:
-        JFROG_CLI_PLUGINS_SERVER: {{.Values.artifactory}}
+        JFROG_CLI_PLUGINS_SERVER: s_artifactory
         JFROG_CLI_BUILD_NUMBER: ${run_id}
     runtime:
       type: image
@@ -40,7 +40,7 @@ pipelines:
     type: Bash
     configuration:
       integrations:
-      - name: {{.Values.artifactory}}
+      - name: s_artifactory
       inputResources:
       - name: {{.Values.pipeline.name}}_DeploymentSpec
       outputResources:
@@ -129,7 +129,7 @@ pipelines:
     type: Bash
     configuration:
       integrations:
-      - name: {{.Values.artifactory}}
+      - name: s_artifactory
       - name: {{.Values.cdk.credentials}}
       inputSteps:
       - name: prepare_deployment
@@ -175,7 +175,7 @@ pipelines:
         # Timeout in 1 week
         timeoutSeconds: 604800
       integrations:
-      - name: {{.Values.artifactory}}
+      - name: s_artifactory
       inputSteps:
       - name: perform_deployment
       outputResources:
@@ -200,7 +200,7 @@ pipelines:
     jfrogCliVersion: 2
     environmentVariables:
       readOnly:
-        JFROG_CLI_PLUGINS_SERVER: {{.Values.artifactory}}
+        JFROG_CLI_PLUGINS_SERVER: s_artifactory
         JFROG_CLI_BUILD_NUMBER: ${run_id}
     runtime:
       type: image
@@ -213,7 +213,7 @@ pipelines:
     type: Bash
     configuration:
       integrations:
-      - name: {{.Values.artifactory}}
+      - name: s_artifactory
       - name: {{.Values.cdk.credentials}}
       inputResources:
       - name: {{.Values.pipeline.name}}_CleanupGitRepo
