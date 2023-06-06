@@ -1,3 +1,10 @@
+resources:
+  - name: git_res
+    type: GitRepo
+    configuration:
+      path: kunal-mazumdar/pipelines-local-test-repo
+      gitProvider: kunal_gh
+
 pipelines:
   - name: my_first_pipeline
     configuration:
@@ -9,6 +16,9 @@ pipelines:
     steps:
       - name: my_first_step
         type: Bash
+        configuration:
+          inputResources:
+            - name: git_res
         execution:
           onExecute:
             - echo "test"
