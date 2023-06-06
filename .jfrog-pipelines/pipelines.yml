@@ -22,6 +22,7 @@ pipelines:
         execution:
           onExecute:
             - printenv
+            - printenv
             - echo $res_dev_trigger_name
             - echo $res_dev_trigger_resourceId
             - echo $res_prod_trigger_name
