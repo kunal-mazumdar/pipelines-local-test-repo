@@ -31,6 +31,10 @@ resources:
     type: PropertyBag
     configuration:
       TEST: 1
+  - name: {{.Values.pipeline.name}}_BuildInfo
+    type: PropertyBag
+    configuration:
+      TEST: 1
 
 
 pipelines:
@@ -69,7 +73,6 @@ pipelines:
   - name: prepare_deployment
     type: Bash
     configuration:
-      integrations:
       inputResources:
       - name: {{.Values.pipeline.name}}_Functions
       - name: {{.Values.pipeline.name}}_DeploymentPackage
@@ -100,9 +103,7 @@ pipelines:
     type: Bash
     configuration:
       environmentVariables:
-        hugoVersion: {{.Values.docs.hugoVersion}}
-      integrations:
-      - name: {{.Values.docs.sshKey}}
+        hugoVersion: '1.0.0'
       inputSteps:
       - name: prepare_deployment
       inputResources:
