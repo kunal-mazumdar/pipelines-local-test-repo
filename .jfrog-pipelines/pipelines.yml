@@ -13,6 +13,6 @@ pipelines:
           onExecute:
             - echo "test"
             - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
-            - configure_jfrog_cli --artifactory-url https://master.jfrog-pipelines.com --user admin --apikey password --server-name test
+            - configure_jfrog_cli --artifactory-url https://master.jfrog-pipelines.com/artifactory --user admin --apikey password --server-name test
             - jf c show
             - use_jfrog_cli test
