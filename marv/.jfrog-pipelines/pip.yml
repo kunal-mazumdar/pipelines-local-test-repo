@@ -18,6 +18,21 @@ installHugo: &INSTALL_HUGO
   - dpkg -i $step_tmp_dir/hugo.deb
   - hugo version
 
+resources:
+  - name: {{.Values.pipeline.name}}_DeploymentSpec
+    type: PropertyBag
+    configuration:
+      TEST: 1
+  - name: {{.Values.pipeline.name}}_Functions
+    type: PropertyBag
+    configuration:
+      TEST: 1
+  - name: {{.Values.pipeline.name}}_DeploymentPackage
+    type: PropertyBag
+    configuration:
+      TEST: 1
+
+
 pipelines:
 - name: {{.Values.pipeline.name}}_Deployment
   configuration:
@@ -55,7 +70,6 @@ pipelines:
     type: Bash
     configuration:
       integrations:
-      - name: {{.Values.cdk.credentials}}
       inputResources:
       - name: {{.Values.pipeline.name}}_Functions
       - name: {{.Values.pipeline.name}}_DeploymentPackage
@@ -89,7 +103,6 @@ pipelines:
         hugoVersion: {{.Values.docs.hugoVersion}}
       integrations:
       - name: {{.Values.docs.sshKey}}
-      - name: {{.Values.docs.credentials}}
       inputSteps:
       - name: prepare_deployment
       inputResources:
@@ -130,7 +143,6 @@ pipelines:
     configuration:
       integrations:
       - name: s_artifactory
-      - name: {{.Values.cdk.credentials}}
       inputSteps:
       - name: prepare_deployment
       - name: generate_docs
@@ -214,7 +226,6 @@ pipelines:
     configuration:
       integrations:
       - name: s_artifactory
-      - name: {{.Values.cdk.credentials}}
       inputResources:
       - name: {{.Values.pipeline.name}}_CleanupGitRepo
       - name: {{.Values.pipeline.name}}_Functions
