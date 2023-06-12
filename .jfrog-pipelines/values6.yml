@@ -22,13 +22,13 @@ publishTemplate:
   version: 0.0.1
 
   # name of the pipeline (optional)
-  pipelineName: PublishTemplate4
+  pipelineName: PublishTemplate6
 
   # template repository resource name (optional)
-  templateRepositoryResourceName: templateRepository4
+  templateRepositoryResourceName: templateRepository6
 
   # upload status resource name (optional)
-  templateUploadStatusResourceName: templateUploadStatus4
+  templateUploadStatusResourceName: templateUploadStatus6
 
   # JFrog platform access token integration name
   jfrogAccessTokenIntegration: kunal_token
