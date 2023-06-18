@@ -1,0 +1,30 @@
+resources:
+  - name: git_res_1
+    type: GitRepo
+    configuration:
+      path: kunal-mazumdar/pipelines-local-test-repo
+      gitProvider: kunal_gh
+      branches:
+        include: sanity
+
+pipelines:
+  - name: my_first_pipeline
+    configuration:
+      jfrogCliVersion: 2
+      environmentVariables:
+        readOnly:
+          XRAY_ENABLED: "{{ ternary true false ( hasPrefix "master" "{{gitBranch}}" ) }}"
+          MODIFIED_GIT_BRANCH: "{{ "{{gitBranch}}" | replace "/" "." | replace "-" "."  }}"
+    steps:
+      - name: my_first_step
+        type: Bash
+        configuration:
+          inputResources:
+            - name: git_res_1
+        execution:
+          onExecute:
+            - echo "test1234513"
+            - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
+            - configure_jfrog_cli --artifactory-url https://master.jfrog-pipelines.com/artifactory --user admin --apikey Password@1 --server-name test
+            - jf c show
+            - use_jfrog_cli test
