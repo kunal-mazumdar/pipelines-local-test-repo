@@ -30,6 +30,7 @@ pipelines:
       - name: step_2
         type: NpmPublish
         configuration:
+          repositoryName: templates-npm-local
           autoPublishBuildInfo: true
           inputSteps:
             - name: step_1
