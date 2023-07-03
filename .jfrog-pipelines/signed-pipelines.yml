@@ -59,7 +59,8 @@ pipelines:
         execution:
           onExecute:
             - cd $res_signed_git_resourcePath
-            - echo '{ "files": [ { "aql": { "items.find": { "repo": { "$eq": "km-generic-local" } } } } ] }' > spec.json
+            - |
+              echo '{ "files": [ { "aql": { "items.find": { "repo": { "$eq": "km-generic-local" } } } } ] }' > spec.json
             - jf rt s --spec=spec.json
             - jf ds rbc --spec=spec.json kunal_test_rb_${run_id} 1.0.0 --sign --detailed-summary > summaryOutput.json
             - save_artifact_info 'releaseBundle' './summaryOutput.json' --release-bundle-name kunal_test_rb_${run_id} --release-bundle-version 1.0.0
