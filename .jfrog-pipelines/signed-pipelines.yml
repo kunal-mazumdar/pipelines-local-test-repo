@@ -30,11 +30,28 @@ pipelines:
             - jfrog rt upload server.js km-generic-local
             - jfrog rt build-publish --detailed-summary $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER > summaryOutput.json
             - save_artifact_info 'buildInfo' './summaryOutput.json' --build-name $JFROG_CLI_BUILD_NAME --build-number $JFROG_CLI_BUILD_NUMBER
-      - name: print_info
+      
+      - name: create_info_2
         type: Bash
         configuration:
           inputSteps:
             - name: create_info
+          inputResources:
+            - name: signed_git
+          integrations:
+            - name: int_default_artifactory
+        execution:
+          onExecute:
+            - cd $res_signed_git_resourcePath
+            - touch server1.js
+            - jfrog rt upload server1.js km-generic-local > summaryOutput.json
+            - save_artifact_info 'file' './summaryOutput.json'
+            
+      - name: print_info
+        type: Bash
+        configuration:
+          inputSteps:
+            - name: create_info_2
         execution:
           onExecute:
             - validate_artifact buildInfo --build-name $JFROG_CLI_BUILD_NAME --build-number $JFROG_CLI_BUILD_NUMBER
