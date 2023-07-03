@@ -44,7 +44,7 @@ pipelines:
           onExecute:
             - cd $res_signed_git_resourcePath
             - touch server1.js
-            - jfrog rt upload server1.js km-generic-local > summaryOutput.json
+            - jfrog rt upload server1.js km-generic-local --detailed-summary > summaryOutput.json
             - save_artifact_info 'file' './summaryOutput.json'
             
       - name: print_info
