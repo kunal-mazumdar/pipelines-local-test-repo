@@ -5,7 +5,8 @@ resources:
       gitProvider: kunal_gh
       path: kunal-mazumdar/pipelines-local-test-repo
       branches:
-        include: {{ gitBranch }}
+        #include: {{ gitBranch }}
+        include: signed_pipeline
   - name: signed_buildinfo_1
     type: BuildInfo
     configuration:
