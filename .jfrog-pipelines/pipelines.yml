@@ -45,13 +45,9 @@ pipelines:
               cd $res_ffm_test_repo1_resourcePath
               mkdir -p /tmp/dir
               touch /tmp/dir/test.txt
-              tar -czvf service-d-0.0.1.tgz /tmp/dir
-              jf rt upload service-d-0.0.1.tgz km-generic-local --build-name $JFROG_CLI_BUILD_NAME --build-number $JFROG_CLI_BUILD_NUMBER
-          onSuccess:
-            - |
-              echo "[INFO] Set Helm Build Info"
+              tar -czvf service-d-0.0.1.tgz /tmp/dir              
               old_build_name=$JFROG_CLI_BUILD_NAME
-              build_name=$JFROG_CLI_BUILD_NAME              
+              build_name=$JFROG_CLI_BUILD_NAME    
               if [[ $isStepMatrix ]]
               then
                 echo "[INFO] This is a Matrix step thus we are assigning the service name to the build name, \ 
@@ -59,6 +55,10 @@ pipelines:
                 build_name=$name
                 # export JFROG_CLI_BUILD_NAME=$name                
               fi        
+              jf rt upload service-d-0.0.1.tgz km-generic-local --build-name $build_name --build-number $JFROG_CLI_BUILD_NUMBER
+          onSuccess:
+            - |
+              echo "[INFO] Set Helm Build Info"
               echo $JFROG_CLI_BUILD_NAME
               jf --version
               echo "[INFO] Collect Environment Variables to the Build-Info"
