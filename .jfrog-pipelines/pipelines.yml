@@ -57,8 +57,9 @@ pipelines:
                 echo "[INFO] This is a Matrix step thus we are assigning the service name to the build name, \ 
                 and on PostMatrix step we will aggregate those services Published Builds into one Build-Info"
                 build_name=$name
-                export JFROG_CLI_BUILD_NAME=$name
+                export JFROG_CLI_BUILD_NAME=$name                
               fi        
+              echo $JFROG_CLI_BUILD_NAME
               jf --version
               echo "[INFO] Collect Environment Variables to the Build-Info"
               jf rt bce $build_name $JFROG_CLI_BUILD_NUMBER              
