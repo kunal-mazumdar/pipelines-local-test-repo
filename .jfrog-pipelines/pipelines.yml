@@ -46,7 +46,7 @@ pipelines:
               mkdir -p /tmp/dir
               touch /tmp/dir/test.txt
               tar -czvf service-d-0.0.1.tgz /tmp/dir
-              jf rt upload service-d-0.0.1.tgz km-generic-local
+              jf rt upload service-d-0.0.1.tgz km-generic-local --build-name $JFROG_CLI_BUILD_NAME --build-number $JFROG_CLI_BUILD_NUMBER
           onSuccess:
             - |
               echo "[INFO] Set Helm Build Info"
@@ -57,7 +57,7 @@ pipelines:
                 echo "[INFO] This is a Matrix step thus we are assigning the service name to the build name, \ 
                 and on PostMatrix step we will aggregate those services Published Builds into one Build-Info"
                 build_name=$name
-                export JFROG_CLI_BUILD_NAME=$name                
+                # export JFROG_CLI_BUILD_NAME=$name                
               fi        
               echo $JFROG_CLI_BUILD_NAME
               jf --version
