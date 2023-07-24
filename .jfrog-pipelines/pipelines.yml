@@ -17,6 +17,7 @@ resources:
 pipelines:
   - name: ffm_test1
     configuration:
+      jfrogCliVersion: 2
       environmentVariables:
         readOnly: {}
       integrations:
