@@ -15,14 +15,16 @@ resources:
         pullRequestUpdate: true
   - name: bi_1
     type: BuildInfo
-    sourceArtifactory: art
-    buildName: ''
-    buildNumber: ''
+    configuration:
+      sourceArtifactory: art
+      buildName: ''
+      buildNumber: ''
   - name: bi_2
     type: BuildInfo
-    sourceArtifactory: art
-    buildName: ''
-    buildNumber: ''
+    configuration:
+      sourceArtifactory: art
+      buildName: ''
+      buildNumber: ''
 
 pipelines:
   - name: ffm_test1
