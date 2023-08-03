@@ -44,7 +44,6 @@ pipelines:
               trigger: true
           outputResources:
             - name: bi_1
-            - name: bi_2
           multiNode: true            
         stepletMultipliers:
           fastFail: true
@@ -86,5 +85,5 @@ pipelines:
               write-output bi_1 "buildName=$old_build_name"
               write-output bi_1 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
 
-              write-output bi_2 "buildName=$build_name"
-              write-output bi_2 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
+              # write-output bi_2 "buildName=$build_name"
+              # write-output bi_2 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
