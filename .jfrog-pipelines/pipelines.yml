@@ -60,7 +60,8 @@ pipelines:
               cd $res_ffm_test_repo1_resourcePath
               mkdir -p /tmp/dir
               touch /tmp/dir/test.txt
-              tar -czvf service-d-0.0.1.tgz /tmp/dir              
+              tar -czvf service-d-0.0.1.tgz /tmp/dir
+              tar -czvf service-d-0.0.2.tgz /tmp/dir              
               old_build_name=$JFROG_CLI_BUILD_NAME
               build_name=$JFROG_CLI_BUILD_NAME    
               if [[ $isStepMatrix ]]
@@ -71,20 +72,17 @@ pipelines:
                 # export JFROG_CLI_BUILD_NAME=$name                
               fi        
               jf rt upload service-d-0.0.1.tgz km-generic-local --build-name $build_name --build-number $JFROG_CLI_BUILD_NUMBER
+              jf rt upload service-d-0.0.2.tgz km-generic-local --build-name $old_build_name --build-number $JFROG_CLI_BUILD_NUMBER
           onSuccess:
             - |
-              echo "[INFO] Set Helm Build Info"
-              echo $JFROG_CLI_BUILD_NAME
-              jf --version
-              echo "[INFO] Collect Environment Variables to the Build-Info"
               jf rt bce $build_name $JFROG_CLI_BUILD_NUMBER              
-              echo "[INFO] Collect Information from Git to the Build-Info"
               jf rt bag $build_name $JFROG_CLI_BUILD_NUMBER                            
-              echo "[INFO] Publishing Build-Info for step "
               jf rt build-publish $build_name $JFROG_CLI_BUILD_NUMBER
-
               write_output bi_1 "buildName=$old_build_name"
               write_output bi_1 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
 
+              jf rt bce $old_build_name $JFROG_CLI_BUILD_NUMBER              
+              jf rt bag $old_build_name $JFROG_CLI_BUILD_NUMBER                            
+              jf rt build-publish $old_build_name $JFROG_CLI_BUILD_NUMBER
               write_output bi_2 "buildName=$build_name"
               write_output bi_2 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
