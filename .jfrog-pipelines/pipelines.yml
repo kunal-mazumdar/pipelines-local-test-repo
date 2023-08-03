@@ -13,6 +13,16 @@ resources:
       cancelPendingRunsOn:
         newCommit: false
         pullRequestUpdate: true
+  - name: bi_1
+    type: BuildInfo
+    sourceArtifactory: art
+    buildName: ''
+    buildNumber: ''
+  - name: bi_2
+    type: BuildInfo
+    sourceArtifactory: art
+    buildName: ''
+    buildNumber: ''
 
 pipelines:
   - name: ffm_test1
@@ -30,6 +40,9 @@ pipelines:
           inputResources:
             - name: ffm_test_repo1
               trigger: true
+          outputResources:
+            - name: bi_1
+            - name: bi_2
           multiNode: true            
         stepletMultipliers:
           fastFail: true
@@ -66,4 +79,10 @@ pipelines:
               echo "[INFO] Collect Information from Git to the Build-Info"
               jf rt bag $build_name $JFROG_CLI_BUILD_NUMBER                            
               echo "[INFO] Publishing Build-Info for step "
-              jf rt build-publish $build_name $JFROG_CLI_BUILD_NUMBER  
+              jf rt build-publish $build_name $JFROG_CLI_BUILD_NUMBER
+
+              write-output bi_1 "buildName=$old_build_name"
+              write-output bi_1 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
+
+              write-output bi_2 "buildName=$build_name"
+              write-output bi_2 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
