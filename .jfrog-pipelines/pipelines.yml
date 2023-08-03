@@ -82,8 +82,8 @@ pipelines:
               echo "[INFO] Publishing Build-Info for step "
               jf rt build-publish $build_name $JFROG_CLI_BUILD_NUMBER
 
-              write-output bi_1 "buildName=$old_build_name"
-              write-output bi_1 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
+              write_output bi_1 "buildName=$old_build_name"
+              write_output bi_1 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
 
-              # write-output bi_2 "buildName=$build_name"
-              # write-output bi_2 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
+              write_output bi_2 "buildName=$build_name"
+              write_output bi_2 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
