@@ -9,7 +9,7 @@ resources:
     type: GitRepo
     configuration:
       gitProvider: kunal_gh
-      path: kunal_mazumdar/pipelines-local-test-repo
+      path: kunal-mazumdar/pipelines-local-test-repo
       branches:
         include: develop|release\/.*|master
   - name: BuildInfo_test2_Description_Ressource
@@ -22,7 +22,7 @@ resources:
     type: GitRepo
     configuration:
       gitProvider: kunal_gh
-      path: kunal_mazumdar/pipelines-local-test-repo
+      path: kunal-mazumdar/pipelines-local-test-repo
       branches:
         include: develop|release\/.*|master
 
