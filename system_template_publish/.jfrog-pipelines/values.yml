@@ -10,5 +10,4 @@ publishTemplate:
   version: 1.0.0
   description: "This is a test template"
   pipelineName: publish_broadcom_system_templates
-  artifactoryIntegration: def_artifactory
-  jfrogAccessTokenIntegration: access_token
+  jfrogAccessTokenIntegration: jf_token
