@@ -5,9 +5,5 @@ templateRepository:
   templateFolder: templates/broadcom/NewHelloWorld
  
 publishTemplate:
-  namespace: broadcom
-  name: NewHelloWorld
-  version: 1.0.0
-  description: "This is a test template"
   pipelineName: publish_broadcom_system_templates
   jfrogAccessTokenIntegration: jf_token
