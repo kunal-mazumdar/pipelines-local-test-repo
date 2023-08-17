@@ -1,3 +1,6 @@
+template:
+  name: test
+
 pipelines:
   - name: new_hello_world_pipeline
     steps:
