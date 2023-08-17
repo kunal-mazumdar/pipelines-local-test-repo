@@ -5,9 +5,7 @@ pipelines:
         type: Bash
         configuration:
           environmentVariables:
-            {{ include "default.envs" . }}
+            test: true
         execution:
           onExecute:
             - echo {{ .Values.helloWorldMessage }}
-            - echo sanityName = {{ include "sanity.name" . }}
-            - echo {{ get (.Files.Get "config.json" | fromJson) "message" }}
