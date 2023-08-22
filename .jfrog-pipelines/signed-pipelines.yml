@@ -58,6 +58,7 @@ pipelines:
             - write_output signed_buildinfo_1 "buildName=$JFROG_CLI_BUILD_NAME"
             - write_output signed_buildinfo_1 "buildNumber=$JFROG_CLI_BUILD_NUMBER"
       
+      
       # - name: create_only_artifact
       #   type: Bash
       #   configuration:
