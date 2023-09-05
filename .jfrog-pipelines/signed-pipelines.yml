@@ -28,9 +28,9 @@ pipelines:
         execution:
           onExecute:
             - cd $res_signed_git_resourcePath
-            - touch server_${run_id}.js
+            - echo '12345' > server_${run_id}.js
             - jfrog rt upload server_${run_id}.js km-generic-local --build-name $JFROG_CLI_BUILD_NAME --build-number $JFROG_CLI_BUILD_NUMBER
-            - touch dependency_${run_id}.js
+            - echo '6789' > dependency_${run_id}.js
             - jfrog rt upload dependency_${run_id}.js km-generic-local --build-name $JFROG_CLI_BUILD_NAME --build-number $JFROG_CLI_BUILD_NUMBER
             - jf rt bad $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER "km-generic-local/dependency_${run_id}.js" --from-rt
             - jf rt bce $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
