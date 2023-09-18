@@ -7,7 +7,7 @@ resources:
       tool: SonarCloud
       provider:
         integration: sonar_integration
-        userNameKey: sonar_user_name
+        urlKey: sonar_user_name
         tokenKey: sonar_token
 
 pipelines:
