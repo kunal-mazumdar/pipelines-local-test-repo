@@ -18,7 +18,7 @@ pipelines:
       - name: my_first_step
         type: Bash
         configuration:
-          inputResources:
+          outputResources:
             - name: git_sonar_1
         execution:
           onExecute:
