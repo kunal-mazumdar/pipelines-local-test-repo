@@ -22,4 +22,5 @@ pipelines:
             - name: git_sonar
         execution:
           onExecute:
-            - echo "test"
+            - printenv
+            - write_output git_sonar "urlKey=some_key"
