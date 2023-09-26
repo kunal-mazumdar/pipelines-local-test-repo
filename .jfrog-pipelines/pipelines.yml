@@ -23,4 +23,12 @@ pipelines:
         execution:
           onExecute:
             - printenv
-            - write_output git_sonar_1 "urlKey=some_key"
+            - write_output git_sonar_1 "codeDuplicationPercent=12"
+            - write_output git_sonar_1 "linesOfCode=1500"
+            - write_output git_sonar_1 "duplicateBlocks=8"
+            - write_output git_sonar_1 "coveragePercent=68"
+            - write_output git_sonar_1 "unitTests=137"
+            - write_output git_sonar_1 "bugs=10"
+            - write_output git_sonar_1 "vulnerabilities=19"
+            - write_output git_sonar_1 "codeSmells=7"
+            - write_output git_sonar_1 "hotspots=3"
