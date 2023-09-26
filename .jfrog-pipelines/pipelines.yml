@@ -6,7 +6,7 @@ resources:
     configuration:
       tool: SonarCloud
       provider:
-        integration: sonar_integration
+        integration: sonar_int
         urlKey: sonar_user_name
         tokenKey: sonar_token
 
