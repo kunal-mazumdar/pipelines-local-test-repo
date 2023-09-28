@@ -1,0 +1,22 @@
+resources:
+  - name: pr_repo_x
+    type: GitRepo
+    configuration:
+      gitProvider: kunal_gh
+      path: kunal-mazumdar/pipelines-local-test-repo
+      buildOn:
+        branchCreate: false
+        commit: false
+        pullRequestCreate: true
+
+pipelines:
+  - name: pr_pipe_x
+    steps:
+      - name: pr_step
+        type: Bash
+        configuration:
+          inputResources:
+            - name: pr_repo_x
+        execution:
+          onExecute:
+            - echo ${res_pr_repo_x_isPullRequest}
