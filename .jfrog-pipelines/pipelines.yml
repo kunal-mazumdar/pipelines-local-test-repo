@@ -15,7 +15,7 @@ resources:
       sourceArtifactory: s_artifactory
       flat: true
       target: "/tmp"
-      aql: "{\"items.find\":{\"$and\":[{\"repo\":\"jfrogpipelines\"},{\"name\":\"$FILE_NAME\"}]}}"
+      aql: "{\"items.find\":{\"$and\":[{\"repo\":\"jfrogpipelines\"},{\"name\":\"pipelines-template\"}]}}"
 
 pipelines:
   - name: pr_pipe_x
