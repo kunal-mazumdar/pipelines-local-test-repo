@@ -31,6 +31,7 @@ pipelines:
         configuration:
           inputResources:
             - name: pr_repo_x
+            - name: myAqlResource
             - name: myFileSpec1
         execution:
           onExecute:
