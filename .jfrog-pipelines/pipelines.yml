@@ -21,7 +21,7 @@ resources:
       sourceArtifactory: s_artifactory
       flat: true
       target: "/tmp"
-      aql: myAqlResource
+      aql: '{"repo":"example-repo-local"},{"name":"tools/pipelines-template"}'
 
 pipelines:
   - name: pr_pipe_x
