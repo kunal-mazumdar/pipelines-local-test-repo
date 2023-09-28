@@ -9,19 +9,13 @@ resources:
         commit: true
         pullRequestCreate: false
 
-  - name: myAqlResource
-    type: Aql
-    configuration:
-      sourceArtifactory: s_artifactory
-      query: items.find({"repo":"example-repo-local"},{"name":"tools/pipelines-template"})
-
   - name: myFileSpec1
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
       flat: true
       target: "/tmp"
-      aql: "{\"items.find\":{\"$and\":[{\"repo\":\"jfrogpipelines\"},{\"name\":\"pipelines-template\"}]}}"
+      aql: "{\"items.find\":{\"$and\":[{\"repo\":\"jfrogpipelines\"},{\"name\":\"$FILE_NAME\"}]}}"
 
 pipelines:
   - name: pr_pipe_x
@@ -29,10 +23,14 @@ pipelines:
       - name: pr_step
         type: Bash
         configuration:
+          environmentVariables:
+            FILE_NAME: 'pipelines-template'
           inputResources:
             - name: pr_repo_a
-            - name: myAqlResource
             - name: myFileSpec1
         execution:
           onExecute:
             - echo ${res_pr_repo_a_isPullRequest}
+            - echo $FILE_NAME
+            - pushd /tmp
+            - ls -al
