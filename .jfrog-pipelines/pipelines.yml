@@ -10,7 +10,7 @@ resources:
         pullRequestCreate: true
 
 pipelines:
-  - name: pr_pipe
+  - name: pr_pipe_x
     steps:
       - name: pr_step
         type: Bash
