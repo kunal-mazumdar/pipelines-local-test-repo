@@ -15,7 +15,7 @@ resources:
       sourceArtifactory: myArtifactoryIntegration
       query: items.find({"repo":"example-repo-local"},{"name":"tools/pipelines-template"})
 
-  - name: myFileSpec
+  - name: myFileSpec1
     type: FileSpec
     configuration:
       sourceArtifactory: s_artifactory
@@ -31,7 +31,7 @@ pipelines:
         configuration:
           inputResources:
             - name: pr_repo_x
-            - name: myFileSpec
+            - name: myFileSpec1
         execution:
           onExecute:
             - echo ${res_pr_repo_x_isPullRequest}
