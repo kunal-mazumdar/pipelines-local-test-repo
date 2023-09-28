@@ -1,5 +1,5 @@
 resources:
-  - name: pr_repo_x
+  - name: pr_repo_a
     type: GitRepo
     configuration:
       gitProvider: kunal_gh
@@ -21,7 +21,8 @@ resources:
       sourceArtifactory: s_artifactory
       flat: true
       target: "/tmp"
-      aql: "{'$and':['repo':'example-repo-local'},{'name':'tools/pipelines-template']}"
+      aql: "{'repo': 'docker-local'}"
+      # aql: "{'$and':['repo':'example-repo-local'},{'name':'tools/pipelines-template']}"
 
 pipelines:
   - name: pr_pipe_x
@@ -30,9 +31,9 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: pr_repo_x
+            - name: pr_repo_a
             - name: myAqlResource
             - name: myFileSpec1
         execution:
           onExecute:
-            - echo ${res_pr_repo_x_isPullRequest}
+            - echo ${res_pr_repo_a_isPullRequest}
