@@ -12,7 +12,7 @@ resources:
   - name: myAqlResource
     type: Aql
     configuration:
-      sourceArtifactory: myArtifactoryIntegration
+      sourceArtifactory: s_artifactory
       query: items.find({"repo":"example-repo-local"},{"name":"tools/pipelines-template"})
 
   - name: myFileSpec1
