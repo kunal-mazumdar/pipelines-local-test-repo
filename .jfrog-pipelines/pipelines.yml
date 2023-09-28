@@ -1,5 +1,5 @@
 resources:
-  - name: pr_repo
+  - name: pr_repo_1
     type: GitRepo
     configuration:
       gitProvider: kunal_gh
@@ -18,7 +18,7 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: pr_repo
+            - name: pr_repo_1
         execution:
           onExecute:
-            - echo ${res_pr_repo_isPullRequest}
+            - echo ${res_pr_repo_1_isPullRequest}
