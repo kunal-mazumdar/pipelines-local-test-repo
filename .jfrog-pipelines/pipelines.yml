@@ -6,8 +6,8 @@ resources:
       path: kunal-mazumdar/pipelines-local-test-repo
       buildOn:
         branchCreate: false
-        commit: false
-        pullRequestCreate: true
+        commit: true
+        pullRequestCreate: false
 
   - name: myAqlResource
     type: Aql
