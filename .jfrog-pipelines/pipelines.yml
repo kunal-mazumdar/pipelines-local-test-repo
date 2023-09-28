@@ -7,8 +7,8 @@ resources:
       branches:
         include: pr
       buildOn:
-        branchCreate: true
-        commit: true
+        branchCreate: false
+        commit: false
         pullRequestCreate: true
 
 pipelines:
