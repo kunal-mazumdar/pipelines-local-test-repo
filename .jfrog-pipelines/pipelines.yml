@@ -9,6 +9,20 @@ resources:
         commit: false
         pullRequestCreate: true
 
+  - name: myAqlResource
+    type: Aql
+    configuration:
+      sourceArtifactory: myArtifactoryIntegration
+      query: items.find({"repo":"example-repo-local"},{"name":"tools/pipelines-template"})
+
+  - name: myFileSpec
+    type: FileSpec
+    configuration:
+      sourceArtifactory: s_artifactory
+      flat: true
+      target: "/tmp"
+      aql: myAqlResource
+
 pipelines:
   - name: pr_pipe_x
     steps:
@@ -17,6 +31,7 @@ pipelines:
         configuration:
           inputResources:
             - name: pr_repo_x
+            - name: myFileSpec
         execution:
           onExecute:
             - echo ${res_pr_repo_x_isPullRequest}
