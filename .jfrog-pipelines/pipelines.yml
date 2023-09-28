@@ -21,8 +21,7 @@ resources:
       sourceArtifactory: s_artifactory
       flat: true
       target: "/tmp"
-      aql: "{\"repo\":\"docker-local\"}"
-      # aql: "{'$and':['repo':'example-repo-local'},{'name':'tools/pipelines-template']}"
+      aql: "{\"$and\":[\"repo\":\"example-repo-local\"},{\"name\":\"tools/pipelines-template\"]}"
 
 pipelines:
   - name: pr_pipe_x
