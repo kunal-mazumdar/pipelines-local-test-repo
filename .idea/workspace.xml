@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fad8d3fa-5173-4ab3-a237-f140f4c903be" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/system_template_publish/.jfrog-pipelines/values.yml" beforeDir="false" afterPath="$PROJECT_DIR$/system_template_publish/.jfrog-pipelines/values.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +51,7 @@
       <updated>1695915193339</updated>
       <workItem from="1695915194456" duration="5283000" />
       <workItem from="1696429794573" duration="156000" />
-      <workItem from="1696430662074" duration="368000" />
+      <workItem from="1696430662074" duration="1282000" />
     </task>
     <servers />
   </component>
