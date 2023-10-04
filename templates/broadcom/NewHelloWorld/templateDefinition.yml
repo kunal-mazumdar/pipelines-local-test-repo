@@ -2,13 +2,6 @@
   - echo "test"
 {{- end }}
 
-template:
-  namespace: broadcom
-  name: test
-  version: 1.0.0
-  development: false
-  description: test
-
 pipelines:
   - name: new_hello_world_pipeline
     steps:
