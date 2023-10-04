@@ -3,7 +3,14 @@ templateRepository:
   path: kunal-mazumdar/pipelines-local-test-repo
   branch: template2.0
   templateFolder: templates/broadcom/NewHelloWorld
- 
+
 publishTemplate:
-  pipelineName: publish_broadcom_system_templates
+  namespace: test
+  name: TestTemplate
+  version: 1.0.0
+  description: "Test Template"
+  pipelineName: publish_template_2_0_0
+  templateRepositoryResourceName: publish_template_2_0_0_repo
+  templateUploadStatusResourceName: publish_template_2_0_0_result
   jfrogAccessTokenIntegration: jf_token
+  enableHelmTemplating: false
