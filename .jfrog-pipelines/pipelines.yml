@@ -27,7 +27,6 @@ pipelines:
             - write_output git_sonar_1 "linesOfCode=1500"
             - write_output git_sonar_1 "duplicateBlocks=8"
             - write_output git_sonar_1 "coveragePercent=0.0"
-            # - write_output git_sonar_1 "unitTests=137"
             - write_output git_sonar_1 "bugs=10"
             - write_output git_sonar_1 "vulnerabilities=19"
             - write_output git_sonar_1 "codeSmells=7"
