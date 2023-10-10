@@ -1,7 +1,7 @@
 valuesFilePath: ./values.yml
 
 resources:
-  - name: git_sonar_1
+  - name: git_sonar
     type: CodeAnalysis
     configuration:
       tool: SonarCloud
@@ -19,7 +19,7 @@ pipelines:
         type: Bash
         configuration:
           outputResources:
-            - name: git_sonar_1
+            - name: git_sonar
         execution:
           onExecute:
             - printenv
