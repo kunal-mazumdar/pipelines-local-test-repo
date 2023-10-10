@@ -6,10 +6,7 @@ resources:
     type: CodeAnalysis
     configuration:
       tool: SonarCloud
-      provider:
-        integration: sonar_int
-        urlKey: sonar_user_name
-        tokenKey: sonar_token
+      integration: sonar_int
 
 pipelines:
   - name: code_analysis_pipe
