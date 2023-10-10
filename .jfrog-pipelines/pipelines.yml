@@ -11,8 +11,6 @@ pipelines:
   - name: my_first_pipeline
     configuration:
       jfrogCliVersion: 2
-      integrations:
-        - name: aws_test
       environmentVariables:
         readOnly:
           XRAY_ENABLED: "{{ ternary true false ( hasPrefix "master" "{{gitBranch}}" ) }}"
@@ -21,6 +19,8 @@ pipelines:
       - name: my_first_step
         type: Bash
         configuration:
+          integrations:
+            - name: aws_test
           inputResources:
             - name: git_res_1
         execution:
