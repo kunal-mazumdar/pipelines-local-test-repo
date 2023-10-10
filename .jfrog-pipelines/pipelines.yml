@@ -21,11 +21,13 @@ pipelines:
         execution:
           onExecute:
             - printenv
-            - write_output {{ $res }} "codeDuplicationPercent=0"
-            - write_output {{ $res }} "linesOfCode=1500"
-            - write_output {{ $res }} "duplicateBlocks=8"
+            - write_output {{ $res }} "duplicated_lines=0"
+            - write_output {{ $res }} "ncloc=1500"
+            - write_output {{ $res }} "duplicated_blocks=8"
             - write_output {{ $res }} "coveragePercent=0.0"
             - write_output {{ $res }} "bugs=10"
             - write_output {{ $res }} "vulnerabilities=19"
-            - write_output {{ $res }} "codeSmells=7"
-            - write_output {{ $res }} "hotspots=3"
+            - write_output {{ $res }} "code_smells=7"
+            - write_output {{ $res }} "security_hotspots=3"
+            - write_output {{ $res }} "git_resource=some_resource"
+            - write_output {{ $res }} "report_url=https://sonarcloud.io/dashboard?id=kunal-mazumdar_test"
