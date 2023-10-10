@@ -1,7 +1,8 @@
 valuesFilePath: ./values.yml
 
+{{ $res := "git_sonar" }}
 resources:
-  - name: git_sonar
+  - name: {{ $res }}
     type: CodeAnalysis
     configuration:
       tool: SonarCloud
@@ -19,15 +20,15 @@ pipelines:
         type: Bash
         configuration:
           outputResources:
-            - name: git_sonar
+            - name: {{ $res }}
         execution:
           onExecute:
             - printenv
-            - write_output git_sonar_1 "codeDuplicationPercent=0"
-            - write_output git_sonar_1 "linesOfCode=1500"
-            - write_output git_sonar_1 "duplicateBlocks=8"
-            - write_output git_sonar_1 "coveragePercent=0.0"
-            - write_output git_sonar_1 "bugs=10"
-            - write_output git_sonar_1 "vulnerabilities=19"
-            - write_output git_sonar_1 "codeSmells=7"
-            - write_output git_sonar_1 "hotspots=3"
+            - write_output {{ $res }} "codeDuplicationPercent=0"
+            - write_output {{ $res }} "linesOfCode=1500"
+            - write_output {{ $res }} "duplicateBlocks=8"
+            - write_output {{ $res }} "coveragePercent=0.0"
+            - write_output {{ $res }} "bugs=10"
+            - write_output {{ $res }} "vulnerabilities=19"
+            - write_output {{ $res }} "codeSmells=7"
+            - write_output {{ $res }} "hotspots=3"
