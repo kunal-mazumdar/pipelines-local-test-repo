@@ -28,10 +28,10 @@ publishTemplate:
   pipelineName: PublishTemplate141
 
   # template repository resource name (optional)
-  templateRepositoryResourceName: templateRepository142
+  templateRepositoryResourceName: templateRepository141
 
   # upload status resource name (optional)
-  templateUploadStatusResourceName: templateUploadStatus143
+  templateUploadStatusResourceName: templateUploadStatus141
 
   # JFrog platform access token integration name
   jfrogAccessTokenIntegration: myJfrogAccessToken
