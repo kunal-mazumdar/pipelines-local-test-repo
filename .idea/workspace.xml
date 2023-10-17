@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fad8d3fa-5173-4ab3-a237-f140f4c903be" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/values141.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/templates/pip140.yml" beforeDir="false" afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/pip140.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/templates/pip141.yml" beforeDir="false" afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/pip141.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/templates/pip142.yml" beforeDir="false" afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/pip142.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/templates/values.yml" beforeDir="false" afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/values140.yml" afterDir="false" />
-    </list>
+    <list default="true" id="fad8d3fa-5173-4ab3-a237-f140f4c903be" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
