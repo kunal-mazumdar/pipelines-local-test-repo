@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fad8d3fa-5173-4ab3-a237-f140f4c903be" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/values141.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/templates/pip140.yml" beforeDir="false" afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/pip140.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/templates/pip141.yml" beforeDir="false" afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/pip141.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/templates/pip142.yml" beforeDir="false" afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/pip142.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/templates/values.yml" beforeDir="false" afterPath="$PROJECT_DIR$/templates/.jfrog-pipelines/values140.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2W206ein7yQqHHligwPvQkTXcUo" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/kunalm/Documents/repos/pipelines-local-test-repo/.jfrog-pipelines/templates",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.jfrog-pipelines/templates" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/templates/.jfrog-pipelines" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/.jfrog-pipelines" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fad8d3fa-5173-4ab3-a237-f140f4c903be" name="Changes" comment="" />
+      <created>1695915193339</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695915193339</updated>
+      <workItem from="1695915194456" duration="5283000" />
+      <workItem from="1696429794573" duration="156000" />
+      <workItem from="1696430662074" duration="1846000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
