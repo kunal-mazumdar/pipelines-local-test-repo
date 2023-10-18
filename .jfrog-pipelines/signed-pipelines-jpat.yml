@@ -12,7 +12,7 @@ resources:
       sourceArtifactory: jpat
  
 pipelines:
-  - name: test_signed_start_1
+  - name: test_signed_start_2
     configuration:
       jfrogCliVersion: 2
     steps:
