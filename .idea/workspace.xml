@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fad8d3fa-5173-4ab3-a237-f140f4c903be" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.jfrog-pipelines/signed-pipelines.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.jfrog-pipelines/signed-pipelines.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
