@@ -26,7 +26,7 @@ pipelines:
           pipelineName: scanner_embed_pipeline
           stepName: scan_it
           integrations:
-            - name: artifactory_pipelines
+            - name: jf_token
           environmentVariables:
             scan_target:
               default: "hello-world 777"
@@ -51,6 +51,9 @@ pipelines:
     steps:
       - name: scan_it
         type: Bash
+        configuration:
+          integrations:
+            - name: jf_token
         execution:
           onExecute:
             - echo "Image to scan is $scan_target. !!!"
