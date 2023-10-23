@@ -30,7 +30,7 @@ pipelines:
             - name: jf_token
           environmentVariables:
             scan_target:
-              default: "hello-world-777"
+              default: 'hello-world 777'
               allowCustom: true
               values:
                 - "vault"
