@@ -18,11 +18,12 @@ pipelines:
               trigger: true
         execution:
           onExecute:
-            - add_run_variables 'var1=1'
+            - add_run_variables var1="true"
+
       - name: scan_controller
         type: TriggerPipeline
         configuration:
-          condition: 'var1 == 1'
+          condition: 'var1 == "true"'
           pipelineName: scanner_embed_pipeline
           stepName: scan_it
           integrations:
