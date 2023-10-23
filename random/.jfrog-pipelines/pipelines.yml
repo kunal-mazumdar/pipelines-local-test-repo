@@ -23,7 +23,6 @@ pipelines:
       - name: scan_controller
         type: TriggerPipeline
         configuration:
-          condition: 'var1 == "true"'
           pipelineName: scanner_embed_pipeline
           stepName: scan_it
           integrations:
@@ -43,6 +42,7 @@ pipelines:
                 - success
         execution:
           onStart:
+            - echo $var1
             - set_trigger_payload pipelineVariables "scan_target=${scan_target}"
             - set_trigger_payload stepVariables "notify=email" "uploadReport=true"
           onComplete:
