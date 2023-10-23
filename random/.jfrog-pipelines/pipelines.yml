@@ -23,6 +23,7 @@ pipelines:
       - name: scan_controller
         type: TriggerPipeline
         configuration:
+          condition: 'var1 == "true"'
           pipelineName: scanner_embed_pipeline
           stepName: scan_it
           integrations:
