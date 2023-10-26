@@ -34,7 +34,7 @@ publishTemplate:
   templateUploadStatusResourceName: templateUploadStatus140
 
   # JFrog platform access token integration name
-  jfrogAccessTokenIntegration: myJfrogAccessToken
+  jfrogAccessTokenIntegration: jf_token
 
   # Flag to control the version override behavior, if set to false then run will fail, if detects the template is already present.
   allowOverride: true
