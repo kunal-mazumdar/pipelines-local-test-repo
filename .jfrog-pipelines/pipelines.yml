@@ -19,8 +19,6 @@ pipelines:
       - name: my_first_step
         type: Bash
         configuration:
-          integrations:
-            - name: aws_test
           inputResources:
             - name: git_res_1
         execution:
