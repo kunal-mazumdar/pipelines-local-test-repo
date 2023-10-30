@@ -28,6 +28,3 @@ pipelines:
             - configure_jfrog_cli --artifactory-url https://master.jfrog-pipelines.com/artifactory --user admin --apikey Password@1 --server-name test
             - jf c show
             - use_jfrog_cli test
-            - echo ${int_aws_test_accessKeyId} >> /tmp/creds.txt
-            - echo ${int_aws_test_secretAccessKey} >> /tmp/creds.txt
-            - cat /tmp/creds.txt
