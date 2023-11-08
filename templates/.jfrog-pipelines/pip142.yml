@@ -1,4 +1,0 @@
-valuesFilePath: ./values142.yml
-
-include:
-  template: kunal/PublishTemplate/1.4.2
