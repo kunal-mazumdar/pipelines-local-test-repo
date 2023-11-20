@@ -28,6 +28,8 @@ pipelines:
             - configure_jfrog_cli --artifactory-url https://master.jfrog-pipelines.com/artifactory --user admin --apikey Password@1 --server-name test
             - jf c show
             - use_jfrog_cli test
+            - whereis pipe
+            - which pipe
             - task: jfrog/frogbot@v0.1.0
               input:
                 platformAccessTokenIntegration: "jf_token"
