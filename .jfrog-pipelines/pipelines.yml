@@ -35,5 +35,7 @@ pipelines:
                 platformAccessTokenIntegration: "jf_token"
                 resourceName: "kunal_gh"
                 botAction: "scan-all-pull-requests"
+                ext:
+                  level1: true
 
             
