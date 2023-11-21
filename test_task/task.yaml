@@ -16,3 +16,4 @@ execution:
   - echo "Hello from Task!"
   - echo $IN_platformAccessTokenIntegration
   - echo $IN_ext
+  - printenv
