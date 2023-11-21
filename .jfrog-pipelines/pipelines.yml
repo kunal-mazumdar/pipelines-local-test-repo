@@ -1,5 +1,5 @@
 resources:
-  - name: git_res_2
+  - name: git_res_3
     type: GitRepo
     configuration:
       path: kunal-mazumdar/pipelines-local-test-repo
@@ -20,7 +20,7 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: git_res_2
+            - name: git_res_3
         execution:
           onExecute:
             - echo "test1234513"
@@ -30,7 +30,7 @@ pipelines:
             - use_jfrog_cli test
             - whereis pipe
             - which pipe
-            - task: $res_git_res_2_resourcePath/test_task
+            - task: $res_git_res_3_resourcePath/test_task
               id: test_task
               input:
                 platformAccessTokenIntegration: "jf_token"
