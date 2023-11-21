@@ -14,3 +14,5 @@ input:
     description: action to be performed by frogbot for example create-fix-pull-requests/scan-pull-request
 execution:
   - echo "Hello from Task!"
+  - echo $IN_platformAccessTokenIntegration
+  - echo $IN_ext
