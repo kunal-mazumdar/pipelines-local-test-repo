@@ -1,0 +1,16 @@
+name: frogbot
+description: Jfrog pipelines task for frogbot
+source: github.com/jfrog/jfrog-pipelines-tasks
+labels:
+  - frogbot
+  - xray
+  - security
+input:
+  - name: platformAccessTokenIntegration
+    description: Name of the JFrog platform access token integration. [Mandatory] for establishing connection with JFrog Xray.
+  - name: resourceName
+    description: resource name which should scanned by frogbot
+  - name: botAction
+    description: action to be performed by frogbot for example create-fix-pull-requests/scan-pull-request
+execution:
+  - echo "Hello from Task!"
