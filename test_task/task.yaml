@@ -18,3 +18,4 @@ execution:
   - echo $IN_ext
   - printenv
   - echo "Hello again!"
+  - echo $IN_ext_array
