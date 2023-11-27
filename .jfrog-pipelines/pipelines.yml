@@ -39,6 +39,10 @@ pipelines:
                 ext:
                   level1:                    
                     level2: "true"
+                extArray:
+                  - 1
+                  - 2
+                  - 3
             - echo $IN_platformAccessTokenIntegration
             - echo $IN_ext
 
