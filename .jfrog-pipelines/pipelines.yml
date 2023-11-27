@@ -39,7 +39,7 @@ pipelines:
                 ext:
                   level1:                    
                     level2: "true"
-                extArray:
+                ext_array:
                   - 1
                   - 2
                   - 3
