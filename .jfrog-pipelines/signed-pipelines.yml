@@ -27,20 +27,15 @@ pipelines:
         execution:
           onExecute:
             - echo $res_git_repo_resourcePath
-            - task: jfrog/docker-build@v0.0.1
-              repository: pipelines-tasks-virtual
-              input:
-                resourceName: git_repo
-                dockerImage: docker-local/jfrog/pipelines-msg:1.0.0
-                dockerFileName: Dockerfile
-            - task: jfrog/docker-push@v0.0.2
-              repository: pipelines-tasks-virtual
-              input:
-                dockerImage: docker-local/jfrog/pipelines-msg:1.0.0
-                autoPublishBuildInfo: 'true'
-                xrayScan: false
-                failOnScan: true
-                outputBuildInfoResourceName: buildInfo
+            - export IN_resourceName=git_repo
+            - export IN_dockerImage=docker-local/jfrog/pipelines-msg:1.0.0
+            - export IN_dockerFileName=Dockerfile
+            - export IN_autoPublishBuildInfo='true'
+            - export IN_xrayScan=false
+            - export IN_failOnScan=true
+            - export IN_outputBuildInfoResourceName=buildInfo
+            - ./docker-build.sh
+            - ./docker-push.sh
 
   - name: signed_pipelines_manual
     configuration:
