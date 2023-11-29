@@ -45,6 +45,8 @@ pipelines:
             - ./docker-push.sh
             - echo $DOC_OUT_PATH
             - save_artifact_info 'file' $DOC_OUT_PATH
+            - echo $DOC_BP_OUT_PATH
+            - save_artifact_info buildInfo $DOC_BP_OUT_PATH --build-name $OUTPUT_BUILD_NAME --build-number $OUTPUT_BUILD_NUMBER
 
   - name: signed_pipelines_manual
     configuration:

@@ -64,6 +64,7 @@ echo "--- SAVE FILE OVER ---"
 #   # END Fetch pipeline branch name to store
 #   # START build-publish and save artifact info
 # outputBuildName=`echo $buildName\_$pipelineSourceBranch | tr -d \"`
+outputBuildName=$buildName
 # echo $outputBuildName
 # pipelineSourceBranch=`echo $pipeline_source_branch`
 #   # START Fetch pipeline branch name to store
@@ -89,9 +90,10 @@ echo $IN_autoPublishBuildInfo
         export JFROG_CLI_ENV_EXCLUDE="buildinfo.env.res_*;buildinfo.env.int_*;buildinfo.env.current_*;*password*;*secret*;*key*;*token*"
       fi
       retry_command jfrog rt build-publish --detailed-summary --insecure-tls=$no_verify_ssl $outputBuildName $buildNumber > $buildPublishOutputFile
-      save_artifact_info buildInfo $buildPublishOutputFile --build-name $outputBuildName --build-number $buildNumber
-      retry_command jfrog rt build-publish --detailed-summary --insecure-tls=$no_verify_ssl $outputBuildName $buildNumber > $buildPublishOutputFile
-      save_artifact_info buildInfo $buildPublishOutputFile --build-name $outputBuildName --build-number $buildNumber
+      export OUTPUT_BUILD_NAME=$outputBuildName
+      export OUTPUT_BUILD_NUMBER=$buildNumber
+    #   save_artifact_info buildInfo $buildPublishOutputFile --build-name $outputBuildName --build-number $buildNumber
+      export DOC_BP_OUT_PATH=$buildPublishOutputFile
       cat $buildPublishOutputFile
     fi
   # END build-publish and save artifact info
