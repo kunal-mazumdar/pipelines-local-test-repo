@@ -18,4 +18,4 @@ input:
     description:
 execution:
   - echo $IN_frogbotEnvVariables
-  - frogbot-${JFROG_OPERATING_SYSTEM_FAMILY}-${JFROG_ARCHITECTURE}
+  - ./frogbot-${JFROG_OPERATING_SYSTEM_FAMILY}-${JFROG_ARCHITECTURE}
