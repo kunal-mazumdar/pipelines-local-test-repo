@@ -46,7 +46,7 @@ jf docker push $dockerImageName:$dockerImageTag --build-name=$buildName --build-
 echo "--- DOCKER OVER ---"
 echo $dockerPushOutputFile
 export DOC_OUT_PATH=$dockerPushOutputFile
-save_artifact_info 'file' '${dockerPushOutputFile}'
+save_artifact_info "file" "$dockerPushOutputFile"
 echo "--- SAVE FILE OVER ---"
 # pipelineSourceBranch=`echo $pipeline_source_branch`
 #   # START Fetch pipeline branch name to store
