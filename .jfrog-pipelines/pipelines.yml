@@ -21,6 +21,8 @@ pipelines:
         configuration:
           inputResources:
             - name: git_res_3
+          integrations:
+            - name: jf_token
         execution:
           onExecute:
             - echo "test1234513"
