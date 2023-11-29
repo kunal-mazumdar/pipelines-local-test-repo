@@ -57,9 +57,9 @@ pipelines:
                 gitResourceName: "git_res_3"
                 frogbotCommand: "scan-all-pull-requests"
                 frogbotEnvVariables:
-                  TEST1: true
-                  TEST2: 'true'
-                  TEST3: 1
+                  TEST1: "true"
+                  TEST2: "true"
+                  TEST3: "1"
                   
             - echo $IN_platformAccessTokenIntegration
             - echo $IN_ext
