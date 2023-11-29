@@ -43,6 +43,7 @@ dockerPushOutputFile="$step_tmp_dir/dockerPushOutput.json"
   # Perform Docker Push
 jf docker push $dockerImageName:$dockerImageTag --build-name=$buildName --build-number=$buildNumber --detailed-summary | tee $dockerPushOutputFile
   # saving docker push artifact info
+echo "--- DOCKER OVER ---"
 save_artifact_info file $dockerPushOutputFile
 # pipelineSourceBranch=`echo $pipeline_source_branch`
 #   # START Fetch pipeline branch name to store
@@ -78,7 +79,6 @@ save_artifact_info file $dockerPushOutputFile
 #   # START build-publish and save artifact info
 # outputBuildName=`echo $buildName\_$pipelineSourceBranch | tr -d \"`
 echo $outputBuildName
-echo "--- DOCKER OVER ---"
 echo $IN_autoPublishBuildInfo
     if [ "$IN_autoPublishBuildInfo" == "true" ]; then
       echo "--- INSIDE BUILD PUBLISH---"
