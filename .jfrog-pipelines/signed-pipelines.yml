@@ -9,6 +9,8 @@ resources:
   - name: buildInfo
     type: BuildInfo
     configuration:
+      buildName: local_docker_build
+      buildNumber: 1
       sourceArtifactory: int_default_artifactory
 pipelines:
   - name: signed_pipelines_docker
@@ -35,7 +37,10 @@ pipelines:
             - export IN_failOnScan=true
             - export IN_outputBuildInfoResourceName=buildInfo
             - cd $res_git_repo_resourcePath
-            - ls -al
+            - echo $JFROG_CLI_BUILD_NAME
+            - echo $JFROG_CLI_BUILD_NUMBER
+            - export JFROG_CLI_BUILD_NAME=docker-local-build
+            - export JFROG_CLI_BUILD_NUMBER=${run_id}
             - ./docker-build.sh
             - ./docker-push.sh
 
