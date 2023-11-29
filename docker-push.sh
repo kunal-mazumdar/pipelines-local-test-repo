@@ -44,41 +44,44 @@ dockerPushOutputFile="$step_tmp_dir/dockerPushOutput.json"
 jf docker push $dockerImageName:$dockerImageTag --build-name=$buildName --build-number=$buildNumber --detailed-summary | tee $dockerPushOutputFile
   # saving docker push artifact info
 save_artifact_info file $dockerPushOutputFile
-pipelineSourceBranch=`echo $pipeline_source_branch`
-  # START Fetch pipeline branch name to store
-    if [[ -z "$pipelineSourceBranch" ]]; then
-      read pipelineId pipelineSourceId < <(curl https://$hostname/pipelines/api/v1/steps/$step_id --header "Authorization: Bearer $builder_api_token" | jq -r '.pipelineId, .pipelineSourceId')
-      read isMultiBranch branch < <(curl https://$hostname/pipelines/api/v1/pipelineSources/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq -r '.isMultiBranch, .branch')
-      if [ "$isMultiBranch" == "true" ]; then
-        pipelineSourceBranch=`curl https://$hostname/pipelines/api/v1/pipelines/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq .pipelineSourceBranch | tr -d \"`
-      else
-        pipelineSourceBranch=branch | tr -d \"
-      fi
-      pipelineSourceBranch=`curl https://$hostname/pipelines/api/v1/pipelines/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq .pipelineSourceBranch`
-      echo $pipelineSourceBranch
-    fi
-  # END Fetch pipeline branch name to store
-  # START build-publish and save artifact info
-outputBuildName=`echo $buildName\_$pipelineSourceBranch | tr -d \"`
+# pipelineSourceBranch=`echo $pipeline_source_branch`
+#   # START Fetch pipeline branch name to store
+#     if [[ -z "$pipelineSourceBranch" ]]; then
+#       read pipelineId pipelineSourceId < <(curl https://$hostname/pipelines/api/v1/steps/$step_id --header "Authorization: Bearer $builder_api_token" | jq -r '.pipelineId, .pipelineSourceId')
+#       read isMultiBranch branch < <(curl https://$hostname/pipelines/api/v1/pipelineSources/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq -r '.isMultiBranch, .branch')
+#       if [ "$isMultiBranch" == "true" ]; then
+#         pipelineSourceBranch=`curl https://$hostname/pipelines/api/v1/pipelines/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq .pipelineSourceBranch | tr -d \"`
+#       else
+#         pipelineSourceBranch=branch | tr -d \"
+#       fi
+#       pipelineSourceBranch=`curl https://$hostname/pipelines/api/v1/pipelines/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq .pipelineSourceBranch`
+#       echo $pipelineSourceBranch
+#     fi
+#   # END Fetch pipeline branch name to store
+#   # START build-publish and save artifact info
+# outputBuildName=`echo $buildName\_$pipelineSourceBranch | tr -d \"`
+# echo $outputBuildName
+# pipelineSourceBranch=`echo $pipeline_source_branch`
+#   # START Fetch pipeline branch name to store
+#     if [[ -z "$pipelineSourceBranch" ]]; then
+#       read pipelineId pipelineSourceId < <(curl https://$hostname/pipelines/api/v1/steps/$step_id --header "Authorization: Bearer $builder_api_token" | jq -r '.pipelineId, .pipelineSourceId')
+#       read isMultiBranch branch < <(curl https://$hostname/pipelines/api/v1/pipelineSources/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq -r '.isMultiBranch, .branch')
+#       if [ "$isMultiBranch" == "true" ]; then
+#         pipelineSourceBranch=`curl https://$hostname/pipelines/api/v1/pipelines/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq .pipelineSourceBranch | tr -d \"`
+#       else
+#         pipelineSourceBranch=branch | tr -d \"
+#       fi
+#       pipelineSourceBranch=`curl https://$hostname/pipelines/api/v1/pipelines/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq .pipelineSourceBranch`
+#       echo $pipelineSourceBranch
+#     fi
+#   # END Fetch pipeline branch name to store
+#   # START build-publish and save artifact info
+# outputBuildName=`echo $buildName\_$pipelineSourceBranch | tr -d \"`
 echo $outputBuildName
-pipelineSourceBranch=`echo $pipeline_source_branch`
-  # START Fetch pipeline branch name to store
-    if [[ -z "$pipelineSourceBranch" ]]; then
-      read pipelineId pipelineSourceId < <(curl https://$hostname/pipelines/api/v1/steps/$step_id --header "Authorization: Bearer $builder_api_token" | jq -r '.pipelineId, .pipelineSourceId')
-      read isMultiBranch branch < <(curl https://$hostname/pipelines/api/v1/pipelineSources/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq -r '.isMultiBranch, .branch')
-      if [ "$isMultiBranch" == "true" ]; then
-        pipelineSourceBranch=`curl https://$hostname/pipelines/api/v1/pipelines/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq .pipelineSourceBranch | tr -d \"`
-      else
-        pipelineSourceBranch=branch | tr -d \"
-      fi
-      pipelineSourceBranch=`curl https://$hostname/pipelines/api/v1/pipelines/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq .pipelineSourceBranch`
-      echo $pipelineSourceBranch
-    fi
-  # END Fetch pipeline branch name to store
-  # START build-publish and save artifact info
-outputBuildName=`echo $buildName\_$pipelineSourceBranch | tr -d \"`
-echo $outputBuildName
+echo "--- DOCKER OVER ---"
+echo $IN_autoPublishBuildInfo
     if [ "$IN_autoPublishBuildInfo" == "true" ]; then
+      echo "--- INSIDE BUILD PUBLISH---"
       if [ -z "$JFROG_CLI_ENV_EXCLUDE" ]; then
         export JFROG_CLI_ENV_EXCLUDE="buildinfo.env.res_*;buildinfo.env.int_*;buildinfo.env.current_*;*password*;*secret*;*key*;*token*"
       fi
