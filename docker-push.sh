@@ -8,15 +8,12 @@ hostname=$(echo $step_url | cut -d / -f3)
   # Input validations and updating optional values
 hostname=$(echo $step_url | cut -d / -f3)
   # Input validations and updating optional values
-|
     if [[ -z "${IN_autoPublishBuildInfo}" ]]; then
       IN_autoPublishBuildInfo="false"
     fi
-|
     if [[ -z "$IN_xrayScan" ]]; then
       IN_xrayScan="false"
     fi
-|
     if [[ -z "${IN_failOnScan}" ]]; then
       IN_failOnScan="true"
     else
@@ -49,7 +46,6 @@ jf docker push $dockerImageName:$dockerImageTag --build-name=$buildName --build-
 save_artifact_info file $dockerPushOutputFile
 pipelineSourceBranch=`echo $pipeline_source_branch`
   # START Fetch pipeline branch name to store
-|
     if [[ -z "$pipelineSourceBranch" ]]; then
       read pipelineId pipelineSourceId < <(curl https://$hostname/pipelines/api/v1/steps/$step_id --header "Authorization: Bearer $builder_api_token" | jq -r '.pipelineId, .pipelineSourceId')
       read isMultiBranch branch < <(curl https://$hostname/pipelines/api/v1/pipelineSources/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq -r '.isMultiBranch, .branch')
@@ -67,7 +63,6 @@ outputBuildName=`echo $buildName\_$pipelineSourceBranch | tr -d \"`
 echo $outputBuildName
 pipelineSourceBranch=`echo $pipeline_source_branch`
   # START Fetch pipeline branch name to store
-|
     if [[ -z "$pipelineSourceBranch" ]]; then
       read pipelineId pipelineSourceId < <(curl https://$hostname/pipelines/api/v1/steps/$step_id --header "Authorization: Bearer $builder_api_token" | jq -r '.pipelineId, .pipelineSourceId')
       read isMultiBranch branch < <(curl https://$hostname/pipelines/api/v1/pipelineSources/$pipelineId --header "Authorization: Bearer $builder_api_token" | jq -r '.isMultiBranch, .branch')
@@ -83,7 +78,6 @@ pipelineSourceBranch=`echo $pipeline_source_branch`
   # START build-publish and save artifact info
 outputBuildName=`echo $buildName\_$pipelineSourceBranch | tr -d \"`
 echo $outputBuildName
-|
     if [ "$IN_autoPublishBuildInfo" == "true" ]; then
       if [ -z "$JFROG_CLI_ENV_EXCLUDE" ]; then
         export JFROG_CLI_ENV_EXCLUDE="buildinfo.env.res_*;buildinfo.env.int_*;buildinfo.env.current_*;*password*;*secret*;*key*;*token*"
@@ -98,7 +92,6 @@ echo $outputBuildName
   # START Update buildinfo output resource
   # END build-publish and save artifact info
   # START Update buildinfo output resource
-|
     if [ -n "$IN_outputBuildInfoResourceName" ]; then
       write_output $IN_outputBuildInfoResourceName buildName=$outputBuildName buildNumber=$buildNumber
       write_output $IN_outputBuildInfoResourceName buildName=$outputBuildName buildNumber=$buildNumber
@@ -110,7 +103,6 @@ echo $outputBuildName
 xrayScanResultsOutputFile="$step_tmp_dir/xrayScanResultsOutput.json"
 echo $IN_xrayScan
 echo $IN_failOnScan
-|
     if [ "$IN_xrayScan" == "true" ]; then
       onScanComplete() {
         cat $xrayScanResultsOutputFile

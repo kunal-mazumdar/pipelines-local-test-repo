@@ -8,17 +8,14 @@ dockerImageTag=$(echo $dockerImage | cut -d ':' -f 2)
 IFS=', ' read -r -a tags <<< "${IN_additionalTags}"
   # Input validations and preparing optional values
 additionalTag=""
-|
     for index in "${!tags[@]}"
     do
       echo $index
       additionalTag+="-t $dockerImageName:${tags[index]} "
     done
-|
     if [[ -z "${IN_dockerFileName}" ]]; then
       IN_dockerFileName="Dockerfile"
     fi
-|
     if [[ -z "${IN_optionalParams}" ]]; then
       IN_optionalParams=""
     fi
@@ -29,14 +26,12 @@ echo ${!buildDir}
 pushd ${!buildDir}
 
 additionalOptions=""
-|
     if [ ! -z "${IN_optionalParams}" ]; then
       additionalOptions="${IN_optionalParams}"
     fi
 
 inputFileResourceNames=$(get_resource_names --type FileSpec --operation IN)
 
-|
     if [ ! -z "$inputFileResourceNames" ]; then
       echo "$inputFileResourceNames" | jq -r '.[]' | while read inputFileResourceName
     do
@@ -47,7 +42,6 @@ inputFileResourceNames=$(get_resource_names --type FileSpec --operation IN)
 echo $dockerImage
 echo $additionalOptions
 
-|
     if [ ! -z "${IN_dockerFileLocation}" ]; then
       buildDir="${!buildDir}/${IN_dockerFileLocation}"
     else
