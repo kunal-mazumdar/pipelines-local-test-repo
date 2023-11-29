@@ -28,7 +28,7 @@ pipelines:
           onExecute:
             - echo $res_git_repo_resourcePath
             - export IN_resourceName=git_repo
-            - export IN_dockerImage=localhost:8082/jfrog/pipelines-msg:latest
+            - export IN_dockerImage=localhost:8082/docker-local/jfrog/pipelines-msg:latest
             - export IN_dockerFileName=Dockerfile
             - export IN_autoPublishBuildInfo='true'
             - export IN_xrayScan=false
