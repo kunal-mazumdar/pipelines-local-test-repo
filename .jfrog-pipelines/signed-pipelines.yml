@@ -26,6 +26,7 @@ pipelines:
             - name: buildInfo
         execution:
           onExecute:
+            - echo $res_git_repo_resourcePath
             - task: jfrog/docker-build@v0.0.1
               repository: pipelines-tasks-virtual
               input:
