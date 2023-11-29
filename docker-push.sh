@@ -45,7 +45,7 @@ jf docker push $dockerImageName:$dockerImageTag --build-name=$buildName --build-
   # saving docker push artifact info
 echo "--- DOCKER OVER ---"
 echo $dockerPushOutputFile
-export DOC_OUT_PATH=$dockerPushOutputFile
+echo $dockerPushOutputFile > ./DOC_OUT_PATH.txt
 # save_artifact_info "file" "$dockerPushOutputFile"
 echo "--- SAVE FILE OVER ---"
 # pipelineSourceBranch=`echo $pipeline_source_branch`
@@ -90,10 +90,10 @@ echo $IN_autoPublishBuildInfo
         export JFROG_CLI_ENV_EXCLUDE="buildinfo.env.res_*;buildinfo.env.int_*;buildinfo.env.current_*;*password*;*secret*;*key*;*token*"
       fi
       retry_command jfrog rt build-publish --detailed-summary --insecure-tls=$no_verify_ssl $outputBuildName $buildNumber > $buildPublishOutputFile
-      export OUTPUT_BUILD_NAME=$outputBuildName
-      export OUTPUT_BUILD_NUMBER=$buildNumber
+      echo $outputBuildName > > ./OUTPUT_BUILD_NAME.txt
+      echo $buildNumber > ./OUTPUT_BUILD_NUMBER.txt
     #   save_artifact_info buildInfo $buildPublishOutputFile --build-name $outputBuildName --build-number $buildNumber
-      export DOC_BP_OUT_PATH=$buildPublishOutputFile
+      echo $buildPublishOutputFile > ./DOC_BP_OUT_PATH.txt
       cat $buildPublishOutputFile
     fi
   # END build-publish and save artifact info

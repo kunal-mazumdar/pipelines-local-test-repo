@@ -43,10 +43,10 @@ pipelines:
             - export JFROG_CLI_BUILD_NUMBER=${run_id}
             - ./docker-build.sh
             - ./docker-push.sh
-            - echo $DOC_OUT_PATH
-            - save_artifact_info 'file' $DOC_OUT_PATH
-            - echo $DOC_BP_OUT_PATH
-            - save_artifact_info buildInfo $DOC_BP_OUT_PATH --build-name $OUTPUT_BUILD_NAME --build-number $OUTPUT_BUILD_NUMBER
+            - cat ./DOC_OUT_PATH.txt
+            - save_artifact_info 'file' $(cat ./DOC_OUT_PATH.txt)
+            - cat ./DOC_BP_OUT_PATH.txt
+            - save_artifact_info buildInfo $(cat ./DOC_BP_OUT_PATH) --build-name $(cat ./OUTPUT_BUILD_NAME.txt) --build-number $(./OUTPUT_BUILD_NUMBER.txt)
 
   - name: signed_pipelines_manual
     configuration:
