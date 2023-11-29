@@ -35,6 +35,7 @@ pipelines:
             - export IN_failOnScan=true
             - export IN_outputBuildInfoResourceName=buildInfo
             - cd $res_git_repo_resourcePath
+            - ls -al
             - ./docker-build.sh
             - ./docker-push.sh
 
