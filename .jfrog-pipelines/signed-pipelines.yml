@@ -32,7 +32,7 @@ pipelines:
             - export IN_resourceName=git_repo
             - export IN_dockerImage=localhost:8082/docker-local/jfrog/pipelines-msg:latest
             - export IN_dockerFileName=Dockerfile
-            - export IN_autoPublishBuildInfo='true'
+            - export IN_autoPublishBuildInfo=true
             - export IN_xrayScan=false
             - export IN_failOnScan=true
             - export IN_outputBuildInfoResourceName=buildInfo

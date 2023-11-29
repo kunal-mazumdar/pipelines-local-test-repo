@@ -100,19 +100,19 @@ echo $outputBuildName
   # START perform xray scan
   # END Update buildinfo output resource
   # START perform xray scan
-xrayScanResultsOutputFile="$step_tmp_dir/xrayScanResultsOutput.json"
-echo $IN_xrayScan
-echo $IN_failOnScan
-    if [ "$IN_xrayScan" == "true" ]; then
-      onScanComplete() {
-        cat $xrayScanResultsOutputFile
-        xrayUrl=$(jq -c '.[0].xray_data_url' "$xrayScanResultsOutputFile" --raw-output 2> /dev/null)
-        if [ -n "$xrayUrl" ]; then
-          save_xray_results_url "$xrayUrl"
-        fi
-      }
-      jf build-scan --fail="$IN_failOnScan" --format=json $outputBuildName $buildNumber > $xrayScanResultsOutputFile || (onScanComplete; exit 99)
-      jf build-scan --fail="$IN_failOnScan" --format=json $outputBuildName $buildNumber > $xrayScanResultsOutputFile || (onScanComplete; exit 99)
-    fi
+# xrayScanResultsOutputFile="$step_tmp_dir/xrayScanResultsOutput.json"
+# echo $IN_xrayScan
+# echo $IN_failOnScan
+#     if [ "$IN_xrayScan" == "true" ]; then
+#       onScanComplete() {
+#         cat $xrayScanResultsOutputFile
+#         xrayUrl=$(jq -c '.[0].xray_data_url' "$xrayScanResultsOutputFile" --raw-output 2> /dev/null)
+#         if [ -n "$xrayUrl" ]; then
+#           save_xray_results_url "$xrayUrl"
+#         fi
+#       }
+#       jf build-scan --fail="$IN_failOnScan" --format=json $outputBuildName $buildNumber > $xrayScanResultsOutputFile || (onScanComplete; exit 99)
+#       jf build-scan --fail="$IN_failOnScan" --format=json $outputBuildName $buildNumber > $xrayScanResultsOutputFile || (onScanComplete; exit 99)
+#     fi
   # END perform xray scan
   # END perform xray scan
