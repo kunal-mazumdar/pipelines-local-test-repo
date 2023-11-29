@@ -62,4 +62,4 @@ add_run_variables ${step_name}_DockerImageName=${dockerImageName}
 add_run_variables ${step_name}_DockerImageTag=${dockerImageTag}
 popd
 jfrog rt build-collect-env $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER
-add_run_files /tmp/jfrog/. jfrog
+# add_run_files /tmp/jfrog/. jfrog
