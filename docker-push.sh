@@ -44,7 +44,9 @@ dockerPushOutputFile="$step_tmp_dir/dockerPushOutput.json"
 jf docker push $dockerImageName:$dockerImageTag --build-name=$buildName --build-number=$buildNumber --detailed-summary | tee $dockerPushOutputFile
   # saving docker push artifact info
 echo "--- DOCKER OVER ---"
+echo $dockerPushOutputFile
 save_artifact_info file $dockerPushOutputFile
+echo "--- SAVE FILE OVER ---"
 # pipelineSourceBranch=`echo $pipeline_source_branch`
 #   # START Fetch pipeline branch name to store
 #     if [[ -z "$pipelineSourceBranch" ]]; then
