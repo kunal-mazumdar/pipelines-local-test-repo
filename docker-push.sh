@@ -90,7 +90,7 @@ echo $IN_autoPublishBuildInfo
         export JFROG_CLI_ENV_EXCLUDE="buildinfo.env.res_*;buildinfo.env.int_*;buildinfo.env.current_*;*password*;*secret*;*key*;*token*"
       fi
       retry_command jfrog rt build-publish --detailed-summary --insecure-tls=$no_verify_ssl $outputBuildName $buildNumber > $buildPublishOutputFile
-      echo $outputBuildName > > ./OUTPUT_BUILD_NAME.txt
+      echo $outputBuildName > ./OUTPUT_BUILD_NAME.txt
       echo $buildNumber > ./OUTPUT_BUILD_NUMBER.txt
     #   save_artifact_info buildInfo $buildPublishOutputFile --build-name $outputBuildName --build-number $buildNumber
       echo $buildPublishOutputFile > ./DOC_BP_OUT_PATH.txt
