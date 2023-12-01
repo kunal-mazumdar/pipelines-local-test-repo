@@ -1,1 +1,38 @@
 
+templateRepository:
+  # scm integration name
+  gitProvider: kunal_gh
+
+  # repository path where your templates are present
+  path: https://github.com/kunal-mazumdar
+
+  # branch name or pattern where your templates are present in the repository (optional)
+  branch: dev-template
+
+  # template folder location, where your templateDefinition.yml file is present
+  templateFolder: templates
+
+  # when set to true and branch is also defined, then auto triggers the publish pipeline upon commit. (optional)
+  autoPublishOnTemplateChange: true
+ 
+publishTemplate:
+  # Template namespace
+  namespace: local
+
+  # Template name
+  name: myPipelineTemplate
+
+  # Template version
+  version: 0.0.1
+
+  # name of the pipeline (optional)
+  pipelineName: PublishTemplate1231
+
+  # template repository resource name (optional)
+  templateRepositoryResourceName: templateRepository1231
+
+  # upload status resource name (optional)
+  templateUploadStatusResourceName: templateUploadStatus1231
+
+  # JFrog platform access token integration name
+  jfrogAccessTokenIntegration: jf_token
