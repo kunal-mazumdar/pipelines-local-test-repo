@@ -71,7 +71,7 @@ pipelines:
                 dockerImage: "b14810.jfrog-pipelines.com/docker-local/jfrog/pipelines-msg:latest"
                 dockerFileName: Dockerfile
                 dockerFileLocation: .
-            - task: jfrog/docker-push@v0.0.2
+            - task: jfrog/docker-push@v0.0.1
               repository: pipelines-tasks-virtual
               input:
                 dockerImage: "b14810.jfrog-pipelines.com/docker-local/jfrog/pipelines-msg:latest"
