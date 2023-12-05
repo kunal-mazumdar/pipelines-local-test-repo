@@ -13,7 +13,7 @@ resources:
       buildNumber: 1
       sourceArtifactory: int_default_artifactory
 pipelines:
-  - name: signed_pipelines_docker
+  - name: signed_pipelines_docker_manual
     configuration:
       jfrogCliVersion: 2
     steps:
@@ -48,6 +48,37 @@ pipelines:
             - cat ./DOC_BP_OUT_PATH.txt
             - save_artifact_info buildInfo $(cat ./DOC_BP_OUT_PATH) --build-name $(cat ./OUTPUT_BUILD_NAME.txt) --build-number $(./OUTPUT_BUILD_NUMBER.txt)
 
+  - name: signed_pipelines_docker_using_task
+    configuration:
+      jfrogCliVersion: 2
+    steps:
+      - name: build_push
+        type: Bash
+        configuration:
+          inputResources:
+            - name: git_repo
+          integrations:
+            - name: int_default_artifactory
+          outputResources:
+            - name: buildInfo
+        execution:
+          onExecute:
+            - echo $res_git_repo_resourcePath
+            - task: jfrog/docker-build@v0.0.1
+              repository: pipelines-tasks-virtual
+              input:
+                resourceName: git_repo
+                dockerImage: "b14810.jfrog-pipelines.com/docker-local/jfrog/pipelines-msg:latest"
+                dockerFileName: Dockerfile
+            - task: jfrog/docker-push@v0.0.2
+              repository: pipelines-tasks-virtual
+              input:
+                dockerImage: "b14810.jfrog-pipelines.com/docker-local/jfrog/pipelines-msg:latest"
+                autoPublishBuildInfo: "true"
+                xrayScan: "false"
+                failOnScan: "true"
+                outputBuildInfoResourceName: "buildInfo"
+            
   - name: signed_pipelines_manual
     configuration:
       jfrogCliVersion: 2
