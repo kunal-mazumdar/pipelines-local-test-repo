@@ -69,14 +69,16 @@ pipelines:
               input:
                 resourceName: git_repo
                 # dockerImage: "b14810.jfrog-pipelines.com/docker-local/jfrog/pipelines-msg:latest"
-                dockerImage: "pipelineslnp1.jfrogdev.org/docker-local/jfrog/pipelines-msg:latest"
+                # dockerImage: "pipelineslnp1.jfrogdev.org/docker-local/jfrog/pipelines-msg:latest"
+                dockerImage: "jpd957291677.jfrogdev.org/docker-local/jfrog/pipelines-msg:latest"
                 dockerFileName: Dockerfile
                 dockerFileLocation: .
             - task: jfrog/docker-push@v0.0.1
               repository: pipelines-tasks-virtual
               input:
-                #dockerImage: "b14810.jfrog-pipelines.com/docker-local/jfrog/pipelines-msg:latest"
-                dockerImage: "pipelineslnp1.jfrogdev.org/docker-local/jfrog/pipelines-msg:latest"
+                # dockerImage: "b14810.jfrog-pipelines.com/docker-local/jfrog/pipelines-msg:latest"
+                # dockerImage: "pipelineslnp1.jfrogdev.org/docker-local/jfrog/pipelines-msg:latest"
+                dockerImage: "jpd957291677.jfrogdev.org/docker-local/jfrog/pipelines-msg:latest"
                 autoPublishBuildInfo: "true"
                 xrayScan: "false"
                 failOnScan: "true"
