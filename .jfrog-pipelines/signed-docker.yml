@@ -1,0 +1,51 @@
+resources:
+  - name: S_DockerPush_8307_009_GitRepo
+    type: GitRepo
+    configuration:
+      gitProvider: kunal_gh
+      path: kunal-mazumdar/pipelines-local-test-repo
+      branches:
+        include: {{gitBranch}}
+
+  - name: S_DockerPush_8307_009_buildInfo
+    type: BuildInfo
+    configuration:
+      sourceArtifactory: int_default_artifactory
+
+pipelines:
+  - name: S_DockerPush_8307_009
+    configuration:
+      jfrogCliVersion: 2
+    steps:
+      - name: S_DockerPush_8307_009_1
+        type: DockerBuild
+        configuration:
+          environmentVariables:
+            JFROG_CLI_BUILD_NUMBER: ${run_id}
+          affinityGroup: S_DockerPush_8307_009
+          dockerImageName: ${artifactory_registry_url}/test-automation-docker-local/s_dockerpush_8307_009
+          dockerImageTag: ${run_id}
+          dockerFileLocation: "."
+          inputResources:
+            - name: S_DockerPush_8307_009_GitRepo
+          integrations:
+            - name: int_default_artifactory
+        execution:
+          onStart:
+            - artifactory_registry_url=$(echo "$int_int_default_artifactory_url" | sed 's#.*//\([^/]*\)/.*#\1#')
+            - echo $artifactory_registry_url
+            - add_run_variables artifactory_registry_url="$artifactory_registry_url"
+
+      - name: S_DockerPush_8307_009_2
+        type: DockerPush
+        configuration:
+          autoPublishBuildInfo: true
+          forceXrayScan: true
+          affinityGroup: S_DockerPush_8307_009
+          targetRepository: test-automation-docker-local
+          inputSteps:
+            - name: S_DockerPush_8307_009_1
+          integrations:
+            - name: int_default_artifactory
+          outputResources:
+            - name: S_DockerPush_8307_009_buildInfo
