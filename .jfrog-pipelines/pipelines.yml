@@ -5,7 +5,7 @@ resources:
       path: kunal-mazumdar/pipelines-local-test-repo
       gitProvider: kunal_gh
       branches:
-        include: ^{{ .jfrog-pipelines.gitBranch }}$
+        include: ^{{ gitBranch }}$
 
 {{ range $i, $e := until 1000 }}
 pipelines:
