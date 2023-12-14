@@ -7,8 +7,8 @@ resources:
       branches:
         include: ^{{ gitBranch }}$
 
-{{ range $i, $e := until 1000 }}
 pipelines:
+{{ range $i, $e := until 1000 }}
   - name: loop_pipeline_{{ $i }}
     configuration:
       jfrogCliVersion: 2
