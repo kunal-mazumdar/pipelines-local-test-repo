@@ -1,67 +1,24 @@
 resources:
-  - name: git_res_3
+  - name: git_resource
     type: GitRepo
     configuration:
       path: kunal-mazumdar/pipelines-local-test-repo
       gitProvider: kunal_gh
       branches:
-        include: ^sanity$
+        include: ^{{ .jfrog-pipelines.gitBranch }}$
 
+{{ range $i, $e := until 1000 }}
 pipelines:
-  - name: my_first_pipeline
+  - name: loop_pipeline_{{ $i }}
     configuration:
       jfrogCliVersion: 2
-      environmentVariables:
-        readOnly:
-          XRAY_ENABLED: "{{ ternary true false ( hasPrefix "master" "{{gitBranch}}" ) }}"
-          MODIFIED_GIT_BRANCH: "{{ "{{gitBranch}}" | replace "/" "." | replace "-" "."  }}"
-          JFROG_TASK_DEBUG: "true"
-          JFROG_CLI_LOG_LEVEL: debug
     steps:
-      - name: my_first_step
+      - name: step
         type: Bash
         configuration:
           inputResources:
-            - name: git_res_3
-          integrations:
-            - name: jf_token
+            - name: git_resource
         execution:
           onExecute:
             - echo "test1234513"
-            - echo "{{ ternary "true" "false" ( hasPrefix "master" "{{gitBranch}}" ) }}"
-            - configure_jfrog_cli --artifactory-url https://master.jfrog-pipelines.com/artifactory --user admin --apikey Password@1 --server-name test
-            - jf c show
-            - use_jfrog_cli test
-            - whereis pipe
-            - which pipe
-            - task: $res_git_res_3_resourcePath/test_task
-              id: test_task
-              input:
-                platformAccessTokenIntegration: "jf_token"
-                resourceName: "kunal_gh"
-                botAction: "scan-all-pull-requests"
-                ext:
-                  level1:                    
-                    level2: "true"
-                    level2.1: true
-                    level2.2: 2
-                ext_array:
-                  - 1
-                  - "2"
-                  - 3
-
-            - task: $res_git_res_3_resourcePath/frogbot_test_task
-              id: frogbot_task
-              input:
-                platformAccessTokenIntegration: "jf_token"
-                gitResourceName: "git_res_3"
-                frogbotCommand: "scan-all-pull-requests"
-                frogbotEnvVariables:
-                  TEST1: "true"
-                  TEST2: "true"
-                  TEST3: "1"
-                  
-            - echo $IN_platformAccessTokenIntegration
-            - echo $IN_ext
-
-            
+{{ end }}
