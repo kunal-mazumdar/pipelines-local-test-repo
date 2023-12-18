@@ -8,12 +8,13 @@ resources:
         include: ^{{ gitBranch }}$
 
 pipelines:
-{{ range $i, $e := until 1000 }}
+{{ range $i, $pipe := until 100 }}
   - name: loop_pipeline_{{ $i }}
     configuration:
       jfrogCliVersion: 2
     steps:
-      - name: step
+    {{ range $j, $step := until 1000 }}
+      - name: step_{{ $j }}
         type: Bash
         configuration:
           inputResources:
@@ -21,4 +22,5 @@ pipelines:
         execution:
           onExecute:
             - echo "test1234513"
+    {{ end }}
 {{ end }}
