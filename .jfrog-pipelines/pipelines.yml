@@ -1,11 +1,13 @@
 resources:
-  - name: git_resource
+  {{ range $i, $pipe := until 100 }}
+  - name: git_resource_{{ $i }}
     type: GitRepo
     configuration:
       path: kunal-mazumdar/pipelines-local-test-repo
       gitProvider: kunal_gh
       branches:
         include: ^{{ gitBranch }}$
+  {{ end }}
 
 pipelines:
 {{ range $i, $pipe := until 100 }}
@@ -18,7 +20,7 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: git_resource
+            - name: git_resource_1
         execution:
           onExecute:
             - echo "test1234513"
