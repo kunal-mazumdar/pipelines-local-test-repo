@@ -13,7 +13,7 @@ pipelines:
     configuration:
       jfrogCliVersion: 2
     steps:
-    {{ range $j, $step := until 1000 }}
+    {{ range $j, $step := until 100 }}
       - name: step_{{ $j }}
         type: Bash
         configuration:
