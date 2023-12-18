@@ -1,5 +1,5 @@
 resources:
-  {{ range $i, $pipe := until 100 }}
+  {{ range $i, $pipe := until 10000 }}
   - name: git_resource_{{ $i }}
     type: GitRepo
     configuration:
@@ -10,12 +10,12 @@ resources:
   {{ end }}
 
 pipelines:
-{{ range $i, $pipe := until 100 }}
+{{ range $i, $pipe := until 10 }}
   - name: loop_pipeline_{{ $i }}
     configuration:
       jfrogCliVersion: 2
     steps:
-    {{ range $j, $step := until 100 }}
+    {{ range $j, $step := until 10 }}
       - name: step_{{ $j }}
         type: Bash
         configuration:
