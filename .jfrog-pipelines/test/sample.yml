@@ -8,6 +8,9 @@ pipelines:
     steps:
       - name: my_first_step
         type: Bash
+        configuration:
+          integrations:
+            - name: jf_token
         execution:
           onExecute:
             - echo "test"
