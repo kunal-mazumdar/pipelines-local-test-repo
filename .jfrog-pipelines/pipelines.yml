@@ -8,7 +8,7 @@ resources:
         include: ^sanity$
 
 pipelines:
-  - name: my_first_pipeline
+  - name: sanity_pipeline
     configuration:
       jfrogCliVersion: 2
       environmentVariables:
