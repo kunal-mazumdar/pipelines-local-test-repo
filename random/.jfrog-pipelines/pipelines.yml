@@ -18,6 +18,7 @@ pipelines:
               trigger: true
         execution:
           onExecute:
+            - printenv
             - add_run_variables var1="true"
 
       - name: scan_controller
