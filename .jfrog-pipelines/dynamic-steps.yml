@@ -4,13 +4,16 @@ pipelines:
     configuration:
       jfrogCliVersion: 2
     steps:
-      {{- range $step := .Values.customSteps }}
-      - {{ $step }}
-      {{- end }}
       - name: default_step
-        type: Bash        
+        type: Bash
         execution:
           onExecute:
             - echo "THIS IS DEFAULT_STEP"
+
+      - execution:
+          onExecute:
+          - echo "This is custom step 1"
+        name: custom_step_1
+        type: Bash
 
             
