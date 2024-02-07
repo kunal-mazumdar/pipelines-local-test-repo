@@ -1,0 +1,6 @@
+customSteps:
+  - name: custom_step_1
+    type: Bash
+    execution:
+      onExecute:
+        - echo "This is custom step 1"
