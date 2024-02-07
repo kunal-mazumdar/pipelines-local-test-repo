@@ -1,0 +1,16 @@
+valuesFilePath: ./values.yml
+pipelines:
+  - name: dynamic_pipeline
+    configuration:
+      jfrogCliVersion: 2
+    steps:
+      {{- range $step := .Values.customSteps }}
+      - {{ $step }}
+      {{- end }}
+      - name: default_step
+        type: Bash        
+        execution:
+          onExecute:
+            - echo "THIS IS DEFAULT_STEP"
+
+            
