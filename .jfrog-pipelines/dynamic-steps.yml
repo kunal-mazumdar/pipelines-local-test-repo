@@ -13,6 +13,9 @@ pipelines:
       - execution:
           onExecute:
           - echo "This is custom step 1"
+        configuration:
+          inputSteps:
+          - name: default_step
         name: custom_step_1
         type: Bash
 
