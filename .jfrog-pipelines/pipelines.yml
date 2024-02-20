@@ -1,28 +1,37 @@
 resources:
-  {{ range $i, $pipe := until 10000 }}
-  - name: git_resource_{{ $i }}
+  - name: jfrog_playground
     type: GitRepo
     configuration:
-      path: kunal-mazumdar/pipelines-local-test-repo
       gitProvider: kunal_gh
+      path: kunal-mazumdar/node-js-sample
       branches:
-        include: ^{{ gitBranch }}$
-  {{ end }}
+        include: master
 
 pipelines:
-{{ range $i, $pipe := until 10 }}
-  - name: loop_pipeline_{{ $i }}
+  - name: local_cache_test
     configuration:
-      jfrogCliVersion: 2
+      nodePool: local_cache
+      runtime:
+        type: image
+        image:
+          custom:
+            name: releases-docker.jfrog.io/jfrog/pipelines-u20node
+            tag: 18.18.2
+            options: -v ~/node_modules:/root/node_modules
+
     steps:
-    {{ range $j, $step := until 10 }}
-      - name: step_{{ $j }}
+      - name: test
         type: Bash
         configuration:
           inputResources:
-            - name: git_resource_1
-        execution:
+            - name: jfrog_playground
+              trigger: true
+        execution:          
           onExecute:
-            - echo "test1234513"
-    {{ end }}
-{{ end }}
+            - ls -las /root/node_modules
+            - cd ${res_jfrog_playground_resourcePath}            
+            - pwd
+            - ls -las
+            - npm i --verbose
+            - ls -las node_modules
+            - ls -las /root/node_modules
