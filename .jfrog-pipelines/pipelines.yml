@@ -17,7 +17,7 @@ pipelines:
           custom:
             name: releases-docker.jfrog.io/jfrog/pipelines-u20node
             tag: 18.18.2
-            options: "-v ~/node_modules:/root/node_modules -v ~/node_modules:/root/node_modules:ro,rslave"
+            options: "-v ~/node_modules:/root/node_modules:ro,rslave"
 
     steps:
       - name: test
