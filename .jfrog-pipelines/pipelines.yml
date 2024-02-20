@@ -29,6 +29,7 @@ pipelines:
         execution:          
           onExecute:
             - ls -las /root/node_modules
+            - ln -s /root/node_modules ${res_sample_nodejs_git_resourcePath}
             - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
