@@ -1,5 +1,5 @@
 resources:
-  - name: jfrog_playground
+  - name: sample_nodejs_git
     type: GitRepo
     configuration:
       gitProvider: kunal_gh
@@ -24,12 +24,12 @@ pipelines:
         type: Bash
         configuration:
           inputResources:
-            - name: jfrog_playground
+            - name: sample_nodejs_git
               trigger: true
         execution:          
           onExecute:
             - ls -las /root/node_modules
-            - cd ${res_jfrog_playground_resourcePath}            
+            - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
             - npm i --verbose
