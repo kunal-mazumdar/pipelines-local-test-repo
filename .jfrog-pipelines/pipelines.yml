@@ -33,7 +33,7 @@ pipelines:
             - pwd
             - ls -las
             - npm config set cache "/root/node_modules" --global
-            - npm --global cache verify
             - npm i --verbose
             - ls -las node_modules
             - ls -las /root/node_modules
+            - npm --global cache verify            
