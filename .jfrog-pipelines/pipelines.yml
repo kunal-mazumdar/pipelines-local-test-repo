@@ -32,6 +32,8 @@ pipelines:
             - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
-            - npm i --verbose --cache /root/node_modules
+            - npm config set cache "/root/node_modules" --global
+            - npm --global cache verify
+            - npm i --verbose
             - ls -las node_modules
             - ls -las /root/node_modules
