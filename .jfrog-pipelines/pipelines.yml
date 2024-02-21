@@ -28,7 +28,9 @@ pipelines:
               trigger: true
         execution:          
           onExecute:
+            - ls -al /root
             - ls -las /root/node_modules
+            - mkdir -p /root/node_modules/
             - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
