@@ -29,13 +29,12 @@ pipelines:
         execution:          
           onExecute:
             - ls -al /root
-            - chown -R $USER /root/node_modules
             - ls -las /root/node_modules
             - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
-            - npm config set cache "/root/node_modules" --global
-            - npm i --verbose
+            - npm config set cache /root/node_modules --global
+            - npm i --verbose --cache /root/node_modules
             - ls -las node_modules
             - ls -las /root/node_modules
             - npm --global cache verify            
