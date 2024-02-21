@@ -30,7 +30,8 @@ pipelines:
           onExecute:
             - ls -al /root
             - ls -las /root/node_modules
-            - mkdir -p /root/node_modules/
+            - mkdir -p /root/node_modules/_cacache
+            - mkdir -p /root/node_modules/_logs
             - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
