@@ -7,6 +7,14 @@ resources:
       branches:
         include: master
 
+  - name: yml_git
+    type: GitRepo
+    configuration:
+      gitProvider: kunal_gh
+      path: kunal-mazumdar/pipelines-local-test-repo
+      branches:
+        include: cache
+
 pipelines:
   - name: local_cache_test
     configuration:
@@ -25,16 +33,17 @@ pipelines:
         configuration:
           inputResources:
             - name: sample_nodejs_git
-              trigger: true
+            - name: yml_git
         execution:          
           onExecute:
             - ls -al /root
             - ls -las /root/node_modules
+            - chmod -R 777 /root/node_modules
             - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
             - npm config set cache /root/node_modules --global
-            - npm i --verbose --cache /root/node_modules
+            - npm i --verbose
             - ls -las node_modules
             - ls -las /root/node_modules
             - npm --global cache verify            
