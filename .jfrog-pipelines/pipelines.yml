@@ -38,7 +38,7 @@ pipelines:
           onExecute:
             - ls -al /root
             - ls -las /root/node_modules
-            - chmod -R 777 /root/node_modules
+            - sudo chmod -R 777 /root/node_modules
             - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
