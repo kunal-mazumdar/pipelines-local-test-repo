@@ -25,7 +25,7 @@ pipelines:
           custom:
             name: releases-docker.jfrog.io/jfrog/pipelines-u20node
             tag: 18.18.2
-            options: "-v ~/node_modules:/root/node_modules:ro,rslave"
+            options: "-v ~/node_modules:/root/node_modules"
 
     steps:
       - name: test
@@ -38,7 +38,6 @@ pipelines:
           onExecute:
             - ls -al /root
             - ls -las /root/node_modules
-            - sudo chmod -R 777 /root/node_modules
             - cd ${res_sample_nodejs_git_resourcePath}            
             - pwd
             - ls -las
